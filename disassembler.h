@@ -18,7 +18,7 @@ struct section {
 
 char address_buffer[4], len_buffer[2];
 
-void DecodeSection (FILE *objfile, struct section *CurrSection);
+struct section*  DecodeSection (FILE *objfile, struct section *CurrSection);
 
 
 
