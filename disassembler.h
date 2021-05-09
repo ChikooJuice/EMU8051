@@ -13,13 +13,13 @@ struct section {
 	uint8_t checksum;
 	uint8_t type;
 	uint8_t *data;
-	struct inst_unit *next;	
+	struct section *next;	
 } HEAD;
 
 char address_buffer[4], len_buffer[2];
 
-struct section*  DecodeSection (FILE *objfile, struct section *CurrSection);
-
+struct section  DecodeSection (FILE *objfile);
+int IntfromHex (char tmp);
 
 
 
