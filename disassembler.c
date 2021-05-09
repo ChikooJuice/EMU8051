@@ -25,7 +25,6 @@ struct section DecodeSection (FILE *objfile) {
 	//reading data and converting it to equivalent 
 	// byte and storing them in data of section 
 
-	printf ("Printing Current section's data \n ");
 	CurrSection.data = malloc (sizeof (uint8_t) * CurrSection.len);
 	for (int i = 0; i < CurrSection.len; i++) {
 		fread (tmp, sizeof (char), 2, objfile);
@@ -55,6 +54,26 @@ struct section DecodeSection (FILE *objfile) {
 
 	return CurrSection;
 }
+
+void printSections (struct section *dissasmbl_list) {
+	struct section *temp = dissasmbl_list;
+	int i = 1;
+	while (temp != NULL) {
+		printf ("\n\nSection %d  address %X \n", i, temp);
+		printf("length : %x \n\
+address : %X \n\
+checksum : %X \n\
+type : %X \n", temp->len, temp->address, temp->checksum, temp->type);
+
+	printf ("data : ");
+	for (int j = 0; j < temp->len; j++)	printf("%X ",temp->data[j]);
+	printf("\nnext : %x \n", temp->next);
+	temp = temp->next;
+	i++;
+	}
+}
+
+
 	
 
 int IntfromHex (char tmp) {
