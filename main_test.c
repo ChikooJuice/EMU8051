@@ -2,30 +2,49 @@
 #include <stdlib.h>
 #include <string.h>
 
-struct section *main_head;
+struct section dissasmbl_list;
+void printSections ();
 
 int main (int argc, char *argv[]) {
 
 	FILE *objfile;
 	objfile = fopen ("test.hex", "rb");
-	
-	struct section *temp; char buffer;
+	char tmp;
 
-	fread (&buffer, sizeof (char), 1, objfile); 
-	if (buffer == ':') {
-		
-		printf ("new section start \n");
-		main_head = DecodeSection (objfile, main_head);
-
-		printf ("%x \n", main_head);
+	/** initial read */
+	fread (&tmp, sizeof (char), 1, objfile); // reading first colon
+		if (tmp != ':') {
+		printf ("invalid file \n");
+		exit;
 	}
-	temp = main_head;
-	fread (&buffer, sizeof (char), 1, objfile);
-	fread (&buffer, sizeof (char), 1, objfile);
+	dissasmbl_list = DecodeSection (objfile);
+	if (dissasmbl_list.type == 0) {
+		struct section *pntr = &dissasmbl_list;
+		while (1) {
+			pntr->next = malloc (sizeof (struct section));
+			
+			for (int i = 1; i < 4; i++) {
+				fread (&tmp, sizeof(char), 1, objfile);
+			}
 
-	temp->next = DecodeSection (objfile, temp->next);
-	temp = temp->next;
+			*pntr->next = DecodeSection (objfile);
+			if (pntr->next->type == 01) {
+				pntr->next->next = NULL;
+				break;
+			}
+			pntr = pntr->next;
+		}
+	}
 
-	printf ("head -> next : %x \n", temp->next);
+	printf ("Going to enter printSections function \n");
+	printSections(&dissasmbl_list);
+	
 
 }
+
+
+
+
+
+
+
