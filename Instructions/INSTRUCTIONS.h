@@ -6,11 +6,12 @@
 #include <stdlib.h>
 
 
-typedef int (*Inst_function_pointer)( );
+int (*INSTRUCTION[0xFF]) (void);
+/** Assign this function pointer to corresponding instruction
+ * after defining the functions
+ */
 
-Inst_function_pointer INST_ARRAY[0xFF];
-
-int NOP ( );
+int NOP ( );        
 int AJMP ( );
 int LJMP ( );
 int RR ( );
@@ -165,7 +166,98 @@ int SUBB_R4 ( );
 int SUBB_R5 ( );
 int SUBB_R6 ( );   
 int SUBB_R7 ( );
-
+int ORL_C ( );
+// int AJMP ( );
+int MOV_C ( );
+int INC_dptr ( );
+int MUL ( );
+//reserved
+int MOV_atR0_data_addr ( );
+int MOV_atR1_data_addr ( );
+int R0_data_addr ( );
+int R1_data_addr ( );
+int R2_data_addr ( );
+int R3_data_addr ( );
+int R4_data_addr ( );
+int R5_data_addr ( );
+int R6_data_addr ( );
+int R7_data_addr ( );
+int ANL_C ( );
+// int ACALL ( );
+int CPL ();
+int CPL_C ();
+int CJNE_A_data_codeaddr ( );
+int CJNE_A_data_addr_codeaddr ( );
+int CJNE_atR0_data_codeaddr ( );
+int CJNE_atR1_data_codeaddr ( );
+int CJNE_R0 ( );
+int CJNE_R1 ( );
+int CJNE_R2 ( );
+int CJNE_R3 ( );
+int CJNE_R4 ( );
+int CJNE_R5 ( );
+int CJNE_R6 ( );
+int CJNE_R7 ( );
+int PUSH ();
+// int AJMP ();
+int CLR ( );
+int CLR_C ();
+int SWAP ( );
+int XCH_A_dataaddr ( );
+int XCH_A_atR0 ( );
+int XCH_A_at_R1 ( );
+int XCH_A_R0 ( );
+int XCH_A_R1 ( );
+int XCH_A_R2 ( );
+int XCH_A_R3 ( );
+int XCH_A_R4 ( );
+int XCH_A_R5 ( );
+int XCH_A_R6 ( );
+int XCH_A_R7 ( );
+int POP ( );
+// int ACALL ( );
+int SETB ( );
+int SETB_C ( );
+int DA ( );
+int DJNZ ( );
+int XCHD_A_at_R0 ( );
+int XCHD_A_at_R1 ( );
+int DJNZ_R0 ( );
+int DJNZ_R1 ( );
+int DJNZ_R2 ( );
+int DJNZ_R3 ( );
+int DJNZ_R4 ( );
+int DJNZ_R5 ( );
+int DJNZ_R6 ( );
+int DJNZ_R7 ( );
+int MOVX_at_DPTR ( );
+// int AJMP ( );
+int MOVX_A_at_R0 ( );
+int MOVX_A_at_R1 ( );
+int CLR_A ();
+int MOV_A_dataaddr ();
+int MOV_A_at_R0 ( );
+int MOV_A_at_R1 ( );
+int MOV_A_R0 ( );
+int MOV_A_R1 ( );
+int MOV_A_R2 ( );
+int MOV_A_R3 ( );
+int MOV_A_R4 ( );
+int MOV_A_R5 ( );
+int MOV_A_R6 ( );
+int MOV_A_R7 ( );
+int MOVX_at_DPTR_A ( );
+// int ACALL ( );
+int MOVX_at_R0_A ( );
+int MOVX_at_R1_A ( );
+int MOV_R0_A ( );
+int MOV_R1_A ( );
+int MOV_R2_A ( );
+int MOV_R3_A ( );
+int MOV_R4_A ( );
+int MOV_R5_A ( );
+int MOV_R6_A ( );
+int MOV_R7_A ( );
 
 
 
