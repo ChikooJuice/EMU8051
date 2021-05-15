@@ -1,7 +1,7 @@
 [ ] Write Readme and push it to github repo
 
 ``` diff 
--Warning !!! -
+- Warning !!!
 
 EMU8051 is under development and is not working yet.
 We would be vary happy to welcome contributors to the project !
