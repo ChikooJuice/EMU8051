@@ -19,7 +19,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 
-#define EXTERNAL_MEMORY 1024 * 8
+#define FLASH 4096
 
 // SFR Addresses in Memory from 0x80 - 0xFF
 #define 	P0 	0x80
@@ -97,8 +97,8 @@
 
 /** IE : Interrupt Enable. Bit Addressable
  * 
- * |	EX0	|	IE.0	|	external interrupt 0		|			|	
- * |	ET0	|	IE.1	|	Timer 0 overflow interrupt	|			|
+ * |	EX0	|	IE.0	|	external interrupt 0		|				
+ * |	ET0	|	IE.1	|	Timer 0 overflow interrupt	|			
  * |	EX1	|	IE.2	|	External interrupt 0		|
  * |	ET1	|	IE.3	|	Timer 1 Overflow flag		|
  * |	ES	| 	IE.4	|	Enable/Disable Serial Port Int	| 
@@ -120,9 +120,9 @@
 
 /** IP : Interrupt Priority Register. Bit Addressable
  * 
- * |	PX0	|	IP.0	|	Ext Interrupt 0 priority level	|			|	
- * |	PT0	|	IP.1	|	Timer 0 interrupt priority level|			|
- * |	PX1 	|	IP.2	|	Ext interrupt 1 priority level	|			|
+ * |	PX0	|	IP.0	|	Ext Interrupt 0 priority level	|				
+ * |	PT0	|	IP.1	|	Timer 0 interrupt priority level|			
+ * |	PX1 	|	IP.2	|	Ext interrupt 1 priority level	|			
  * |	PT1	|	IP.3	|	Timer 1 Interrupt priority level|
  * |	PS	| 	IP.4	|	Serial port priority level	| 
  * |	__	| 	IP.5	| 	___				|
@@ -144,9 +144,9 @@
 
 /** TCON : Timer/Counter Control Register. Bit Addressable
  * 
- * |	IT0	|	TCON.0	|	Interrupt 0 type control	|			|	
- * |	IE0	|	TCON.1	|	Ext Int 0 edge flag		|			|
- * |	IT1 	|	TCON.2	|	Interrupt 1 type control	|			|
+ * |	IT0	|	TCON.0	|	Interrupt 0 type control	|				
+ * |	IE0	|	TCON.1	|	Ext Int 0 edge flag		|		
+ * |	IT1 	|	TCON.2	|	Interrupt 1 type control	|		
  * |	IE1	|	TCON.3	|	Ext Int 1 edge flag		|
  * |	TR0	| 	TCON.4	|	Timer 0 run control bit		| 
  * |	TF0	| 	TCON.5	| 	Timer 0 overflow flag		|
@@ -168,7 +168,7 @@
  * |	M0	|	PSW.0/4	|	Mode selector bit 0		|	
  * |	M1	|	PSW.1/5	|	Mode selector bit 1		|
  * |	C/T 	|	PSW.2/6	|	Timer or counter selector	|
- * |	GATE	|	PSw.3/7	|	more info down	|
+ * |	GATE	|	PSw.3/7	|	more info down			|
  *
  * 
  * GATE : when TRx(in TCON) is 1 and GATE = 1, timer counter will run only when
@@ -196,14 +196,14 @@
 
 /** SCON : Serial Port Control Register. Bit Addressable
  * 
- * |	RI	|	SCON.0	|	Receive Interrupt flag				|			|	
- * |	TI	|	SCON.1	|	Transmit Interrupt Flag				|			|
- * |	RB8 	|	SCON.2	|	9th data bit received when mode 2 & 3		|			|
+ * |	RI	|	SCON.0	|	Receive Interrupt flag				|				
+ * |	TI	|	SCON.1	|	Transmit Interrupt Flag				|			
+ * |	RB8 	|	SCON.2	|	9th data bit received when mode 2 & 3		|			
  * |	TB8	|	SCON.3	|	9th data received when mode 2 & 3		|
  * |	REN	| 	SCON.4	|	Enable/Disable Reception. control by SW		| 
  * |	SM2	| 	SCON.5	| 	Enables multiprocessor communication in mode 2&3|
- * |    SM1	| 	SCON.6	|	Serial Port Mode specifier						|
- * |	SM0	|	SCON.7	|	Serial port mode specifier					|
+ * |    SM1	| 	SCON.6	|	Serial Port Mode specifier			|			
+ * |	SM0	|	SCON.7	|	Serial port mode specifier			|
  *
  **/
 
@@ -215,9 +215,6 @@
 #define 	SM2	(1 << 5)
 #define 	SM1	(1 << 6)
 #define		SM0	(1 << 7)
-
-
-
 
 
 
@@ -238,7 +235,10 @@ typedef struct memory {
 	uint8_t Bit_Addressable[0xF]; // bit addressable area
 	uint8_t ScratchPad[0x4F];
 	uint8_t SFR[0x7F];
-	uint8_t EXT[EXTERNAL_MEMORY];
+	uint8_t Code_Memory[FLASH];
 };
+
+
+void Program_memory (void);
 
 #endif
