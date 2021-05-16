@@ -1,7 +1,7 @@
 [ ] Write Readme and push it to github repo
 
 ``` diff 
-- Warning !!!
+- WARNING !!!
 
 EMU8051 is under development and is not working yet.
 We would be vary happy to welcome contributors to the project !
@@ -18,10 +18,19 @@ In this way, we only know the architecture of it, never understands it. Micro-co
 
 8051 was among first micro-controllers that came in the world, and it is based on MCS-51 Architecture. It consist of 8 bit CPU, 64k program and code memory. 4K On-Chip memory. 128 bytes on chip RAM. Two 16 bits timers. Full duplex UART. Simple enough to program, but big enough to understand the vitals of micro-controller. 
 
-## sources
-[click here](https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=&cad=rja&uact=8&ved=2ahUKEwigk5vP9MLwAhUZxTgGHZVlB8wQFjAAegQIBRAD&url=http%3A%2F%2Fweb.mit.edu%2F6.115%2Fwww%2Fdocument%2F8051.pdf&usg=AOvVaw2_1KC25oDgpoVARNveiqCC) to download the refrence manual of 8051.
+At its Core, we have an array of memory and micro-controller just expresses the value of those memory location onto some terminals to outside world. If we look at Memory Map of 8051 given in refrence manual, we can see that inside the upper 128 byte internal RAM, location of Port 1, Port2, accumulator, IP etc, all are defined. Whatever value we write to for example memory location defined for port 1, it gets reflected in output peripheral of port 1. While programming the emulator we keep same perpective in mind.
 
-[click here](https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=&cad=rja&uact=8&ved=2ahUKEwjF0JKS9cLwAhWPyzgGHTw6CWMQFjAAegQIBRAD&url=https%3A%2F%2Fwww.keil.com%2Fdd%2Fdocs%2Fdatashts%2Fatmel%2Fat89c51_ds.pdf&usg=AOvVaw1ikG_PGQSUg0tY-GexdDCz) to download at89c51 datasheet.
+Whole 8051 is struct of memory array and all the instructions read/write and do operation on these memory locations.
 
 
-  
+## Datasheet and Refrence Manual
+
+[Ref Manual](https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=&cad=rja&uact=8&ved=2ahUKEwigk5vP9MLwAhUZxTgGHZVlB8wQFjAAegQIBRAD&url=http%3A%2F%2Fweb.mit.edu%2F6.115%2Fwww%2Fdocument%2F8051.pdf&usg=AOvVaw2_1KC25oDgpoVARNveiqCC) to download the refrence manual of 8051.
+
+[Datasheet](https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=&cad=rja&uact=8&ved=2ahUKEwjF0JKS9cLwAhWPyzgGHTw6CWMQFjAAegQIBRAD&url=https%3A%2F%2Fwww.keil.com%2Fdd%2Fdocs%2Fdatashts%2Fatmel%2Fat89c51_ds.pdf&usg=AOvVaw1ikG_PGQSUg0tY-GexdDCz) to download at89c51 datasheet.
+
+
+# Checklist
+
+- [ ] program function to update PSW after each individual instruction
+- [ ] program Instructions variations of ADD.
