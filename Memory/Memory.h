@@ -21,7 +21,7 @@
 
 #define FLASH 4096
 
-// SFR Addresses in Memory from 0x80 - 0xFF
+// SFR Memory Map from 0x80 - 0xFF
 #define 	P0 	0x80
 #define 	SP 	0x81
 #define 	DPL 	0x82
@@ -230,13 +230,15 @@ struct GPR {
 };
 
 
-typedef struct memory {
+typedef struct cpu {
 	struct GPR REGISTERS[4]; // 4 memory bank registers
 	uint8_t Bit_Addressable[0xF]; // bit addressable area
 	uint8_t ScratchPad[0x4F];
 	uint8_t SFR[0x7F];
 	uint8_t Code_Memory[FLASH];
-};
+}CPU;
+
+CPU CPU_8051;
 
 
 void Program_memory (void);
