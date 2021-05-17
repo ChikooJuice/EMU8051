@@ -22,32 +22,27 @@
 #define FLASH 4096
 
 // SFR Memory Map from 0x80 - 0xFF
-#define 	P0 	0x80
-#define 	SP 	0x81
-#define 	DPL 	0x82
-#define 	DPH 	0x83
-#define 	PCON	0x87
-#define 	TCON 	0x88
-#define 	TMOD 	0x89
-#define 	TL0 	0x8A
-#define 	TL1 	0x8B
-#define 	TH0 	0x8C
-#define 	TH1 	0x8D
-#define 	P1 	0x90
-#define 	SCON 	0x98
-#define 	SBUF 	0x99
-#define 	P2 	0xA0
-#define 	IE 	0xA8
-#define 	P3 	0xB0
-#define 	IP 	0xB8
-#define 	T2CON 	0xC8
-#define 	RCAP2L 	0xCA
-#define 	RCAP2H 	0xCB
-#define 	TL2 	0xCC
-#define		TH2 	0xCD
-#define 	PSW 	0xD0
-#define 	ACC 	0xE0
-#define 	B 	0xF0
+#define 	P0 	0x80	// Port 0
+#define 	SP 	0x81	// Stack Pointer
+#define 	DPL 	0x82	// DPTR Low byte
+#define 	DPH 	0x83	// DPTR High Byte
+#define 	PCON	0x87	// Power Control
+#define 	TCON 	0x88	// Timer Control
+#define 	TMOD 	0x89	// Timer Mode Control
+#define 	TL0 	0x8A	// Timer 0 Low Byte 
+#define 	TL1 	0x8B	// Timer 1 Low byte
+#define 	TH0 	0x8C	// Timer 0 High Byte
+#define 	TH1 	0x8D	// Timer 1 High Byte
+#define 	P1 	0x90	// Port 1
+#define 	SCON 	0x98	// Serial Control
+#define 	SBUF 	0x99	// Serial Buffer
+#define 	P2 	0xA0	// Port 2
+#define 	IE 	0xA8	// Interrupt Enable
+#define 	P3 	0xB0	// Port 3
+#define 	IP 	0xB8	// Interrupt Priorit
+#define 	PSW 	0xD0	// Program Status Word
+#define 	ACC 	0xE0	// Accumulator
+#define 	B 	0xF0	// B register
 
 
 /** PCON : Program Status Word. Bit Addressable
@@ -236,11 +231,15 @@ typedef struct cpu {
 	uint8_t ScratchPad[0x4F];
 	uint8_t SFR[0x7F];
 	uint8_t Code_Memory[FLASH];
+	uint16_t PC;
+	uint8_t Bank;
 }CPU;
 
 CPU CPU_8051;
 
+#define BANK CPU_8051.Bank
 
-void Program_memory (void);
+
+
 
 #endif

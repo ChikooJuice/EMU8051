@@ -32,5 +32,7 @@ Whole 8051 is struct of memory array and all the instructions read/write and do 
 
 # Checklist
 
-- [ ] program function to update PSW after each individual instruction
-- [ ] program Instructions variations of ADD.
+- [*] Init Memory with their initial value as given in ref manual
+- [*] program function to update Parity after each individual instruction involving A.
+- [ ] program function to choose bank of registers.
+- [ ] 
