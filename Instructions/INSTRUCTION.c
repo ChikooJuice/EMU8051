@@ -91,14 +91,14 @@ void Init_CPU (void) {
 
 }
 
-uint8_t fetch ( ) {
-	uint16_t temp = CPU_8051.PC;
+int8_t fetch ( ) {
+	int16_t temp = CPU_8051.PC;
 	CPU_8051.PC += 1;
 	return CPU_8051.Code_Memory[temp];
 }
 
 void update_parity ( ) {
-	uint8_t temp = CPU_8051.SFR[ACC];
+	int8_t temp = CPU_8051.SFR[ACC];
 	char ones = 0;
 	for (int i = 0; i < 8; i++) {
 		if (temp & (1 << i))	ones++;
@@ -116,24 +116,35 @@ int NOP () {
 	return 1;
 }
 
+// 0x01
+// jump address : bit (0-7) : next byte fetch
+//		  bit (8-11): op-code bit (7-5)
+//		  bit (12-16) : previous pc value
 int AJMP () { 
-
+	uint16_t low_add_byte = fetch ( );
+	CPU_8051.PC = ( ( CPU_8051.PC & 0xF800) | (0x01 & 0x70) ) | low_add_byte;
+	return 1;
 }
 
+//0x02, assuming data or address is stored in little endian format
 int LJMP ( ) {
-
+	uint8_t low_byte = fetch ( );
+	uint16_t high_byte = fetch ( );
+	high_byte = (high_byte << 8) | low_byte;
+	CPU_8051.PC = high_byte;
+	return 1;	
 }
 
 // 0x03
 int RR ( ) {
-	uint8_t tmp = CPU_8051.SFR[ACC];
+	int8_t tmp = CPU_8051.SFR[ACC];
 	CPU_8051.SFR[ACC] = (CPU_8051.SFR[ACC] << 1) | (tmp >> 7);
 	return 1;
 }
 
 // 0x04
 int INC_A ( ) {
-	uint8_t temp = CPU_8051.SFR[ACC];
+	int8_t temp = CPU_8051.SFR[ACC];
 	temp++;
 	CPU_8051.SFR[ACC] = temp;
 	update_parity();
@@ -142,14 +153,14 @@ int INC_A ( ) {
 
 // 0x05
 int INC_data_addr ( ) {
-	uint8_t addr = fetch ( );
+	int8_t addr = fetch ( );
 	CPU_8051.Code_Memory[addr] += 1;
 	return 1;
 }	
 
 // 0x06
 int INC_at_R0 ( ) {
-	uint8_t tmp = CPU_8051.REGISTERS[BANK].R0;
+	int8_t tmp = CPU_8051.REGISTERS[BANK].R0;
 
 	/** we can only address code memory here, not give RAM address in R0 */
 	CPU_8051.Code_Memory[tmp] += 1;
@@ -158,7 +169,7 @@ int INC_at_R0 ( ) {
 
 // 0x07
 int INC_at_R1 ( ){
-	uint8_t tmp = CPU_8051.REGISTERS[BANK].R1;
+	int8_t tmp = CPU_8051.REGISTERS[BANK].R1;
 	/** we can only address code memory here, not give RAM address in R1 */
 	CPU_8051.Code_Memory[tmp] += 1;
 	return 1;
@@ -198,780 +209,74 @@ int INC_R7 ( ) {
 	CPU_8051.REGISTERS[BANK].R7 += 1;
 	return 1;
 }
-int JBC ( );		//0x10	
-int ACALL ( );
-int LCALL ( );
-int RRC_A ( );
-int DEC_A ( );
-int DEC_data_addr ( );
-int DEC_at_R0 ( );
-int DEC_at_R1 ( );	//0x17
-int DEC_R0 ( );
-int DEC_R1 ( );
-int DEC_R2 ( );
-int DEC_R3 ( );
-int DEC_R4 ( );
-int DEC_R5 ( );
-int DEC_R6 ( );
-int DEC_R7 ( );		//0x1F
-int JB ( );		//0x20
-int AJMP ( ); //repeat
-int RET ( );		
-int RL ( );
-int ADD_data ( );
-int ADD_data_addr ( );
-int ADD_at_R0 ( );
-int ADD_at_R1 ( );	//0x27
-int ADD_R0 ( );
-int ADD_R1 ( );
-int ADD_R2 ( );
-int ADD_R3 ( );
-int ADD_R4 ( );
-int ADD_R5 ( );
-int ADD_R6 ( );
-int ADD_R7 ( );		//0x2F
-int JNB ( );		//0x30
-int ACALL ( ); // same as 0x11
-int RETI ( );
-int RLC ( );
-int ADDC_data ( );
-int ADDC_data_addr ( );
-int ADDC_at_R0 ( );
-int ADDC_at_R1 ( );	//0x37
-int ADDC_R0 ( );
-int ADDC_R1 ( );
-int ADDC_R2 ( );
-int ADDC_R3 ( );
-int ADDC_R4 ( );
-int ADDC_R5 ( );
-int ADDC_R6 ( );
-int ADDC_R7 ( );	//0x3F
-int JC ( );		//0x40
-int AJMP ( );	//repeat	
-int ORL_data_addr_A ( );
-int ORL_data_addr_data ( );
-int ORL_A_data ( );
-int ORL_A_data_addr ( );
-int ORL_acc_at_R0 ( );
-int ORL_acc_at_R1 ( );	//0x47
-int ORL_R0 ( );
-int ORL_R1 ( );
-int ORL_R2 ( );
-int ORL_R3 ( );
-int ORL_R4 ( );
-int ORL_R5 ( );
-int ORL_R6 ( );
-int ORL_R7 ( );		//0x4F
-int JNC ( );		//0x50
-int ACALL ( );
-int ANL_data_addr_A ( );
-int ANL_data_addr_data ( );
-int ANL_A_data ( );
-int ANL_A_data_addr ( );
-int ANL_A_at_R0 ( );
-int ANL_A_at_R1 ( );	//0x57
-int ANL_R0 ( );
-int ANL_R1 ( );
-int ANL_R2 ( );
-int ANL_R3 ( );
-int ANL_R4 ( );
-int ANL_R5 ( );
-int ANL_R6 ( );
-int ANL_R7 ( );		//0x5F
-int JZ ( );		//0x60
-int AJMP ( );
-int XRL_data_addr_A ( );
-int XRL_data_addr_data ( );
-int XRL_A_data ( );
-int XRL_A_dataaddr ( );
-int XRL_A_at_R0 ( );
-int XRL_A_at_R1 ( );	//0x67
-int XRL_R0 ( );
-int XRL_R1 ( );
-int XRL_R2 ( );
-int XRL_R3 ( );
-int XRL_R4 ( );
-int XRL_R5 ( );
-int XRL_R6 ( );
-int XRL_R7 ( );		//0x6F
-int JNZ ( );		//0x70
-int ACALL ( );
-int ORL_C ( );
-int JMP_at_A_DPTR ( );
-int MOV_A_data ( );
-int MOV_data_addr_data ( );
-int MOV_at_R0 ( );
-int MOV_at_R1 ( );	//0x77
-int MOV_R0 ( );
-int MOV_R1 ( );
-int MOV_R2 ( );
-int MOV_R3 ( );
-int MOV_R4 ( );
-int MOV_R5 ( );
-int MOV_R6 ( );
-int MOV_R7 ( );		//0x7F
-int SJMP ( );		//0x80
-int AJMP ( );		
-int ANL_C ( );
-int MOVC ( );
-int DIV ( );
-int MOV_data_addr_data_addr ( );
-int MOV_data_addr_atR0 ( );
-int MOV_data_addr_atR1 ( );	//0x87
-int MOV_data_addr_R0 ( );	
-int MOV_data_addr_R1 ( );
-int MOV_data_addr_R2 ( );
-int MOV_data_addr_R3 ( );
-int MOV_data_addr_R4 ( );
-int MOV_data_addr_R5 ( );
-int MOV_data_addr_R6 ( );
-int MOV_data_addr_R7 ( );	//0x8F
-int MOV_DPTR_data ( );		//0x90
-int ACALL ( );
-int MOV_bit_C ( );
-int MOVC_A_dptr ( );
-int SUBB_A_data ( );
-int SUBB_A_data_addr ( );
-int SUBB_A_atR0 ( );
-int SUBB_A_atR1 ( );		//0x97
-int SUBB_R0 ( );
-int SUBB_R1 ( );
-int SUBB_R2 ( );
-int SUBB_R3 ( );
-int SUBB_R4 ( );
-int SUBB_R5 ( );
-int SUBB_R6 ( );   
-int SUBB_R7 ( );		//0x9F
-int ORL_C ( );			//0xA0
-int AJMP ( );
-int MOV_C ( );
-int INC_dptr ( );
-int MUL ( );
-//reserved
-int MOV_atR0_data_addr ( );
-int MOV_atR1_data_addr ( );	//0xA7
-int R0_data_addr ( );
-int R1_data_addr ( );
-int R2_data_addr ( );
-int R3_data_addr ( );
-int R4_data_addr ( );
-int R5_data_addr ( );
-int R6_data_addr ( );
-int R7_data_addr ( );		//0xAF
-int ANL_C ( );			//0xB0
-int ACALL ( );
-int CPL ();
-int CPL_C ();
-int CJNE_A_data_codeaddr ( );
-int CJNE_A_data_addr_codeaddr ( );
-int CJNE_atR0_data_codeaddr ( );
-int CJNE_atR1_data_codeaddr ( );	//0xB7
-int CJNE_R0 ( );
-int CJNE_R1 ( );
-int CJNE_R2 ( );
-int CJNE_R3 ( );
-int CJNE_R4 ( );
-int CJNE_R5 ( );
-int CJNE_R6 ( );
-int CJNE_R7 ( );		//0xBF
-int PUSH ();			//0xC0
-int AJMP ();
-int CLR ( );
-int CLR_C ();
-int SWAP ( );
-int XCH_A_dataaddr ( );
-int XCH_A_atR0 ( );
-int XCH_A_at_R1 ( );		//0xC7
-int XCH_A_R0 ( );
-int XCH_A_R1 ( );
-int XCH_A_R2 ( );
-int XCH_A_R3 ( );
-int XCH_A_R4 ( );
-int XCH_A_R5 ( );
-int XCH_A_R6 ( );
-int XCH_A_R7 ( );		//0xCF
-int POP ( );			//0xD0
-int ACALL ( );
-int SETB ( );
-int SETB_C ( );
-int DA ( );
-int DJNZ ( );
-int XCHD_A_at_R0 ( );
-int XCHD_A_at_R1 ( );		//0xD7
-int DJNZ_R0 ( );	
-int DJNZ_R1 ( );
-int DJNZ_R2 ( );
-int DJNZ_R3 ( );
-int DJNZ_R4 ( );
-int DJNZ_R5 ( );
-int DJNZ_R6 ( );
-int DJNZ_R7 ( );		//0xDF
-int MOVX_at_DPTR ( );		//0xE0
-int AJMP ( );
-int MOVX_A_at_R0 ( );
-int MOVX_A_at_R1 ( );
-int CLR_A ();
-int MOV_A_dataaddr ();
-int MOV_A_at_R0 ( );
-int MOV_A_at_R1 ( );		//0xE7
-int MOV_A_R0 ( );
-int MOV_A_R1 ( );
-int MOV_A_R2 ( );
-int MOV_A_R3 ( );
-int MOV_A_R4 ( );
-int MOV_A_R5 ( );
-int MOV_A_R6 ( );
-int MOV_A_R7 ( );		//0xEF
-int MOVX_at_DPTR_A ( );		//0xF0
-int ACALL ( );
-int MOVX_at_R0_A ( );
-int MOVX_at_R1_A ( );
-int CPL_A ( );
-int MOV_data_addr_A ( );
-int MOV_at_R0_A ( );
-int MOV_at_R1_A ( );		//0xF7
-int MOV_R0_A ( );
-int MOV_R1_A ( );
-int MOV_R2_A ( );
-int MOV_R3_A ( );
-int MOV_R4_A ( );
-int MOV_R5_A ( );
-int MOV_R6_A ( );
-int MOV_R7_A ( );		//0xFF
 
-int INC_data_addr ( );	
-int INC_at_R0 ( );
-int INC_at_R1 ( );	//0x07
-int INC_R0 ( );
-int INC_R1 ( );
-int INC_R2 ( );
-int INC_R3 ( );
-int INC_R4 ( );
-int INC_R5 ( );
-int INC_R6 ( );
-int INC_R7 ( );		//0x0F
 int JBC ( );		//0x10	
-int ACALL ( );
-int LCALL ( );
-int RRC_A ( );
-int DEC_A ( );
-int DEC_data_addr ( );
-int DEC_at_R0 ( );
-int DEC_at_R1 ( );	//0x17
-int DEC_R0 ( );
-int DEC_R1 ( );
-int DEC_R2 ( );
-int DEC_R3 ( );
-int DEC_R4 ( );
-int DEC_R5 ( );
-int DEC_R6 ( );
-int DEC_R7 ( );		//0x1F
-int JB ( );		//0x20
-int AJMP ( ); //repeat
-int RET ( );		
-int RL ( );
-int ADD_data ( );
-int ADD_data_addr ( );
-int ADD_at_R0 ( );
-int ADD_at_R1 ( );	//0x27
-int ADD_R0 ( );
-int ADD_R1 ( );
-int ADD_R2 ( );
-int ADD_R3 ( );
-int ADD_R4 ( );
-int ADD_R5 ( );
-int ADD_R6 ( );
-int ADD_R7 ( );		//0x2F
-int JNB ( );		//0x30
-int ACALL ( ); // same as 0x11
-int RETI ( );
-int RLC ( );
-int ADDC_data ( );
-int ADDC_data_addr ( );
-int ADDC_at_R0 ( );
-int ADDC_at_R1 ( );	//0x37
-int ADDC_R0 ( );
-int ADDC_R1 ( );
-int ADDC_R2 ( );
-int ADDC_R3 ( );
-int ADDC_R4 ( );
-int ADDC_R5 ( );
-int ADDC_R6 ( );
-int ADDC_R7 ( );	//0x3F
-int JC ( );		//0x40
-int AJMP ( );	//repeat	
-int ORL_data_addr_A ( );
-int ORL_data_addr_data ( );
-int ORL_A_data ( );
-int ORL_A_data_addr ( );
-int ORL_acc_at_R0 ( );
-int ORL_acc_at_R1 ( );	//0x47
-int ORL_R0 ( );
-int ORL_R1 ( );
-int ORL_R2 ( );
-int ORL_R3 ( );
-int ORL_R4 ( );
-int ORL_R5 ( );
-int ORL_R6 ( );
-int ORL_R7 ( );		//0x4F
-int JNC ( );		//0x50
-int ACALL ( );
-int ANL_data_addr_A ( );
-int ANL_data_addr_data ( );
-int ANL_A_data ( );
-int ANL_A_data_addr ( );
-int ANL_A_at_R0 ( );
-int ANL_A_at_R1 ( );	//0x57
-int ANL_R0 ( );
-int ANL_R1 ( );
-int ANL_R2 ( );
-int ANL_R3 ( );
-int ANL_R4 ( );
-int ANL_R5 ( );
-int ANL_R6 ( );
-int ANL_R7 ( );		//0x5F
-int JZ ( );		//0x60
-int AJMP ( );
-int XRL_data_addr_A ( );
-int XRL_data_addr_data ( );
-int XRL_A_data ( );
-int XRL_A_dataaddr ( );
-int XRL_A_at_R0 ( );
-int XRL_A_at_R1 ( );	//0x67
-int XRL_R0 ( );
-int XRL_R1 ( );
-int XRL_R2 ( );
-int XRL_R3 ( );
-int XRL_R4 ( );
-int XRL_R5 ( );
-int XRL_R6 ( );
-int XRL_R7 ( );		//0x6F
-int JNZ ( );		//0x70
-int ACALL ( );
-int ORL_C ( );
-int JMP_at_A_DPTR ( );
-int MOV_A_data ( );
-int MOV_data_addr_data ( );
-int MOV_at_R0 ( );
-int MOV_at_R1 ( );	//0x77
-int MOV_R0 ( );
-int MOV_R1 ( );
-int MOV_R2 ( );
-int MOV_R3 ( );
-int MOV_R4 ( );
-int MOV_R5 ( );
-int MOV_R6 ( );
-int MOV_R7 ( );		//0x7F
-int SJMP ( );		//0x80
-int AJMP ( );		
-int ANL_C ( );
-int MOVC ( );
-int DIV ( );
-int MOV_data_addr_data_addr ( );
-int MOV_data_addr_atR0 ( );
-int MOV_data_addr_atR1 ( );	//0x87
-int MOV_data_addr_R0 ( );	
-int MOV_data_addr_R1 ( );
-int MOV_data_addr_R2 ( );
-int MOV_data_addr_R3 ( );
-int MOV_data_addr_R4 ( );
-int MOV_data_addr_R5 ( );
-int MOV_data_addr_R6 ( );
-int MOV_data_addr_R7 ( );	//0x8F
-int MOV_DPTR_data ( );		//0x90
-int ACALL ( );
-int MOV_bit_C ( );
-int MOVC_A_dptr ( );
-int SUBB_A_data ( );
-int SUBB_A_data_addr ( );
-int SUBB_A_atR0 ( );
-int SUBB_A_atR1 ( );		//0x97
-int SUBB_R0 ( );
-int SUBB_R1 ( );
-int SUBB_R2 ( );
-int SUBB_R3 ( );
-int SUBB_R4 ( );
-int SUBB_R5 ( );
-int SUBB_R6 ( );   
-int SUBB_R7 ( );		//0x9F
-int ORL_C ( );			//0xA0
-int AJMP ( );
-int MOV_C ( );
-int INC_dptr ( );
-int MUL ( );
-//reserved
-int MOV_atR0_data_addr ( );
-int MOV_atR1_data_addr ( );	//0xA7
-int R0_data_addr ( );
-int R1_data_addr ( );
-int R2_data_addr ( );
-int R3_data_addr ( );
-int R4_data_addr ( );
-int R5_data_addr ( );
-int R6_data_addr ( );
-int R7_data_addr ( );		//0xAF
-int ANL_C ( );			//0xB0
-int ACALL ( );
-int CPL ();
-int CPL_C ();
-int CJNE_A_data_codeaddr ( );
-int CJNE_A_data_addr_codeaddr ( );
-int CJNE_atR0_data_codeaddr ( );
-int CJNE_atR1_data_codeaddr ( );	//0xB7
-int CJNE_R0 ( );
-int CJNE_R1 ( );
-int CJNE_R2 ( );
-int CJNE_R3 ( );
-int CJNE_R4 ( );
-int CJNE_R5 ( );
-int CJNE_R6 ( );
-int CJNE_R7 ( );		//0xBF
-int PUSH ();			//0xC0
-int AJMP ();
-int CLR ( );
-int CLR_C ();
-int SWAP ( );
-int XCH_A_dataaddr ( );
-int XCH_A_atR0 ( );
-int XCH_A_at_R1 ( );		//0xC7
-int XCH_A_R0 ( );
-int XCH_A_R1 ( );
-int XCH_A_R2 ( );
-int XCH_A_R3 ( );
-int XCH_A_R4 ( );
-int XCH_A_R5 ( );
-int XCH_A_R6 ( );
-int XCH_A_R7 ( );		//0xCF
-int POP ( );			//0xD0
-int ACALL ( );
-int SETB ( );
-int SETB_C ( );
-int DA ( );
-int DJNZ ( );
-int XCHD_A_at_R0 ( );
-int XCHD_A_at_R1 ( );		//0xD7
-int DJNZ_R0 ( );	
-int DJNZ_R1 ( );
-int DJNZ_R2 ( );
-int DJNZ_R3 ( );
-int DJNZ_R4 ( );
-int DJNZ_R5 ( );
-int DJNZ_R6 ( );
-int DJNZ_R7 ( );		//0xDF
-int MOVX_at_DPTR ( );		//0xE0
-int AJMP ( );
-int MOVX_A_at_R0 ( );
-int MOVX_A_at_R1 ( );
-int CLR_A ();
-int MOV_A_dataaddr ();
-int MOV_A_at_R0 ( );
-int MOV_A_at_R1 ( );		//0xE7
-int MOV_A_R0 ( );
-int MOV_A_R1 ( );
-int MOV_A_R2 ( );
-int MOV_A_R3 ( );
-int MOV_A_R4 ( );
-int MOV_A_R5 ( );
-int MOV_A_R6 ( );
-int MOV_A_R7 ( );		//0xEF
-int MOVX_at_DPTR_A ( );		//0xF0
-int ACALL ( );
-int MOVX_at_R0_A ( );
-int MOVX_at_R1_A ( );
-int CPL_A ( );
-int MOV_data_addr_A ( );
-int MOV_at_R0_A ( );
-int MOV_at_R1_A ( );		//0xF7
-int MOV_R0_A ( );
-int MOV_R1_A ( );
-int MOV_R2_A ( );
-int MOV_R3_A ( );
-int MOV_R4_A ( );
-int MOV_R5_A ( );
-int MOV_R6_A ( );
-int MOV_R7_A ( );		//0xFF
 
-int INC_data_addr ( );	
-int INC_at_R0 ( );
-int INC_at_R1 ( );	//0x07
-int INC_R0 ( );
-int INC_R1 ( );
-int INC_R2 ( );
-int INC_R3 ( );
-int INC_R4 ( );
-int INC_R5 ( );
-int INC_R6 ( );
-int INC_R7 ( );		//0x0F
-int JBC ( );		//0x10	
+// 0x20
 int ACALL ( );
 int LCALL ( );
 int RRC_A ( );
-int DEC_A ( );
-int DEC_data_addr ( );
-int DEC_at_R0 ( );
-int DEC_at_R1 ( );	//0x17
-int DEC_R0 ( );
-int DEC_R1 ( );
-int DEC_R2 ( );
-int DEC_R3 ( );
-int DEC_R4 ( );
-int DEC_R5 ( );
-int DEC_R6 ( );
-int DEC_R7 ( );		//0x1F
-int JB ( );		//0x20
-int AJMP ( ); //repeat
-int RET ( );		
-int RL ( );
-int ADD_data ( );
-int ADD_data_addr ( );
-int ADD_at_R0 ( );
-int ADD_at_R1 ( );	//0x27
-int ADD_R0 ( );
-int ADD_R1 ( );
-int ADD_R2 ( );
-int ADD_R3 ( );
-int ADD_R4 ( );
-int ADD_R5 ( );
-int ADD_R6 ( );
-int ADD_R7 ( );		//0x2F
-int JNB ( );		//0x30
-int ACALL ( ); // same as 0x11
-int RETI ( );
-int RLC ( );
-int ADDC_data ( );
-int ADDC_data_addr ( );
-int ADDC_at_R0 ( );
-int ADDC_at_R1 ( );	//0x37
-int ADDC_R0 ( );
-int ADDC_R1 ( );
-int ADDC_R2 ( );
-int ADDC_R3 ( );
-int ADDC_R4 ( );
-int ADDC_R5 ( );
-int ADDC_R6 ( );
-int ADDC_R7 ( );	//0x3F
-int JC ( );		//0x40
-int AJMP ( );	//repeat	
-int ORL_data_addr_A ( );
-int ORL_data_addr_data ( );
-int ORL_A_data ( );
-int ORL_A_data_addr ( );
-int ORL_acc_at_R0 ( );
-int ORL_acc_at_R1 ( );	//0x47
-int ORL_R0 ( );
-int ORL_R1 ( );
-int ORL_R2 ( );
-int ORL_R3 ( );
-int ORL_R4 ( );
-int ORL_R5 ( );
-int ORL_R6 ( );
-int ORL_R7 ( );		//0x4F
-int JNC ( );		//0x50
-int ACALL ( );
-int ANL_data_addr_A ( );
-int ANL_data_addr_data ( );
-int ANL_A_data ( );
-int ANL_A_data_addr ( );
-int ANL_A_at_R0 ( );
-int ANL_A_at_R1 ( );	//0x57
-int ANL_R0 ( );
-int ANL_R1 ( );
-int ANL_R2 ( );
-int ANL_R3 ( );
-int ANL_R4 ( );
-int ANL_R5 ( );
-int ANL_R6 ( );
-int ANL_R7 ( );		//0x5F
-int JZ ( );		//0x60
-int AJMP ( );
-int XRL_data_addr_A ( );
-int XRL_data_addr_data ( );
-int XRL_A_data ( );
-int XRL_A_dataaddr ( );
-int XRL_A_at_R0 ( );
-int XRL_A_at_R1 ( );	//0x67
-int XRL_R0 ( );
-int XRL_R1 ( );
-int XRL_R2 ( );
-int XRL_R3 ( );
-int XRL_R4 ( );
-int XRL_R5 ( );
-int XRL_R6 ( );
-int XRL_R7 ( );		//0x6F
-int JNZ ( );		//0x70
-int ACALL ( );
-int ORL_C ( );
-int JMP_at_A_DPTR ( );
-int MOV_A_data ( );
-int MOV_data_addr_data ( );
-int MOV_at_R0 ( );
-int MOV_at_R1 ( );	//0x77
-int MOV_R0 ( );
-int MOV_R1 ( );
-int MOV_R2 ( );
-int MOV_R3 ( );
-int MOV_R4 ( );
-int MOV_R5 ( );
-int MOV_R6 ( );
-int MOV_R7 ( );		//0x7F
-int SJMP ( );		//0x80
-int AJMP ( );		
-int ANL_C ( );
-int MOVC ( );
-int DIV ( );
-int MOV_data_addr_data_addr ( );
-int MOV_data_addr_atR0 ( );
-int MOV_data_addr_atR1 ( );	//0x87
-int MOV_data_addr_R0 ( );	
-int MOV_data_addr_R1 ( );
-int MOV_data_addr_R2 ( );
-int MOV_data_addr_R3 ( );
-int MOV_data_addr_R4 ( );
-int MOV_data_addr_R5 ( );
-int MOV_data_addr_R6 ( );
-int MOV_data_addr_R7 ( );	//0x8F
-int MOV_DPTR_data ( );		//0x90
-int ACALL ( );
-int MOV_bit_C ( );
-int MOVC_A_dptr ( );
-int SUBB_A_data ( );
-int SUBB_A_data_addr ( );
-int SUBB_A_atR0 ( );
-int SUBB_A_atR1 ( );		//0x97
-int SUBB_R0 ( );
-int SUBB_R1 ( );
-int SUBB_R2 ( );
-int SUBB_R3 ( );
-int SUBB_R4 ( );
-int SUBB_R5 ( );
-int SUBB_R6 ( );   
-int SUBB_R7 ( );		//0x9F
-int ORL_C ( );			//0xA0
-int AJMP ( );
-int MOV_C ( );
-int INC_dptr ( );
-int MUL ( );
-//reserved
-int MOV_atR0_data_addr ( );
-int MOV_atR1_data_addr ( );	//0xA7
-int R0_data_addr ( );
-int R1_data_addr ( );
-int R2_data_addr ( );
-int R3_data_addr ( );
-int R4_data_addr ( );
-int R5_data_addr ( );
-int R6_data_addr ( );
-int R7_data_addr ( );		//0xAF
-int ANL_C ( );			//0xB0
-int ACALL ( );
-int CPL ();
-int CPL_C ();
-int CJNE_A_data_codeaddr ( );
-int CJNE_A_data_addr_codeaddr ( );
-int CJNE_atR0_data_codeaddr ( );
-int CJNE_atR1_data_codeaddr ( );	//0xB7
-int CJNE_R0 ( );
-int CJNE_R1 ( );
-int CJNE_R2 ( );
-int CJNE_R3 ( );
-int CJNE_R4 ( );
-int CJNE_R5 ( );
-int CJNE_R6 ( );
-int CJNE_R7 ( );		//0xBF
-int PUSH ();			//0xC0
-int AJMP ();
-int CLR ( );
-int CLR_C ();
-int SWAP ( );
-int XCH_A_dataaddr ( );
-int XCH_A_atR0 ( );
-int XCH_A_at_R1 ( );		//0xC7
-int XCH_A_R0 ( );
-int XCH_A_R1 ( );
-int XCH_A_R2 ( );
-int XCH_A_R3 ( );
-int XCH_A_R4 ( );
-int XCH_A_R5 ( );
-int XCH_A_R6 ( );
-int XCH_A_R7 ( );		//0xCF
-int POP ( );			//0xD0
-int ACALL ( );
-int SETB ( );
-int SETB_C ( );
-int DA ( );
-int DJNZ ( );
-int XCHD_A_at_R0 ( );
-int XCHD_A_at_R1 ( );		//0xD7
-int DJNZ_R0 ( );	
-int DJNZ_R1 ( );
-int DJNZ_R2 ( );
-int DJNZ_R3 ( );
-int DJNZ_R4 ( );
-int DJNZ_R5 ( );
-int DJNZ_R6 ( );
-int DJNZ_R7 ( );		//0xDF
-int MOVX_at_DPTR ( );		//0xE0
-int AJMP ( );
-int MOVX_A_at_R0 ( );
-int MOVX_A_at_R1 ( );
-int CLR_A ();
-int MOV_A_dataaddr ();
-int MOV_A_at_R0 ( );
-int MOV_A_at_R1 ( );		//0xE7
-int MOV_A_R0 ( );
-int MOV_A_R1 ( );
-int MOV_A_R2 ( );
-int MOV_A_R3 ( );
-int MOV_A_R4 ( );
-int MOV_A_R5 ( );
-int MOV_A_R6 ( );
-int MOV_A_R7 ( );		//0xEF
-int MOVX_at_DPTR_A ( );		//0xF0
-int ACALL ( );
-int MOVX_at_R0_A ( );
-int MOVX_at_R1_A ( );
-int CPL_A ( );
-int MOV_data_addr_A ( );
-int MOV_at_R0_A ( );
-int MOV_at_R1_A ( );		//0xF7
-int MOV_R0_A ( );
-int MOV_R1_A ( );
-int MOV_R2_A ( );
-int MOV_R3_A ( );
-int MOV_R4_A ( );
-int MOV_R5_A ( );
-int MOV_R6_A ( );
-int MOV_R7_A ( );		//0xFF
+int DEC_A ( ) {
+	CPU_8051.SFR[ACC] -= 1;
+	return 1;
+}
 
-int INC_data_addr ( );	
-int INC_at_R0 ( );
-int INC_at_R1 ( );	//0x07
-int INC_R0 ( );
-int INC_R1 ( );
-int INC_R2 ( );
-int INC_R3 ( );
-int INC_R4 ( );
-int INC_R5 ( );
-int INC_R6 ( );
-int INC_R7 ( );		//0x0F
-int JBC ( );		//0x10	
-int ACALL ( );
-int LCALL ( );
-int RRC_A ( );
-int DEC_A ( );
-int DEC_data_addr ( );
-int DEC_at_R0 ( );
-int DEC_at_R1 ( );	//0x17
-int DEC_R0 ( );
-int DEC_R1 ( );
-int DEC_R2 ( );
-int DEC_R3 ( );
-int DEC_R4 ( );
-int DEC_R5 ( );
-int DEC_R6 ( );
-int DEC_R7 ( );		//0x1F
+int DEC_data_addr ( ) {
+	int8_t addr = fetch();
+	CPU_8051.Code_Memory[addr] -= 1;
+}
+int DEC_at_R0 ( ) {
+	int8_t tmp = CPU_8051.REGISTERS[BANK].R0;
+	/** we can only address code memory here, not give RAM address in R0 */
+	CPU_8051.Code_Memory[tmp] -= 1;
+}
+int DEC_at_R1 ( ) {
+	int8_t tmp = CPU_8051.REGISTERS[BANK].R1;
+	/** we can only address code memory here, not give RAM address in R1 */
+	CPU_8051.Code_Memory[tmp] -= 1;
+}
+
+int DEC_R0 ( ) {
+	CPU_8051.REGISTERS[BANK].R0 -= 1;
+	return 1;	
+}
+int DEC_R1 ( ) {
+	CPU_8051.REGISTERS[BANK].R1 -= 1;
+	return 1;	
+}
+int DEC_R2 ( ) {
+	CPU_8051.REGISTERS[BANK].R2 -= 1;
+	return 1;	
+}
+int DEC_R3 ( ) {
+	CPU_8051.REGISTERS[BANK].R3 -= 1;
+	return 1;	
+}
+int DEC_R4 ( ) {
+	CPU_8051.REGISTERS[BANK].R4 -= 1;
+	return 1;	
+}
+int DEC_R5 ( ) {
+	CPU_8051.REGISTERS[BANK].R5 -= 1;
+	return 1;	
+}
+int DEC_R6 ( ) {
+	CPU_8051.REGISTERS[BANK].R6 -= 1;
+	return 1;	
+}
+int DEC_R7 ( ) {
+	CPU_8051.REGISTERS[BANK].R7 -= 1;
+	return 1;	
+}
+
 int JB ( );		//0x20
-int AJMP ( ); //repeat
+
+//0x21
+int AJMP ( ) { 
+	uint16_t low_add_byte = fetch ( );
+	CPU_8051.PC = ( ( CPU_8051.PC & 0xF800) | (0x21 & 0x70) ) | low_add_byte;
+	return 1;
+}
 int RET ( );		
 int RL ( );
 int ADD_data ( );
@@ -1003,7 +308,14 @@ int ADDC_R5 ( );
 int ADDC_R6 ( );
 int ADDC_R7 ( );	//0x3F
 int JC ( );		//0x40
-int AJMP ( );	//repeat	
+
+//0x41
+int AJMP ( ){ 
+	uint16_t low_add_byte = fetch ( );
+	CPU_8051.PC = ( ( CPU_8051.PC & 0xF800) | (0x41 & 0x70) ) | low_add_byte;
+	return 1;
+}	
+
 int ORL_data_addr_A ( );
 int ORL_data_addr_data ( );
 int ORL_A_data ( );
@@ -1035,7 +347,15 @@ int ANL_R5 ( );
 int ANL_R6 ( );
 int ANL_R7 ( );		//0x5F
 int JZ ( );		//0x60
-int AJMP ( );
+
+//0x61
+int AJMP ( ) { 
+	uint16_t low_add_byte = fetch ( );
+	CPU_8051.PC = ( ( CPU_8051.PC & 0xF800) | (0x61 & 0x70) ) | low_add_byte;
+	return 1;
+}
+
+
 int XRL_data_addr_A ( );
 int XRL_data_addr_data ( );
 int XRL_A_data ( );
@@ -1066,8 +386,25 @@ int MOV_R4 ( );
 int MOV_R5 ( );
 int MOV_R6 ( );
 int MOV_R7 ( );		//0x7F
-int SJMP ( );		//0x80
-int AJMP ( );		
+
+//0x80
+int SJMP ( ) {
+	int8_t tmp = fetch ( );
+	if (tmp & 0x80 ) // signed bit 1 = negative number
+	{
+		CPU_8051.PC -= tmp;
+	}
+	else {
+		CPU_8051.PC += tmp;
+	}
+}
+
+//0x81
+int AJMP ( ) { 
+	uint16_t low_add_byte = fetch ( );
+	CPU_8051.PC = ( ( CPU_8051.PC & 0xF800) | (0x81 & 0x70) ) | low_add_byte;
+	return 1;
+}		
 int ANL_C ( );
 int MOVC ( );
 int DIV ( );
@@ -1099,7 +436,13 @@ int SUBB_R5 ( );
 int SUBB_R6 ( );   
 int SUBB_R7 ( );		//0x9F
 int ORL_C ( );			//0xA0
-int AJMP ( );
+
+//0xA1
+int AJMP ( ) { 
+	uint16_t low_add_byte = fetch ( );
+	CPU_8051.PC = ( ( CPU_8051.PC & 0xF800) | (0xA1 & 0x70) ) | low_add_byte;
+	return 1;
+}
 int MOV_C ( );
 int INC_dptr ( );
 int MUL ( );
@@ -1131,7 +474,13 @@ int CJNE_R5 ( );
 int CJNE_R6 ( );
 int CJNE_R7 ( );		//0xBF
 int PUSH ();			//0xC0
-int AJMP ();
+
+//0xC1
+int AJMP ( ) { 
+	uint16_t low_add_byte = fetch ( );
+	CPU_8051.PC = ( ( CPU_8051.PC & 0xF800) | (0xC1 & 0x70) ) | low_add_byte;
+	return 1;
+}
 int CLR ( );
 int CLR_C ();
 int SWAP ( );
@@ -1163,7 +512,13 @@ int DJNZ_R5 ( );
 int DJNZ_R6 ( );
 int DJNZ_R7 ( );		//0xDF
 int MOVX_at_DPTR ( );		//0xE0
-int AJMP ( );
+
+//0xE1
+int AJMP ( ) { 
+	uint16_t low_add_byte = fetch ( );
+	CPU_8051.PC = ( ( CPU_8051.PC & 0xF800) | (0xE1 & 0x70) ) | low_add_byte;
+	return 1;
+}
 int MOVX_A_at_R0 ( );
 int MOVX_A_at_R1 ( );
 int CLR_A ();

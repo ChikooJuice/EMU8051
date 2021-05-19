@@ -274,7 +274,7 @@ int MOV_R6_A ( );
 int MOV_R7_A ( );		//0xFF
 
 void assign_functions ();
-uint8_t fetch ( );
+int8_t fetch ( );
 
 /** parity flag in SFR 
  * will give 1 even parity

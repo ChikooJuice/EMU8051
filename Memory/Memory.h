@@ -214,25 +214,25 @@
 
 
 struct GPR {
-	uint8_t R0;
-	uint8_t R1;
-	uint8_t R2;
-	uint8_t R3;
-	uint8_t R4;
-	uint8_t R5;
-	uint8_t R6;
-	uint8_t R7;
+	int8_t R0;
+	int8_t R1;
+	int8_t R2;
+	int8_t R3;
+	int8_t R4;
+	int8_t R5;
+	int8_t R6;
+	int8_t R7;
 };
 
 
 typedef struct cpu {
 	struct GPR REGISTERS[4]; // 4 memory bank registers
-	uint8_t Bit_Addressable[0xF]; // bit addressable area
-	uint8_t ScratchPad[0x4F];
-	uint8_t SFR[0x7F];
-	uint8_t Code_Memory[FLASH];
+	int8_t Bit_Addressable[0xF]; // bit addressable area
+	int8_t ScratchPad[0x4F];
+	int8_t SFR[0x7F];
+	int8_t Code_Memory[FLASH];
 	uint16_t PC;
-	uint8_t Bank;
+	int8_t Bank;
 }CPU;
 
 CPU CPU_8051;
