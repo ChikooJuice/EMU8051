@@ -212,9 +212,45 @@ int INC_R7 ( ) {
 
 int JBC ( );		//0x10	
 
-// 0x20
-int ACALL ( );
-int LCALL ( );
+// 0x11
+/** uses the 11 bit format, same as AJMP
+ * 
+ * push next address into the stack, 
+ * next instruction address will be
+ * PC + 2, as next address stores lower 8 bit of address
+ * 
+ * stack stores address as byte by byte, so first we will push
+ * lower byte of address and then upper byte address of PC,
+ * litte endian behaviour
+ */
+int ACALL ( ) {
+
+	uint16_t push_addr = CPU_8051.PC + 2;
+	PUSH (push_addr & 0x00FF); // pushing lower byte
+	PUSH ( (push_addr & 0xFF00) >> 8); //have to push it lower by 8 otherwise it will give error.
+
+	// change PC to jmp to subroutine
+	uint8_t lower_addr_byte = fetch();
+	CPU_8051.PC = ( (CPU_8051.PC & 0xF800) | (0x11 & 0x70) ) | lower_addr_byte;
+	return 1; 
+	
+}
+
+//0x12
+int LCALL ( ) {
+
+	uint16_t push_addr = CPU_8051.PC + 3;
+	PUSH (push_addr & 0x00FF); // pushing lower byte
+	PUSH ( (push_addr & 0xFF00) >> 8); //have to push it lower by 8 otherwise it will give error.
+
+	// change PC to jmp to subroutine
+	uint8_t lower_addr_byte = fetch( );
+	uint8_t upper_addr_byte = fetch ( );
+	uint16_t new_addr = ( upper_addr_byte << 8) | lower_addr_byte;
+	CPU_8051.PC = new_addr;
+	return 1;
+	
+}
 int RRC_A ( );
 int DEC_A ( ) {
 	CPU_8051.SFR[ACC] -= 1;
@@ -292,7 +328,19 @@ int ADD_R5 ( );
 int ADD_R6 ( );
 int ADD_R7 ( );		//0x2F
 int JNB ( );		//0x30
-int ACALL ( ); // same as 0x11
+//0x31
+int ACALL ( ) {
+
+	uint16_t push_addr = CPU_8051.PC + 2;
+	PUSH (push_addr & 0x00FF); // pushing lower byte
+	PUSH ( (push_addr & 0xFF00) >> 8); //have to push it lower by 8 otherwise it will give error.
+
+	// change PC to jmp to subroutine
+	uint8_t lower_addr_byte = fetch();
+	CPU_8051.PC = ( (CPU_8051.PC & 0xF800) | (0x31 & 0x70) ) | lower_addr_byte;
+	return 1; 
+	
+}
 int RETI ( );
 int RLC ( );
 int ADDC_data ( );
@@ -331,7 +379,20 @@ int ORL_R5 ( );
 int ORL_R6 ( );
 int ORL_R7 ( );		//0x4F
 int JNC ( );		//0x50
-int ACALL ( );
+
+//0x51
+int ACALL ( ) {
+
+	uint16_t push_addr = CPU_8051.PC + 2;
+	PUSH (push_addr & 0x00FF); // pushing lower byte
+	PUSH ( (push_addr & 0xFF00) >> 8); //have to push it lower by 8 otherwise it will give error.
+
+	// change PC to jmp to subroutine
+	uint8_t lower_addr_byte = fetch();
+	CPU_8051.PC = ( (CPU_8051.PC & 0xF800) | (0x51 & 0x70) ) | lower_addr_byte;
+	return 1; 
+	
+}
 int ANL_data_addr_A ( );
 int ANL_data_addr_data ( );
 int ANL_A_data ( );
@@ -371,7 +432,21 @@ int XRL_R5 ( );
 int XRL_R6 ( );
 int XRL_R7 ( );		//0x6F
 int JNZ ( );		//0x70
-int ACALL ( );
+//0x71
+int ACALL ( ) {
+	{
+
+	uint16_t push_addr = CPU_8051.PC + 2;
+	PUSH (push_addr & 0x00FF); // pushing lower byte
+	PUSH ( (push_addr & 0xFF00) >> 8); //have to push it lower by 8 otherwise it will give error.
+
+	// change PC to jmp to subroutine
+	uint8_t lower_addr_byte = fetch();
+	CPU_8051.PC = ( (CPU_8051.PC & 0xF800) | (0x71 & 0x70) ) | lower_addr_byte;
+	return 1; 
+	
+}
+}
 int ORL_C ( );
 int JMP_at_A_DPTR ( );
 int MOV_A_data ( );
@@ -420,7 +495,19 @@ int MOV_data_addr_R5 ( );
 int MOV_data_addr_R6 ( );
 int MOV_data_addr_R7 ( );	//0x8F
 int MOV_DPTR_data ( );		//0x90
-int ACALL ( );
+// 0x91
+int ACALL ( ) {
+
+	uint16_t push_addr = CPU_8051.PC + 2;
+	PUSH (push_addr & 0x00FF); // pushing lower byte
+	PUSH ( (push_addr & 0xFF00) >> 8); //have to push it lower by 8 otherwise it will give error.
+
+	// change PC to jmp to subroutine
+	uint8_t lower_addr_byte = fetch();
+	CPU_8051.PC = ( (CPU_8051.PC & 0xF800) | (0x91 & 0x70) ) | lower_addr_byte;
+	return 1; 
+	
+}
 int MOV_bit_C ( );
 int MOVC_A_dptr ( );
 int SUBB_A_data ( );
@@ -458,7 +545,19 @@ int R5_data_addr ( );
 int R6_data_addr ( );
 int R7_data_addr ( );		//0xAF
 int ANL_C ( );			//0xB0
-int ACALL ( );
+//0xB1
+int ACALL ( ){
+
+	uint16_t push_addr = CPU_8051.PC + 2;
+	PUSH (push_addr & 0x00FF); // pushing lower byte
+	PUSH ( (push_addr & 0xFF00) >> 8); //have to push it lower by 8 otherwise it will give error.
+
+	// change PC to jmp to subroutine
+	uint8_t lower_addr_byte = fetch();
+	CPU_8051.PC = ( (CPU_8051.PC & 0xF800) | (0xB1 & 0x70) ) | lower_addr_byte;
+	return 1; 
+	
+}
 int CPL ();
 int CPL_C ();
 int CJNE_A_data_codeaddr ( );
@@ -496,7 +595,19 @@ int XCH_A_R5 ( );
 int XCH_A_R6 ( );
 int XCH_A_R7 ( );		//0xCF
 int POP ( );			//0xD0
-int ACALL ( );
+//0xD1
+int ACALL ( ) {
+
+	uint16_t push_addr = CPU_8051.PC + 2;
+	PUSH (push_addr & 0x00FF); // pushing lower byte
+	PUSH ( (push_addr & 0xFF00) >> 8); //have to push it lower by 8 otherwise it will give error.
+
+	// change PC to jmp to subroutine
+	uint8_t lower_addr_byte = fetch();
+	CPU_8051.PC = ( (CPU_8051.PC & 0xF800) | (0xD1 & 0x70) ) | lower_addr_byte;
+	return 1; 
+	
+}
 int SETB ( );
 int SETB_C ( );
 int DA ( );
@@ -534,7 +645,19 @@ int MOV_A_R5 ( );
 int MOV_A_R6 ( );
 int MOV_A_R7 ( );		//0xEF
 int MOVX_at_DPTR_A ( );		//0xF0
-int ACALL ( );
+//0xF1
+int ACALL ( ) {
+
+	uint16_t push_addr = CPU_8051.PC + 2;
+	PUSH (push_addr & 0x00FF); // pushing lower byte
+	PUSH ( (push_addr & 0xFF00) >> 8); //have to push it lower by 8 otherwise it will give error.
+
+	// change PC to jmp to subroutine
+	uint8_t lower_addr_byte = fetch();
+	CPU_8051.PC = ( (CPU_8051.PC & 0xF800) | (0xF1 & 0x70) ) | lower_addr_byte;
+	return 1; 
+	
+}
 int MOVX_at_R0_A ( );
 int MOVX_at_R1_A ( );
 int CPL_A ( );
