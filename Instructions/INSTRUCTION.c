@@ -7,6 +7,8 @@
 
 void assign_functions ( ) {
 
+	// working tree clean @CALL 
+
 	OP_CODES[0x0] = NOP;                         OP_CODES[0x1] = AJMP_0x01;                   OP_CODES[0x2] = LJMP;                        OP_CODES[0x3] = RR;                          OP_CODES[0x4] = INC_A;                       OP_CODES[0x5] = INC_data_addr;               OP_CODES[0x6] = INC_at_R0;                   OP_CODES[0x7] = INC_at_R1;                   
 	OP_CODES[0x8] = INC_R0;                      OP_CODES[0x9] = INC_R1;                      OP_CODES[0xa] = INC_R2;                      OP_CODES[0xb] = INC_R3;                      OP_CODES[0xc] = INC_R4;                      OP_CODES[0xd] = INC_R5;                      OP_CODES[0xe] = INC_R6;                      OP_CODES[0xf] = INC_R7;                      
 	OP_CODES[0x10] = JBC;                        OP_CODES[0x11] = ACALL_0x11;                 OP_CODES[0x12] = LCALL;                      OP_CODES[0x13] = RRC_A;                      OP_CODES[0x14] = DEC_A;                      OP_CODES[0x15] = DEC_data_addr;              OP_CODES[0x16] = DEC_at_R0;                  OP_CODES[0x17] = DEC_at_R1;                  
@@ -48,6 +50,7 @@ void Init_CPU (void) {
 	// default values of SFR at power up 
 
 	CPU_8051.SFR[ACC] 	=	0x00;
+	CPU_8051.SFR[SP]	=	0x00;  // for now it points to scratch pad area
 	CPU_8051.SFR[B]   	=	0x00;
 	CPU_8051.SFR[PSW] 	= 	0x00;
 	CPU_8051.SFR[PSW] 	= 	0x07;
@@ -119,8 +122,14 @@ void update_parity ( ) {
 
 /*----------------------------------------------CPU Instructions----------------------------------------------------------*/
 
+/** by default SP = 0x81H
+ * which means it is in upper area of RAM,
+ * above the scratch pad area
+ */
 int PUSH (int8_t data) {
-	return 0;
+	CPU_8051.ScratchPad [CPU_8051.SFR[SP]] = data;
+	CPU_8051.SFR [SP] += 1;
+	return 1;
 }			
 
 int NOP () {

@@ -225,10 +225,14 @@ struct GPR {
 };
 
 
+/**
+ * we can access by address as given in registers 
+ * using void pointer 
+ */
 typedef struct cpu {
 	struct GPR REGISTERS[4]; // 4 memory bank registers
 	int8_t Bit_Addressable[0xF]; // bit addressable area
-	int8_t ScratchPad[0x4F];
+	int8_t ScratchPad[0x50];
 	int8_t SFR[0x7F];
 	int8_t Code_Memory[FLASH];
 	uint16_t PC;
