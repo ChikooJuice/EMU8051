@@ -11,15 +11,28 @@ int (*OP_CODES[0xFF]) (void);
  * after defining the functions
  */
 
-/** declaring the instruction function 
- * 
- * the address are for refrence of op_codes
- */
 
+/** NOP
+ * N OPeration,
+ * does nothing
+ **/
 int NOP ( );		 // 0x00
-int AJMP ( );		
-int LJMP ( );		
-int RR ( );		
+
+/**
+ *
+ * jump address : bit (0-7) : next byte fetch
+ *		  bit (8-11): op-code bit (7-5)
+ *		  bit (12-16) : previous pc value
+ **/
+int AJMP_0x01 ( );		
+
+// Long jump
+int LJMP ( );
+
+// Rotate Right
+int RR ( );	
+
+// Increment A	
 int INC_A ( );		
 int INC_data_addr ( );	
 int INC_at_R0 ( );
@@ -33,7 +46,7 @@ int INC_R5 ( );
 int INC_R6 ( );
 int INC_R7 ( );		//0x0F
 int JBC ( );		//0x10	
-int ACALL ( );
+int ACALL_0x11 ( );
 int LCALL ( );
 int RRC_A ( );
 int DEC_A ( );
@@ -49,7 +62,7 @@ int DEC_R5 ( );
 int DEC_R6 ( );
 int DEC_R7 ( );		//0x1F
 int JB ( );		//0x20
-int AJMP ( ); //repeat
+int AJMP_0x21 ( ); //repeat
 int RET ( );		
 int RL ( );
 int ADD_data ( );
@@ -65,7 +78,7 @@ int ADD_R5 ( );
 int ADD_R6 ( );
 int ADD_R7 ( );		//0x2F
 int JNB ( );		//0x30
-int ACALL ( ); // same as 0x11
+int ACALL_0x31 ( ); // same as 0x11
 int RETI ( );
 int RLC ( );
 int ADDC_data ( );
@@ -81,7 +94,7 @@ int ADDC_R5 ( );
 int ADDC_R6 ( );
 int ADDC_R7 ( );	//0x3F
 int JC ( );		//0x40
-int AJMP ( );	//repeat	
+int AJMP_0x41 ( );	//repeat	
 int ORL_data_addr_A ( );
 int ORL_data_addr_data ( );
 int ORL_A_data ( );
@@ -97,7 +110,7 @@ int ORL_R5 ( );
 int ORL_R6 ( );
 int ORL_R7 ( );		//0x4F
 int JNC ( );		//0x50
-int ACALL ( );
+int ACALL_0x51 ( );
 int ANL_data_addr_A ( );
 int ANL_data_addr_data ( );
 int ANL_A_data ( );
@@ -113,7 +126,7 @@ int ANL_R5 ( );
 int ANL_R6 ( );
 int ANL_R7 ( );		//0x5F
 int JZ ( );		//0x60
-int AJMP ( );
+int AJMP_0x61 ( );
 int XRL_data_addr_A ( );
 int XRL_data_addr_data ( );
 int XRL_A_data ( );
@@ -129,8 +142,8 @@ int XRL_R5 ( );
 int XRL_R6 ( );
 int XRL_R7 ( );		//0x6F
 int JNZ ( );		//0x70
-int ACALL ( );
-int ORL_C ( );
+int ACALL_0x71 ( );
+int ORL_C_0x72 ( );
 int JMP_at_A_DPTR ( );
 int MOV_A_data ( );
 int MOV_data_addr_data ( );
@@ -145,8 +158,8 @@ int MOV_R5 ( );
 int MOV_R6 ( );
 int MOV_R7 ( );		//0x7F
 int SJMP ( );		//0x80
-int AJMP ( );		
-int ANL_C ( );
+int AJMP_0x81 ( );		
+int ANL_C_0x81 ( );
 int MOVC ( );
 int DIV ( );
 int MOV_data_addr_data_addr ( );
@@ -161,7 +174,7 @@ int MOV_data_addr_R5 ( );
 int MOV_data_addr_R6 ( );
 int MOV_data_addr_R7 ( );	//0x8F
 int MOV_DPTR_data ( );		//0x90
-int ACALL ( );
+int ACALL_0x91 ( );
 int MOV_bit_C ( );
 int MOVC_A_dptr ( );
 int SUBB_A_data ( );
@@ -176,8 +189,8 @@ int SUBB_R4 ( );
 int SUBB_R5 ( );
 int SUBB_R6 ( );   
 int SUBB_R7 ( );		//0x9F
-int ORL_C ( );			//0xA0
-int AJMP ( );
+int ORL_C_0xA0 ( );			//0xA0
+int AJMP_0xA1 ( );
 int MOV_C ( );
 int INC_dptr ( );
 int MUL ( );
@@ -192,8 +205,8 @@ int R4_data_addr ( );
 int R5_data_addr ( );
 int R6_data_addr ( );
 int R7_data_addr ( );		//0xAF
-int ANL_C ( );			//0xB0
-int ACALL ( );
+int ANL_C_0xB0 ( );			//0xB0
+int ACALL_0xB1 ( );
 int CPL ();
 int CPL_C ();
 int CJNE_A_data_codeaddr ( );
@@ -208,8 +221,8 @@ int CJNE_R4 ( );
 int CJNE_R5 ( );
 int CJNE_R6 ( );
 int CJNE_R7 ( );		//0xBF
-int PUSH ();			//0xC0
-int AJMP ();
+int PUSH (int8_t );			//0xC0
+int AJMP_0xC1 ();
 int CLR ( );
 int CLR_C ();
 int SWAP ( );
@@ -225,7 +238,7 @@ int XCH_A_R5 ( );
 int XCH_A_R6 ( );
 int XCH_A_R7 ( );		//0xCF
 int POP ( );			//0xD0
-int ACALL ( );
+int ACALL_0xD1 ( );
 int SETB ( );
 int SETB_C ( );
 int DA ( );
@@ -241,7 +254,7 @@ int DJNZ_R5 ( );
 int DJNZ_R6 ( );
 int DJNZ_R7 ( );		//0xDF
 int MOVX_at_DPTR ( );		//0xE0
-int AJMP ( );
+int AJMP_0xE1 ( );
 int MOVX_A_at_R0 ( );
 int MOVX_A_at_R1 ( );
 int CLR_A ();
@@ -257,7 +270,7 @@ int MOV_A_R5 ( );
 int MOV_A_R6 ( );
 int MOV_A_R7 ( );		//0xEF
 int MOVX_at_DPTR_A ( );		//0xF0
-int ACALL ( );
+int ACALL_0xF1 ( );
 int MOVX_at_R0_A ( );
 int MOVX_at_R1_A ( );
 int CPL_A ( );

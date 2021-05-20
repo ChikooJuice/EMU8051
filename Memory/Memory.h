@@ -175,14 +175,14 @@
  **/
 
 
-#define		M0 	(1 << 0)
-#define 	M1	(1 << 1)
-#define		CT	(1 << 2)
-#define		GATE 	(1 << 3)
-#define		M0	(1 << 4)
-#define 	M1	(1 << 5)
-#define 	CT	(1 << 6)
-#define		GATE	(1 << 7)
+#define		M0_T0 	(1 << 0)
+#define 	M1_T0	(1 << 1)
+#define		CT_T0	(1 << 2)
+#define		GATE_T0	(1 << 3)
+#define		M0_T1	(1 << 4)
+#define 	M1_T1	(1 << 5)
+#define 	CT_T1	(1 << 6)
+#define		GATE_T1	(1 << 7)
 
 
 
