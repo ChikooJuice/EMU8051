@@ -36,3 +36,6 @@ Whole 8051 is struct of memory array and all the instructions read/write and do 
 - [*] program function to update Parity after each individual instruction involving A.
 - [ ] program function to choose bank of registers.
 - [ ] function to update PSW register 
+- [ ] mechanism to debug the instruction when you write them
+- [ ] stack operations
+- [ ] overflow flag update logic

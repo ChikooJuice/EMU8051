@@ -137,9 +137,6 @@ int NOP () {
 }
 
 
-
-
-
 int AJMP_0x01 () { 
 	uint16_t low_add_byte = fetch ( );
 	CPU_8051.PC = ( ( CPU_8051.PC & 0xF800) | (0x01 & 0x70) ) | low_add_byte;
@@ -246,7 +243,34 @@ int INC_R7 ( ) {
 	return 1;
 }
 
-//int JBC ( ) {  return 0;} 		//0x10	
+/** will resolve the bit addresses,
+ * still need to be expaneded if register which are bit
+ * addressable are given,
+ * right now works only for bit addressable area of CPU
+ */
+int resolve_bit_addr (uint8_t bit_addr) {
+	uint8_t byte = CPU_8051.Bit_Addressable[bit_addr / 8];
+	uint8_t bit = byte & ( 1 < ((bit_addr % 8) + 1) );
+
+	if (bit) return 1;
+	else return 0;
+}
+
+/** 
+ * JBC : jump if bit is set and clear bit
+ * 0x10
+ * 3 bytes instruction
+ * JBC bit_addr code_addr
+ */ 
+int JBC ( ) {	
+	uint8_t bit_addr = fetch ( );
+	int8_t code_addr = fetch ( );
+
+	if (resolve_bit_addr(bit_addr)) {
+		CPU_8051.PC += code_addr;		
+	}
+	return 1;
+}
 
 // 0x11
 /** uses the 11 bit format, same as AJMP
@@ -288,8 +312,40 @@ int LCALL ( ) {
 	
 }
 
-// 0x13
-//int RRC_A ( ) {  return 0;} 
+/**
+ * 0x13
+ * RRC_A : Rotate Accumulator Right through Carry Flag
+ * 1 byte instruction
+ */
+int RRC_A ( ) { 
+	uint8_t zero_bit = CPU_8051.SFR[ACC] & ( 1 < 1 );
+	uint8_t carry_status = CPU_8051.SFR[PSW] & CY;
+
+	// rotating the accumulator register right
+	CPU_8051.SFR[ACC] >>= 1;
+
+	// putting right most bit of accumulator in carry
+	if (zero_bit) // is last bit was 1
+	{
+		CPU_8051.SFR[PSW] |= CY;
+	}
+	else	// if last bit is zero
+	{
+		CPU_8051.SFR[PSW] &= (~CY);
+	}
+
+	// transfering carry value into the MSB of ACC
+
+	if (carry_status)	// if carry was 1
+	{
+		CPU_8051.SFR[ACC] |= CY;
+	}
+	else 			// if carry was 0
+	{
+		CPU_8051.SFR[ACC] &= ~(CY);
+	}
+	return 1;
+} 
 
 // 0x14
 int DEC_A ( ) {
@@ -371,20 +427,156 @@ int AJMP_0x21 ( ) {
 	CPU_8051.PC = ( ( CPU_8051.PC & 0xF800) | (0x21 & 0x70) ) | low_add_byte;
 	return 1;
 }
-// int RET ( ) {  return 0;} 		
-// int RL ( ) {  return 0;} 
-// int ADD_data ( ) {  return 0;} 
-// int ADD_data_addr ( ) {  return 0;} 
+
+/**
+ * 0x22 
+ * RET : return from subroutine
+ * 1 byte instruction
+ * 
+ * RET pops the high-and low-orderbytes of the PC successively
+ * from the stack decrementing the Stack Pointer by two
+ */
+int RET ( ) {  
+	uint8_t high_addr = POP ( );
+	uint8_t low_addr = POP ( );
+
+	CPU_8051.PC = (high_addr << 8) | low_addr;
+	return 0;
+	
+	
+} 
+
+/** 
+ * 0x23
+ * RL : Rotate Accumulator Left
+ * 1 byte instruction
+ */	
+int RL ( ) {
+	uint8_t acc_msb = CPU_8051.SFR[ACC] & ( 1 << 8 );
+	CPU_8051.SFR[ACC] << 1;
+
+	if (acc_msb)	// if MSB of ACC was 1 before rotate, make LSB 1
+	{
+		CPU_8051.SFR[ACC] |= ( 1 << 1);
+	}
+	else {
+		CPU_8051.SFR[ACC] &= ~( 1 << 1);
+	}
+	return 1;
+}
+
+/** 0x24
+ * ADD A, data : add immmediate data to the accumulator
+ * 2 byte instruction,
+ */
+int ADD_data ( ) {
+	int8_t imm_data = fetch ( );
+	CPU_8051.SFR[ACC] += imm_data;
+
+	return 1;
+}
+
+/** program after stack instructions */
+
+//int ADD_data_addr ( ) { return 0; }
 // int ADD_at_R0 ( ) {  return 0;} 
 // int ADD_at_R1 ( ) {  return 0;} 	//0x27
-// int ADD_R0 ( ) {  return 0;} 
-// int ADD_R1 ( ) {  return 0;} 
-// int ADD_R2 ( ) {  return 0;} 
-// int ADD_R3 ( ) {  return 0;} 
-// int ADD_R4 ( ) {  return 0;} 
-// int ADD_R5 ( ) {  return 0;} 
-// int ADD_R6 ( ) {  return 0;} 
-// int ADD_R7 ( ) {  return 0;} 		//0x2F
+
+/** 0x28
+ * ADD A, R0
+ * 
+ * add data from R0 to accumulator
+ */
+int ADD_R0 ( ) {
+	int8_t data = CPU_8051.REGISTERS[BANK].R0;
+	CPU_8051.SFR[ACC] += data;
+	return 0;
+}
+
+/** 0x29
+ * ADD A, R1
+ * 
+ * add data from R1 to accumulator
+ */
+int ADD_R1 ( ) {
+	int8_t data = CPU_8051.REGISTERS[BANK].R1;
+	CPU_8051.SFR[ACC] += data;
+	return 0;
+
+}
+
+/** 0x2A
+ * ADD A, R2
+ * 
+ * add data from R2 to accumulator
+ */
+int ADD_R2 ( ) {
+	int8_t data = CPU_8051.REGISTERS[BANK].R2;
+	CPU_8051.SFR[ACC] += data;
+	return 0;
+
+}
+
+/** 0x2B
+ * ADD A, R3
+ * 
+ * add data from R3 to accumulator
+ */
+int ADD_R3 ( ) {
+	int8_t data = CPU_8051.REGISTERS[BANK].R3;
+	CPU_8051.SFR[ACC] += data;
+	return 0;
+
+}
+
+/** 0x2C
+ * ADD A, R4
+ * 
+ * add data from R4 to accumulator
+ */
+int ADD_R4 ( ) {
+	int8_t data = CPU_8051.REGISTERS[BANK].R4;
+	CPU_8051.SFR[ACC] += data;
+	return 0;
+
+}
+
+/** 0x2D
+ * ADD A, R5
+ * 
+ * add data from R5 to accumulator
+ */
+int ADD_R5 ( ) {
+	int8_t data = CPU_8051.REGISTERS[BANK].R5;
+	CPU_8051.SFR[ACC] += data;
+	return 0;
+
+}
+
+/** 0x2E
+ * ADD A, R6
+ * 
+ * add data from R6 to accumulator
+ */
+int ADD_R6 ( ) {
+	int8_t data = CPU_8051.REGISTERS[BANK].R6;
+	CPU_8051.SFR[ACC] += data;
+	return 0;
+
+}
+
+/** 0x2F
+ * ADD A, R7
+ * 
+ * add data from R7 to accumulator
+ */
+int ADD_R7 ( ) {
+	int8_t data = CPU_8051.REGISTERS[BANK].R7;
+	CPU_8051.SFR[ACC] += data;
+	return 0;
+
+}
+
 // int JNB ( ) {  return 0;} 		//0x30
 
 //0x31
@@ -400,9 +592,49 @@ int ACALL_0x31 ( ) {
 	return 1; 
 	
 }
-// int RETI ( ) {  return 0;} 
-// int RLC ( ) {  return 0;} 
-// int ADDC_data ( ) {  return 0;} 
+
+/** 0x40
+ * RETI : Return from Interrupt
+ */
+//int RETI ( ) {  return 0;} 
+
+
+/** 0x41
+ * RLC : Rotate Left Through Carry
+ * 1 byte instruction 
+ */
+int RLC ( ) {
+	
+	int8_t acc_msb = CPU_8051.SFR[ACC] & 0x80;
+	CPU_8051.SFR[ACC] <<= 1;
+
+	// now adjsting LSB of ACC from carry.
+	if ( CPU_8051.SFR[PSW] & CY ) {
+		CPU_8051.SFR[ACC] |= 0x01;
+	}
+	else {
+		CPU_8051.SFR[ACC] &= 0xFE;
+	}
+
+	// adjusting carry from MSB of acc before shifting
+
+	if (acc_msb) {
+		CPU_8051.SFR[PSW] |= CY;
+	}
+	else {
+		CPU_8051.SFR[PSW] &= ~(CY);
+	}
+}
+
+/** 0x41
+ * ADDC A, imm_data : Add with carry the immediate data in accumulator
+ * 2 byte instruction
+ * 
+ * here OV flag is set
+ */
+int ADDC_data ( ) {
+
+} 
 // int ADDC_data_addr ( ) {  return 0;} 
 // int ADDC_at_R0 ( ) {  return 0;} 
 // int ADDC_at_R1 ( ) {  return 0;} 	//0x37
@@ -425,18 +657,61 @@ int AJMP_0x41 ( ){
 
 // int ORL_data_addr_A ( ) {  return 0;} 
 // int ORL_data_addr_data ( ) {  return 0;} 
-// int ORL_A_data ( ) {  return 0;} 
+/** ORL A, #data
+ * 2 byte instruction
+ */
+int ORL_A_data ( ) {
+	int8_t data = fetch ( );
+	CPU_8051.SFR[ACC] |= data;
+	return 1;
+} 
+
 // int ORL_A_data_addr ( ) {  return 0;} 
-// int ORL_acc_at_R0 ( ) {  return 0;} 
-// int ORL_acc_at_R1 ( ) {  return 0;} 	//0x47
-// int ORL_R0 ( ) {  return 0;} 
-// int ORL_R1 ( ) {  return 0;} 
-// int ORL_R2 ( ) {  return 0;} 
-// int ORL_R3 ( ) {  return 0;} 
-// int ORL_R4 ( ) {  return 0;} 
-// int ORL_R5 ( ) {  return 0;} 
-// int ORL_R6 ( ) {  return 0;} 
-// int ORL_R7 ( ) {  return 0;} 		//0x4F
+// int ORL_A_at_R0 ( ) {  return 0;} 
+// int ORL_A_at_R1 ( ) {  return 0;} 	//0x47
+/** 0x48 
+ * ORL A, R0
+ */
+int ORL_R0 ( ) { 
+	CPU_8051.SFR[ACC] |= CPU_8051.REGISTERS[BANK].R0;
+	return 1;
+} 
+
+int ORL_R1 ( ) { 
+	CPU_8051.SFR[ACC] |= CPU_8051.REGISTERS[BANK].R1;
+	return 1;
+}  
+
+int ORL_R2 ( ) { 
+	CPU_8051.SFR[ACC] |= CPU_8051.REGISTERS[BANK].R2;
+	return 1;
+} 
+
+int ORL_R3 ( ) { 
+	CPU_8051.SFR[ACC] |= CPU_8051.REGISTERS[BANK].R3;
+	return 1;
+}  
+
+int ORL_R4 ( ) { 
+	CPU_8051.SFR[ACC] |= CPU_8051.REGISTERS[BANK].R4;
+	return 1;
+} 
+
+int ORL_R5 ( ) { 
+	CPU_8051.SFR[ACC] |= CPU_8051.REGISTERS[BANK].R5;
+	return 1;
+} 
+
+
+int ORL_R6 ( ) { 
+	CPU_8051.SFR[ACC] |= CPU_8051.REGISTERS[BANK].R6;
+	return 1;
+} 
+
+int ORL_R7 ( ) { 
+	CPU_8051.SFR[ACC] |= CPU_8051.REGISTERS[BANK].R7;
+	return 1;
+} 
 // int JNC ( ) {  return 0;} 		//0x50
 
 //0x51
@@ -454,18 +729,76 @@ int ACALL_0x51 ( ) {
 }
 // int ANL_data_addr_A ( ) {  return 0;} 
 // int ANL_data_addr_data ( ) {  return 0;} 
-// int ANL_A_data ( ) {  return 0;} 
+
+/** 0x54
+ * ANL A, # Data
+ */
+int ANL_A_data ( ) { 
+
+	int8_t data = fetch ( );
+	CPU_8051.SFR[ACC] &= data;
+	return 1;
+}  
 // int ANL_A_data_addr ( ) {  return 0;} 
 // int ANL_A_at_R0 ( ) {  return 0;} 
 // int ANL_A_at_R1 ( ) {  return 0;} 	//0x57
-// int ANL_R0 ( ) {  return 0;} 
-// int ANL_R1 ( ) {  return 0;} 
-// int ANL_R2 ( ) {  return 0;} 
-// int ANL_R3 ( ) {  return 0;} 
-// int ANL_R4 ( ) {  return 0;} 
-// int ANL_R5 ( ) {  return 0;} 
-// int ANL_R6 ( ) {  return 0;} 
-// int ANL_R7 ( ) {  return 0;} 		//0x5F
+
+int ANL_R0 ( ) { 
+
+	CPU_8051.SFR[ACC] &= CPU_8051.REGISTERS[BANK].R0;
+	return 1;
+
+}  
+
+int ANL_R1 ( ) { 
+
+	CPU_8051.SFR[ACC] &= CPU_8051.REGISTERS[BANK].R1;
+	return 1;
+
+}  
+
+int ANL_R2 ( ) { 
+
+	CPU_8051.SFR[ACC] &= CPU_8051.REGISTERS[BANK].R2;
+	return 1;
+
+}   
+
+int ANL_R3 ( ) { 
+
+	CPU_8051.SFR[ACC] &= CPU_8051.REGISTERS[BANK].R3;
+	return 1;
+
+}  
+
+int ANL_R4 ( ) { 
+
+	CPU_8051.SFR[ACC] &= CPU_8051.REGISTERS[BANK].R4;
+	return 1;
+
+}  
+
+int ANL_R5 ( ) { 
+
+	CPU_8051.SFR[ACC] &= CPU_8051.REGISTERS[BANK].R5;
+	return 1;
+
+}  
+
+int ANL_R6 ( ) { 
+
+	CPU_8051.SFR[ACC] &= CPU_8051.REGISTERS[BANK].R6;
+	return 1;
+
+}  
+
+int ANL_R7 ( ) { 
+
+	CPU_8051.SFR[ACC] &= CPU_8051.REGISTERS[BANK].R7;
+	return 1;
+
+}  
+
 // int JZ ( ) {  return 0;} 		//0x60
 
 //0x61
@@ -478,19 +811,79 @@ int AJMP_0x61 ( ) {
 
 // int XRL_data_addr_A ( ) {  return 0;} 
 // int XRL_data_addr_data ( ) {  return 0;} 
-// int XRL_A_data ( ) {  return 0;} 
+
+/** 
+ * XRL A, #data
+ * Xor operation
+ */
+int XRL_A_data ( ) {
+	
+	int8_t data = fetch ( );
+	CPU_8051.SFR[ACC] ^= data;
+	return 1;
+} 
 // int XRL_A_dataaddr ( ) {  return 0;} 
 // int XRL_A_at_R0 ( ) {  return 0;} 
 // int XRL_A_at_R1 ( ) {  return 0;} 	//0x67
-// int XRL_R0 ( ) {  return 0;} 
-// int XRL_R1 ( ) {  return 0;} 
-// int XRL_R2 ( ) {  return 0;} 
-// int XRL_R3 ( ) {  return 0;} 
-// int XRL_R4 ( ) {  return 0;} 
-// int XRL_R5 ( ) {  return 0;} 
-// int XRL_R6 ( ) {  return 0;} 
-// int XRL_R7 ( ) {  return 0;} 		//0x6F
+
+int XRL_R0 ( ) { 
+
+	CPU_8051.SFR[ACC] ^= CPU_8051.REGISTERS[BANK].R0;
+	return 1;
+
+}   
+
+int XRL_R1 ( ) { 
+
+	CPU_8051.SFR[ACC] ^= CPU_8051.REGISTERS[BANK].R1;
+	return 1;
+
+}   
+
+int XRL_R2 ( ) { 
+
+	CPU_8051.SFR[ACC] ^= CPU_8051.REGISTERS[BANK].R2;
+	return 1;
+
+}   
+
+int XRL_R3 ( ) { 
+
+	CPU_8051.SFR[ACC] ^= CPU_8051.REGISTERS[BANK].R3;
+	return 1;
+
+}   
+
+int XRL_R4 ( ) { 
+
+	CPU_8051.SFR[ACC] ^= CPU_8051.REGISTERS[BANK].R4;
+	return 1;
+
+}   
+
+int XRL_R5 ( ) { 
+
+	CPU_8051.SFR[ACC] ^= CPU_8051.REGISTERS[BANK].R5;
+	return 1;
+
+}   
+
+int XRL_R6 ( ) { 
+
+	CPU_8051.SFR[ACC] ^= CPU_8051.REGISTERS[BANK].R6;
+	return 1;
+
+}   
+
+int XRL_R7 ( ) { 
+
+	CPU_8051.SFR[ACC] ^= CPU_8051.REGISTERS[BANK].R7;
+	return 1;
+
+}   
+
 // int JNZ ( ) {  return 0;} 		//0x70
+
 //0x71
 int ACALL_0x71 ( ) {
 	{
@@ -508,18 +901,81 @@ int ACALL_0x71 ( ) {
 }
 // int ORL_C_0x72 ( ) {  return 0;} 
 // int JMP_at_A_DPTR ( ) {  return 0;} 
-// int MOV_A_data ( ) {  return 0;} 
+
+/** 0x74
+ * MOV A, #data;
+ * 2 byte instruction
+ */
+int MOV_A_data ( ) {
+
+	CPU_8051.SFR[ACC] = fetch ( );
+	return 1;
+}
+
 // int MOV_data_addr_data ( ) {  return 0;} 
 // int MOV_at_R0 ( ) {  return 0;} 
 // int MOV_at_R1 ( ) {  return 0;} 	//0x77
-// int MOV_R0 ( ) {  return 0;} 
-// int MOV_R1 ( ) {  return 0;} 
-// int MOV_R2 ( ) {  return 0;} 
-// int MOV_R3 ( ) {  return 0;} 
-// int MOV_R4 ( ) {  return 0;} 
-// int MOV_R5 ( ) {  return 0;} 
-// int MOV_R6 ( ) {  return 0;} 
-// int MOV_R7 ( ) {  return 0;} 		//0x7F
+
+int MOV_R0 ( ) {
+	
+	CPU_8051.REGISTERS[BANK].R0 = fetch ( );
+	return 1;
+
+}
+
+int MOV_R1 ( ) {
+
+	CPU_8051.REGISTERS[BANK].R1 = fetch ( );	
+	return 1;
+
+}
+
+int MOV_R2 ( ) {
+	
+	CPU_8051.REGISTERS[BANK].R2 = fetch ( );	
+	return 1;
+
+}
+
+
+int MOV_R3 ( ) {
+	
+	CPU_8051.REGISTERS[BANK].R3 = fetch ( );	
+	return 1;
+
+}
+
+
+int MOV_R4 ( ) {
+	
+	CPU_8051.REGISTERS[BANK].R4 = fetch ( );	
+	return 1;
+
+}
+
+
+int MOV_R5 ( ) {
+
+	CPU_8051.REGISTERS[BANK].R5 = fetch ( );		
+	return 1;
+
+}
+
+
+int MOV_R6 ( ) {
+	
+	CPU_8051.REGISTERS[BANK].R6 = fetch ( );	
+	return 1;
+
+}
+
+
+int MOV_R7 ( ) {
+	
+	CPU_8051.REGISTERS[BANK].R7 = fetch ( );	
+	return 1;
+
+}
 
 //0x80
 int SJMP ( ) {
@@ -539,6 +995,7 @@ int AJMP_0x81 ( ) {
 	CPU_8051.PC = ( ( CPU_8051.PC & 0xF800) | (0x81 & 0x70) ) | low_add_byte;
 	return 1;
 }		
+
 // int ANL_C_0x82 ( ) {  return 0;} 
 // int MOVC ( ) {  return 0;} 
 // int DIV ( ) {  return 0;} 
@@ -554,6 +1011,7 @@ int AJMP_0x81 ( ) {
 // int MOV_data_addr_R6 ( ) {  return 0;} 
 // int MOV_data_addr_R7 ( ) {  return 0;} 	//0x8F
 // int MOV_DPTR_data ( ) {  return 0;} 		//0x90
+
 // 0x91
 int ACALL_0x91 ( ) {
 
@@ -595,14 +1053,14 @@ int AJMP_0xA1 ( ) {
 //reserved
 // int MOV_atR0_data_addr ( ) {  return 0;} 
 // int MOV_atR1_data_addr ( ) {  return 0;} 	//0xA7
-// int R0_data_addr ( ) {  return 0;} 
-// int R1_data_addr ( ) {  return 0;} 
-// int R2_data_addr ( ) {  return 0;} 
-// int R3_data_addr ( ) {  return 0;} 
-// int R4_data_addr ( ) {  return 0;} 
-// int R5_data_addr ( ) {  return 0;} 
-// int R6_data_addr ( ) {  return 0;} 
-// int R7_data_addr ( ) {  return 0;} 		//0xAF
+// int MOV_R0_data_addr ( ) {  return 0;} 
+// int MOV_R1_data_addr ( ) {  return 0;} 
+// int MOV_R2_data_addr ( ) {  return 0;} 
+// int MOV_R3_data_addr ( ) {  return 0;} 
+// int MOV_R4_data_addr ( ) {  return 0;} 
+// int MOV_R5_data_addr ( ) {  return 0;} 
+// int MOV_R6_data_addr ( ) {  return 0;} 
+// int MOV_R7_data_addr ( ) {  return 0;} 		//0xAF
 // int ANL_C_0xB0 ( ) {  return 0;} 			//0xB0
 
 //0xB1
@@ -644,18 +1102,97 @@ int AJMP_0xC1 ( ) {
 }
 // int CLR ( ) {  return 0;} 
 // int CLR_C ();
-// int SWAP ( ) {  return 0;} 
+
+/** 0xC4
+ * SWap, will swap the nibbles of the accumulator
+ */
+int SWAP ( ) {
+	
+	int8_t tmp = CPU_8051.SFR[ACC] & 0xF0;
+	CPU_8051.SFR[ACC] = (CPU_8051.SFR[ACC] << 4) | ((tmp >> 4) & 0x0F);
+	return 1;
+
+}
 // int XCH_A_dataaddr ( ) {  return 0;} 
-// int XCH_A_atR0 ( ) {  return 0;} 
+// int XCH_A_at_R0 ( ) {  return 0;} 
 // int XCH_A_at_R1 ( ) {  return 0;} 		//0xC7
-// int XCH_A_R0 ( ) {  return 0;} 
-// int XCH_A_R1 ( ) {  return 0;} 
-// int XCH_A_R2 ( ) {  return 0;} 
-// int XCH_A_R3 ( ) {  return 0;} 
-// int XCH_A_R4 ( ) {  return 0;} 
-// int XCH_A_R5 ( ) {  return 0;} 
-// int XCH_A_R6 ( ) {  return 0;} 
-// int XCH_A_R7 ( ) {  return 0;} 		//0xCF
+
+/** XCH : Xchange A contant with R0 content
+ * 1 byte instruction
+ */
+int XCH_A_R0 ( ) {
+
+	int8_t temp = CPU_8051.SFR[ACC];
+	CPU_8051.SFR[ACC] = CPU_8051.REGISTERS[BANK].R0;
+	CPU_8051.REGISTERS[BANK].R0 = temp;
+	return 1;
+
+} 
+
+int XCH_A_R1 ( ) {
+
+	int8_t temp = CPU_8051.SFR[ACC];
+	CPU_8051.SFR[ACC] = CPU_8051.REGISTERS[BANK].R1;
+	CPU_8051.REGISTERS[BANK].R1 = temp;
+	return 1;
+	
+} 
+
+int XCH_A_R2 ( ) {
+
+	int8_t temp = CPU_8051.SFR[ACC];
+	CPU_8051.SFR[ACC] = CPU_8051.REGISTERS[BANK].R2;
+	CPU_8051.REGISTERS[BANK].R2 = temp;
+	return 1;
+	
+} 
+
+int XCH_A_R3 ( ) {
+
+	int8_t temp = CPU_8051.SFR[ACC];
+	CPU_8051.SFR[ACC] = CPU_8051.REGISTERS[BANK].R3;
+	CPU_8051.REGISTERS[BANK].R3 = temp;
+	return 1;
+	
+} 
+
+int XCH_A_R4 ( ) {
+
+	int8_t temp = CPU_8051.SFR[ACC];
+	CPU_8051.SFR[ACC] = CPU_8051.REGISTERS[BANK].R4;
+	CPU_8051.REGISTERS[BANK].R4 = temp;
+	return 1;
+	
+} 
+
+int XCH_A_R5 ( ) {
+
+	int8_t temp = CPU_8051.SFR[ACC];
+	CPU_8051.SFR[ACC] = CPU_8051.REGISTERS[BANK].R5;
+	CPU_8051.REGISTERS[BANK].R5 = temp;
+	return 1;
+	
+} 
+
+int XCH_A_R6 ( ) {
+
+	int8_t temp = CPU_8051.SFR[ACC];
+	CPU_8051.SFR[ACC] = CPU_8051.REGISTERS[BANK].R6;
+	CPU_8051.REGISTERS[BANK].R6 = temp;
+	return 1;
+	
+} 
+
+
+int XCH_A_R7 ( ) {
+
+	int8_t temp = CPU_8051.SFR[ACC];
+	CPU_8051.SFR[ACC] = CPU_8051.REGISTERS[BANK].R7;
+	CPU_8051.REGISTERS[BANK].R7 = temp;
+	return 1;
+	
+} 
+
 // int POP ( ) {  return 0;} 			//0xD0
 //0xD1
 int ACALL_0xD1 ( ) {
@@ -670,6 +1207,7 @@ int ACALL_0xD1 ( ) {
 	return 1; 
 	
 }
+
 // int SETB ( ) {  return 0;} 
 // int SETB_C ( ) {  return 0;} 
 // int DA ( ) {  return 0;} 
@@ -694,20 +1232,81 @@ int AJMP_0xE1 ( ) {
 }
 // int MOVX_A_at_R0 ( ) {  return 0;} 
 // int MOVX_A_at_R1 ( ) {  return 0;} 
-// int CLR_A ();
+/** 0xE4
+ * clear Acc
+ */
+int CLR_A () {
+	
+	CPU_8051.SFR[ACC] = 0x00;
+	return 1;
+
+}
 // int MOV_A_dataaddr ();
 // int MOV_A_at_R0 ( ) {  return 0;} 
 // int MOV_A_at_R1 ( ) {  return 0;} 		//0xE7
-// int MOV_A_R0 ( ) {  return 0;} 
-// int MOV_A_R1 ( ) {  return 0;} 
-// int MOV_A_R2 ( ) {  return 0;} 
-// int MOV_A_R3 ( ) {  return 0;} 
-// int MOV_A_R4 ( ) {  return 0;} 
-// int MOV_A_R5 ( ) {  return 0;} 
-// int MOV_A_R6 ( ) {  return 0;} 
-// int MOV_A_R7 ( ) {  return 0;} 		//0xEF
+/** 0xE8
+ * MOV A, R0
+ */
+int MOV_A_R0 ( ) {
+
+	CPU_8051.SFR[ACC] = CPU_8051.REGISTERS[BANK].R0;
+	return 1;
+
+}
+
+int MOV_A_R1 ( ) {
+
+	CPU_8051.SFR[ACC] = CPU_8051.REGISTERS[BANK].R1;
+	return 1;
+	
+}
+
+int MOV_A_R2 ( ) {
+
+	CPU_8051.SFR[ACC] = CPU_8051.REGISTERS[BANK].R2;
+	return 1;
+	
+}
+
+int MOV_A_R3 ( ) {
+
+	CPU_8051.SFR[ACC] = CPU_8051.REGISTERS[BANK].R3;
+	return 1;
+	
+}
+
+int MOV_A_R4 ( ) {
+
+	CPU_8051.SFR[ACC] = CPU_8051.REGISTERS[BANK].R4;
+	return 1;
+	
+}
+
+int MOV_A_R5 ( ) {
+
+	CPU_8051.SFR[ACC] = CPU_8051.REGISTERS[BANK].R5;
+	return 1;
+	
+}
+
+int MOV_A_R6 ( ) {
+
+	CPU_8051.SFR[ACC] = CPU_8051.REGISTERS[BANK].R6;
+	return 1;
+	
+}
+
+//0xEF
+int MOV_A_R7 ( ) {
+
+	CPU_8051.SFR[ACC] = CPU_8051.REGISTERS[BANK].R7;
+	return 1;
+	
+}
+
 // int MOVX_at_DPTR_A ( ) {  return 0;} 		//0xF0
 //0xF1
+
 int ACALL_0xF1 ( ) {
 
 	uint16_t push_addr = CPU_8051.PC + 2;
@@ -722,15 +1321,73 @@ int ACALL_0xF1 ( ) {
 }
 // int MOVX_at_R0_A ( ) {  return 0;} 
 // int MOVX_at_R1_A ( ) {  return 0;} 
-// int CPL_A ( ) {  return 0;} 
+/** 0xF4
+ * CPL A : Complement A
+ */
+int CPL_A ( ) {
+
+	CPU_8051.SFR[ACC] ^= 0xFF;
+	return 1;
+
+}
+
 // int MOV_data_addr_A ( ) {  return 0;} 
 // int MOV_at_R0_A ( ) {  return 0;} 
 // int MOV_at_R1_A ( ) {  return 0;} 		//0xF7
-// int MOV_R0_A ( ) {  return 0;} 
-// int MOV_R1_A ( ) {  return 0;} 
-// int MOV_R2_A ( ) {  return 0;} 
-// int MOV_R3_A ( ) {  return 0;} 
-// int MOV_R4_A ( ) {  return 0;} 
-// int MOV_R5_A ( ) {  return 0;} 
-// int MOV_R6_A ( ) {  return 0;} 
-// int MOV_R7_A ( ) {  return 0;} 		//0xFF
+
+int MOV_R0_A ( ) {
+
+	CPU_8051.REGISTERS[BANK].R0 = CPU_8051.SFR[ACC];
+	return 1;
+
+} 
+
+int MOV_R1_A ( ) {
+
+	CPU_8051.REGISTERS[BANK].R1 = CPU_8051.SFR[ACC];
+	return 1;
+	
+} 
+
+int MOV_R2_A ( ) {
+
+	CPU_8051.REGISTERS[BANK].R2 = CPU_8051.SFR[ACC];
+	return 1;
+	
+} 
+
+int MOV_R3_A ( ) {
+
+	CPU_8051.REGISTERS[BANK].R3 = CPU_8051.SFR[ACC];
+	return 1;
+	
+} 
+
+int MOV_R4_A ( ) {
+
+	CPU_8051.REGISTERS[BANK].R4 = CPU_8051.SFR[ACC];
+	return 1;
+	
+} 
+
+int MOV_R5_A ( ) {
+
+	CPU_8051.REGISTERS[BANK].R5 = CPU_8051.SFR[ACC];
+	return 1;
+	
+} 
+
+int MOV_R6_A ( ) {
+
+	CPU_8051.REGISTERS[BANK].R6 = CPU_8051.SFR[ACC];
+	return 1;
+	
+} 
+
+//0xFF
+int MOV_R7_A ( ) {
+
+	CPU_8051.REGISTERS[BANK].R7 = CPU_8051.SFR[ACC];
+	return 1;
+	
+} 
