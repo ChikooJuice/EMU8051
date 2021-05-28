@@ -117,6 +117,32 @@ void update_parity ( ) {
 	}
 }
 
+void show_memory ( ) {
+	
+	char *pntr = &CPU_8051;
+	char tmp[2];
+	
+	// printing the upper line of refrence 
+	for ( int i = 0; i < 16; i++) printf ("\t %x",i);
+	printf ("\n");
+	for ( int i = 0; i < 130; i++) printf ("-");
+
+	// printing the memory locations
+	for ( int i = 0 ; i < 8 ; i++) {
+		printf("\n%4x", i);
+		
+		for (int j = 0; j < 16 ; j++) {
+			
+			tmp[0] = *(pntr + j + (i * 0xF));
+			tmp[1] = *(pntr + j + (i * 0xF));
+
+			printf ("\t%hhx",tmp[0]);
+		}
+	}
+	printf ("\n");
+}
+
+
 /*------------------------------------------------------------------------------------------------------------------------*/
 
 
