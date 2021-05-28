@@ -237,7 +237,7 @@ int XCH_A_R4 ( );
 int XCH_A_R5 ( );
 int XCH_A_R6 ( );
 int XCH_A_R7 ( );		//0xCF
-int POP ( );			//0xD0
+int8_t POP ( );			//0xD0
 int ACALL_0xD1 ( );
 int SETB ( );
 int SETB_C ( );

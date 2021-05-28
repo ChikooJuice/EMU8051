@@ -122,15 +122,26 @@ void update_parity ( ) {
 
 /*----------------------------------------------CPU Instructions----------------------------------------------------------*/
 
-/** by default SP = 0x81H
- * which means it is in upper area of RAM,
- * above the scratch pad area
+/** 
+ * here we take unique approach
+ * and try to push data using address of 
+ * CPU structure, typecasting it.
  */
 int PUSH (int8_t data) {
-	CPU_8051.ScratchPad [CPU_8051.SFR[SP]] = data;
-	CPU_8051.SFR [SP] += 1;
+	
+	*(((char*)&CPU_8051) + CPU_8051.SFR[SP]) = data;
+	CPU_8051.SFR[SP] += 1;
 	return 1;
-}			
+
+}	
+
+int8_t POP ( ) {
+
+	int8_t data;
+	CPU_8051.SFR[SP] -= 1;
+	data = *(((char*)&CPU_8051) + CPU_8051.SFR[SP]);
+	return data;
+}
 
 int NOP () {
 	return 1;
