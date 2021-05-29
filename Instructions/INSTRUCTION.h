@@ -294,6 +294,10 @@ int8_t fetch ( );
  * w.r.t accumulator
  */
 void update_parity ( );
+void update_OV ( uint8_t val);
+void update_AC ( uint8_t val);
+void update_CY ( uint8_t val);
+int8_t add (int8_t op1, int8_t op2);
 
 /**
  * program memory registers with initial values

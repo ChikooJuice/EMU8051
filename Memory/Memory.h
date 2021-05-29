@@ -22,8 +22,8 @@
 #define FLASH 4096
 
 // SFR Memory Map from 0x80 - 0xFF
-#define 	P0 	0x80	// Port 0
-#define 	SP 	0x81	// Stack Pointer
+#define 	P0 		0x80	// Port 0
+#define 	SP 		0x81	// Stack Pointer
 #define 	DPL 	0x82	// DPTR Low byte
 #define 	DPH 	0x83	// DPTR High Byte
 #define 	PCON	0x87	// Power Control
@@ -33,16 +33,16 @@
 #define 	TL1 	0x8B	// Timer 1 Low byte
 #define 	TH0 	0x8C	// Timer 0 High Byte
 #define 	TH1 	0x8D	// Timer 1 High Byte
-#define 	P1 	0x90	// Port 1
+#define 	P1 		0x90	// Port 1
 #define 	SCON 	0x98	// Serial Control
 #define 	SBUF 	0x99	// Serial Buffer
-#define 	P2 	0xA0	// Port 2
-#define 	IE 	0xA8	// Interrupt Enable
-#define 	P3 	0xB0	// Port 3
-#define 	IP 	0xB8	// Interrupt Priorit
+#define 	P2 		0xA0	// Port 2
+#define 	IE 		0xA8	// Interrupt Enable
+#define 	P3 		0xB0	// Port 3
+#define 	IP 		0xB8	// Interrupt Priorit
 #define 	PSW 	0xD0	// Program Status Word
 #define 	ACC 	0xE0	// Accumulator
-#define 	B 	0xF0	// B register
+#define 	B 		0xF0	// B register
 
 
 /** PCON : Program Status Word. Bit Addressable
@@ -193,7 +193,7 @@
  * 
  * |	RI	|	SCON.0	|	Receive Interrupt flag				|				
  * |	TI	|	SCON.1	|	Transmit Interrupt Flag				|			
- * |	RB8 	|	SCON.2	|	9th data bit received when mode 2 & 3		|			
+ * |	RB8 |	SCON.2	|	9th data bit received when mode 2 & 3		|			
  * |	TB8	|	SCON.3	|	9th data received when mode 2 & 3		|
  * |	REN	| 	SCON.4	|	Enable/Disable Reception. control by SW		| 
  * |	SM2	| 	SCON.5	| 	Enables multiprocessor communication in mode 2&3|
@@ -205,8 +205,8 @@
 #define		RI 	(1 << 1)
 #define 	TI	(1 << 2)
 #define		RB8	(1 << 3)
-#define		TB8 	(1 << 4)
-#define		REN 	(1 << 5)
+#define		TB8	(1 << 4)
+#define		REN	(1 << 5)
 #define 	SM2	(1 << 6)
 #define 	SM1	(1 << 7)
 #define		SM0	(1 << 8)
