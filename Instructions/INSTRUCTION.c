@@ -950,8 +950,28 @@ int AJMP_0x41 ( ){
 	return 1;
 }	
 
-// int ORL_data_addr_A ( ) {  return 0;} 
-// int ORL_data_addr_data ( ) {  return 0;} 
+int ORL_data_addr_A ( ) {
+
+	uint8_t addr = fetch ( );
+	int8_t data = *( (char*)&CPU_8051 + addr );
+	data |= CPU_8051.SFR[ACC];
+	*( (char*)&CPU_8051 + addr ) = data;
+	return 1;
+
+} 
+
+
+int ORL_data_addr_data ( ) {
+
+	uint8_t addr = fetch ( );
+	int8_t data = *( (char*)&CPU_8051 + addr );
+	data &= fetch ( );
+	*( (char*)&CPU_8051 + addr ) = data;
+	return 1;
+
+} 
+
+
 /** ORL A, #data
  * 2 byte instruction
  */
@@ -961,15 +981,43 @@ int ORL_A_data ( ) {
 	return 1;
 } 
 
-// int ORL_A_data_addr ( ) {  return 0;} 
-// int ORL_A_at_R0 ( ) {  return 0;} 
-// int ORL_A_at_R1 ( ) {  return 0;} 	//0x47
+int ORL_A_data_addr ( ) {
+
+	uint8_t addr = fetch ( );
+	int8_t data = *( (char*)&CPU_8051 + addr );
+	CPU_8051.SFR[ACC] |= data;
+	return 1;
+
+}
+
+
+int ORL_A_at_R0 ( ) {
+
+	uint8_t addr = CPU_8051.REGISTERS[BANK].R0;
+	int8_t data = *( (char*)&CPU_8051 + addr );
+	CPU_8051.SFR[ACC] |= data;
+	return 1;
+
+} 
+
+// 0x47
+int ORL_A_at_R1 ( ) {
+
+	uint8_t addr = CPU_8051.REGISTERS[BANK].R1;
+	int8_t data = *( (char*)&CPU_8051 + addr );
+	CPU_8051.SFR[ACC] |= data;
+	return 1;
+	
+} 
+
 /** 0x48 
  * ORL A, R0
  */
 int ORL_R0 ( ) { 
+
 	CPU_8051.SFR[ACC] |= CPU_8051.REGISTERS[BANK].R0;
 	return 1;
+
 } 
 
 int ORL_R1 ( ) { 
@@ -1022,8 +1070,26 @@ int ACALL_0x51 ( ) {
 	return 1; 
 	
 }
-// int ANL_data_addr_A ( ) {  return 0;} 
-// int ANL_data_addr_data ( ) {  return 0;} 
+
+int ANL_data_addr_A ( ) {
+
+	uint8_t addr = fetch ( );
+	int8_t data = *( (char*)&CPU_8051 + addr );
+	data &= CPU_8051.SFR[ACC];
+	*( (char*)&CPU_8051 + addr ) = data;
+	return 1;
+
+} 
+
+int ANL_data_addr_data ( ) {
+
+	uint8_t addr = fetch ( );
+	int8_t data = *( (char*)&CPU_8051 + addr );
+	data &= fetch ( );
+	*( (char*)&CPU_8051 + addr ) = data;
+	return 1;
+
+} 
 
 /** 0x54
  * ANL A, # Data
@@ -1161,6 +1227,7 @@ int XRL_A_data ( ) {
 	int8_t data = fetch ( );
 	CPU_8051.SFR[ACC] ^= data;
 	return 1;
+
 } 
 
 int XRL_A_dataaddr ( ) {
@@ -1253,7 +1320,6 @@ int XRL_R7 ( ) {
 //0x71
 int ACALL_0x71 ( ) {
 	
-
 	uint16_t push_addr = CPU_8051.PC + 2;
 	PUSH (push_addr & 0x00FF); // pushing lower byte
 	PUSH ( (push_addr & 0xFF00) >> 8); //have to push it lower by 8 otherwise it will give error.
@@ -1263,7 +1329,6 @@ int ACALL_0x71 ( ) {
 	CPU_8051.PC = ( (CPU_8051.PC & 0xF800) | (0x71 & 0x70) ) | lower_addr_byte;
 	return 1; 
 	
-
 }
 
 //int ORL_C_0x72 ( ) {  return 0;} 
@@ -1388,20 +1453,135 @@ int AJMP_0x81 ( ) {
 }		
 
 // int ANL_C_0x82 ( ) {  return 0;} 
-// int MOVC ( ) {  return 0;} 
+/**
+ * MOVC A, @A+PC
+ * mov code byte
+ */
+int MOVC ( ) {
+
+	uint8_t addr1 = CPU_8051.SFR[ACC];
+	uint16_t pc = pc;
+	pc += addr1;
+	CPU_8051.SFR[ACC] = CPU_8051.Code_Memory[pc];
+	return 1;
+
+}
+
 // int DIV ( ) {  return 0;} 
-// int MOV_data_addr_data_addr ( ) {  return 0;} 
-// int MOV_data_addr_atR0 ( ) {  return 0;} 
-// int MOV_data_addr_atR1 ( ) {  return 0;} 	//0x87
-// int MOV_data_addr_R0 ( ) {  return 0;} 	
-// int MOV_data_addr_R1 ( ) {  return 0;} 
-// int MOV_data_addr_R2 ( ) {  return 0;} 
-// int MOV_data_addr_R3 ( ) {  return 0;} 
-// int MOV_data_addr_R4 ( ) {  return 0;} 
-// int MOV_data_addr_R5 ( ) {  return 0;} 
-// int MOV_data_addr_R6 ( ) {  return 0;} 
-// int MOV_data_addr_R7 ( ) {  return 0;} 	//0x8F
-// int MOV_DPTR_data ( ) {  return 0;} 		//0x90
+
+
+int MOV_data_addr_data_addr ( ) {
+
+	uint8_t dest_addr = fetch ( );
+	uint8_t sour_addr = fetch ( );
+	int8_t data = *( (char*)&CPU_8051 + sour_addr );
+	*( (char*)&CPU_8051 + dest_addr ) = data;
+	return 1;
+
+}
+
+int MOV_data_addr_atR0 ( ) {
+
+	uint8_t dest_addr = fetch ( );
+	uint8_t sour_addr = CPU_8051.REGISTERS[BANK].R0;
+	int8_t data = *( (char*)&CPU_8051 + sour_addr );
+	*( (char*)&CPU_8051 + dest_addr ) = data;
+	return 1;
+
+}
+
+// 0x87
+int MOV_data_addr_atR1 ( ) {
+
+	uint8_t dest_addr = fetch ( );
+	uint8_t sour_addr = CPU_8051.REGISTERS[BANK].R1;
+	int8_t data = *( (char*)&CPU_8051 + sour_addr );
+	*( (char*)&CPU_8051 + dest_addr ) = data;
+	return 1;
+
+}
+
+int MOV_data_addr_R0 ( ) {
+
+	uint8_t dest_addr = fetch ( );
+	int8_t data = CPU_8051.REGISTERS[BANK].R0;
+	*( (char*)&CPU_8051 + dest_addr ) = data;
+	return 1;
+
+}
+
+int MOV_data_addr_R1 ( ) {
+
+	uint8_t dest_addr = fetch ( );
+	int8_t data = CPU_8051.REGISTERS[BANK].R1;
+	*( (char*)&CPU_8051 + dest_addr ) = data;
+	return 1;
+
+}
+
+int MOV_data_addr_R2 ( ) {
+
+	uint8_t dest_addr = fetch ( );
+	int8_t data = CPU_8051.REGISTERS[BANK].R2;
+	*( (char*)&CPU_8051 + dest_addr ) = data;
+	return 1;
+
+}
+
+int MOV_data_addr_R3 ( ) {
+
+	uint8_t dest_addr = fetch ( );
+	int8_t data = CPU_8051.REGISTERS[BANK].R3;
+	*( (char*)&CPU_8051 + dest_addr ) = data;
+	return 1;
+
+}
+
+int MOV_data_addr_R4 ( ) {
+
+	uint8_t dest_addr = fetch ( );
+	int8_t data = CPU_8051.REGISTERS[BANK].R4;
+	*( (char*)&CPU_8051 + dest_addr ) = data;
+	return 1;
+
+}
+
+int MOV_data_addr_R5 ( ) {
+
+	uint8_t dest_addr = fetch ( );
+	int8_t data = CPU_8051.REGISTERS[BANK].R5;
+	*( (char*)&CPU_8051 + dest_addr ) = data;
+	return 1;
+
+}
+
+int MOV_data_addr_R6 ( ) {
+
+	uint8_t dest_addr = fetch ( );
+	int8_t data = CPU_8051.REGISTERS[BANK].R6;
+	*( (char*)&CPU_8051 + dest_addr ) = data;
+	return 1;
+
+}
+
+//0x8F
+int MOV_data_addr_R7 ( ) {
+
+	uint8_t dest_addr = fetch ( );
+	int8_t data = CPU_8051.REGISTERS[BANK].R0;
+	*( (char*)&CPU_8051 + dest_addr ) = data;
+	return 1;
+
+}
+
+// 0x90
+int MOV_DPTR_data ( ) {
+
+	CPU_8051.SFR[DPH] = fetch ( );
+	CPU_8051.SFR[DPL] = fetch ( );
+	return 1;
+
+}
 
 // 0x91
 int ACALL_0x91 ( ) {
@@ -1416,8 +1596,17 @@ int ACALL_0x91 ( ) {
 	return 1; 
 	
 }
+
 // int MOV_bit_C ( ) {  return 0;} 
-// int MOVC_A_dptr ( ) {  return 0;} 
+
+int MOVC_A_dptr ( ) {
+
+	uint16_t addr = ( (CPU_8051.SFR[DPH] << 8) | CPU_8051.SFR[DPL] );
+	addr += CPU_8051.SFR[ACC];
+	CPU_8051.SFR[ACC] = CPU_8051.Code_Memory[addr];
+	return 1;
+
+}
 // int SUBB_A_data ( ) {  return 0;} 
 // int SUBB_A_data_addr ( ) {  return 0;} 
 // int SUBB_A_atR0 ( ) {  return 0;} 
@@ -1438,20 +1627,99 @@ int AJMP_0xA1 ( ) {
 	CPU_8051.PC = ( ( CPU_8051.PC & 0xF800) | (0xA1 & 0x70) ) | low_add_byte;
 	return 1;
 }
+
 // int MOV_C ( ) {  return 0;} 
 // int INC_dptr ( ) {  return 0;} 
 // int MUL ( ) {  return 0;} 
 //reserved
-// int MOV_atR0_data_addr ( ) {  return 0;} 
-// int MOV_atR1_data_addr ( ) {  return 0;} 	//0xA7
-// int MOV_R0_data_addr ( ) {  return 0;} 
-// int MOV_R1_data_addr ( ) {  return 0;} 
-// int MOV_R2_data_addr ( ) {  return 0;} 
-// int MOV_R3_data_addr ( ) {  return 0;} 
-// int MOV_R4_data_addr ( ) {  return 0;} 
-// int MOV_R5_data_addr ( ) {  return 0;} 
-// int MOV_R6_data_addr ( ) {  return 0;} 
-// int MOV_R7_data_addr ( ) {  return 0;} 		//0xAF
+
+int MOV_atR0_data_addr ( ) {
+
+	uint8_t dest_addr = CPU_8051.REGISTERS[BANK].R0;
+	uint8_t sour_addr = fetch ( );
+
+	*( (char*)&CPU_8051 + dest_addr) = *( (char*)&CPU_8051 + sour_addr );
+	return 1;
+
+}
+
+// 0xA7
+int MOV_atR1_data_addr ( ) {
+
+	uint8_t dest_addr = CPU_8051.REGISTERS[BANK].R1;
+	uint8_t sour_addr = fetch ( );
+
+	*( (char*)&CPU_8051 + dest_addr) = *( (char*)&CPU_8051 + sour_addr );
+	return 1;
+
+}
+
+int MOV_R0_data_addr ( ) {
+	
+	uint8_t sour_addr = fetch ( );
+	CPU_8051.REGISTERS[BANK].R0 = *( (char*)&CPU_8051 + sour_addr );
+	return 1;
+
+}
+
+int MOV_R1_data_addr ( ) {
+	
+	uint8_t sour_addr = fetch ( );
+	CPU_8051.REGISTERS[BANK].R1 = *( (char*)&CPU_8051 + sour_addr );
+	return 1;
+	
+}
+
+int MOV_R2_data_addr ( ) {
+	
+	uint8_t sour_addr = fetch ( );
+	CPU_8051.REGISTERS[BANK].R2 = *( (char*)&CPU_8051 + sour_addr );
+	return 1;
+	
+}
+
+int MOV_R3_data_addr ( ) {
+	
+	uint8_t sour_addr = fetch ( );
+	CPU_8051.REGISTERS[BANK].R3 = *( (char*)&CPU_8051 + sour_addr );
+	return 1;
+	
+}
+
+int MOV_R4_data_addr ( ) {
+	
+	uint8_t sour_addr = fetch ( );
+	CPU_8051.REGISTERS[BANK].R4 = *( (char*)&CPU_8051 + sour_addr );
+	return 1;
+	
+}
+
+int MOV_R5_data_addr ( ) {
+	
+	uint8_t sour_addr = fetch ( );
+	CPU_8051.REGISTERS[BANK].R5 = *( (char*)&CPU_8051 + sour_addr );
+	return 1;
+	
+}
+
+int MOV_R6_data_addr ( ) {
+	
+	uint8_t sour_addr = fetch ( );
+	CPU_8051.REGISTERS[BANK].R6 = *( (char*)&CPU_8051 + sour_addr );
+	return 1;
+	
+}
+
+// 0xAF
+int MOV_R7_data_addr ( ) {
+	
+	uint8_t sour_addr = fetch ( );
+	CPU_8051.REGISTERS[BANK].R7 = *( (char*)&CPU_8051 + sour_addr );
+	return 1;
+	
+}
+
+
 // int ANL_C_0xB0 ( ) {  return 0;} 			//0xB0
 
 //0xB1
@@ -1467,8 +1735,20 @@ int ACALL_0xB1 ( ){
 	return 1; 
 	
 }
-// int CPL ();
-// int CPL_C ();
+
+int CPL ( ) {
+
+	CPU_8051.SFR[ACC] ^= 0xFF;
+	return 1;
+
+}
+
+int CPL_C ( ) {
+
+	CPU_8051.SFR[ACC] ^= CY;
+	return 1;
+	
+}
 // int CJNE_A_data_codeaddr ( ) {  return 0;} 
 // int CJNE_A_data_addr_codeaddr ( ) {  return 0;} 
 // int CJNE_atR0_data_codeaddr ( ) {  return 0;} 
@@ -1491,8 +1771,16 @@ int AJMP_0xC1 ( ) {
 	CPU_8051.PC = ( ( CPU_8051.PC & 0xF800) | (0xC1 & 0x70) ) | low_add_byte;
 	return 1;
 }
+
+// clear particular bit, like P1.0
 // int CLR ( ) {  return 0;} 
-// int CLR_C ();
+
+int CLR_C ( ) {
+	
+	CPU_8051.SFR[PSW] &= ~(CY);
+	return 1;
+
+}
 
 /** 0xC4
  * SWap, will swap the nibbles of the accumulator
@@ -1504,9 +1792,37 @@ int SWAP ( ) {
 	return 1;
 
 }
-// int XCH_A_dataaddr ( ) {  return 0;} 
-// int XCH_A_at_R0 ( ) {  return 0;} 
-// int XCH_A_at_R1 ( ) {  return 0;} 		//0xC7
+
+int XCH_A_dataaddr ( ) {
+	
+	uint8_t addr = fetch ( );
+	int8_t tmp = CPU_8051.SFR[ACC];
+	CPU_8051.SFR[ACC] = *( (char*)&CPU_8051 + addr );
+	*( (char*)&CPU_8051 + addr ) = tmp;
+	return 1;
+
+}
+
+int XCH_A_at_R0 ( ) {
+	
+	uint8_t addr = CPU_8051.REGISTERS[BANK].R0;
+	int8_t tmp = CPU_8051.SFR[ACC];
+	CPU_8051.SFR[ACC] = *( (char*)&CPU_8051 + addr );
+	*( (char*)&CPU_8051 + addr ) = tmp;
+	return 1;
+	
+}
+
+// 0xC7
+int XCH_A_at_R1 ( ) {
+	
+	uint8_t addr = CPU_8051.REGISTERS[BANK].R1;
+	int8_t tmp = CPU_8051.SFR[ACC];
+	CPU_8051.SFR[ACC] = *( (char*)&CPU_8051 + addr );
+	*( (char*)&CPU_8051 + addr ) = tmp;
+	return 1;
+	
+}
 
 /** XCH : Xchange A contant with R0 content
  * 1 byte instruction
@@ -1621,8 +1937,12 @@ int AJMP_0xE1 ( ) {
 	CPU_8051.PC = ( ( CPU_8051.PC & 0xF800) | (0xE1 & 0x70) ) | low_add_byte;
 	return 1;
 }
+
+
 // int MOVX_A_at_R0 ( ) {  return 0;} 
 // int MOVX_A_at_R1 ( ) {  return 0;} 
+
+
 /** 0xE4
  * clear Acc
  */
@@ -1632,9 +1952,33 @@ int CLR_A () {
 	return 1;
 
 }
-// int MOV_A_dataaddr ();
-// int MOV_A_at_R0 ( ) {  return 0;} 
-// int MOV_A_at_R1 ( ) {  return 0;} 		//0xE7
+
+
+int MOV_A_dataaddr ( ) {
+	
+	uint8_t addr = fetch ( );
+	CPU_8051.SFR[ACC] = *( (char*)&CPU_8051 + addr);
+	return 1;
+
+}
+
+int MOV_A_at_R0 ( ) {
+
+	uint8_t addr = CPU_8051.REGISTERS[BANK].R0;
+	CPU_8051.SFR[ACC] = *( (char*)&CPU_8051 + addr );
+	return 1;
+
+}
+
+// 0xE7
+int MOV_A_at_R1 ( ) {
+
+	uint8_t addr = CPU_8051.REGISTERS[BANK].R1;
+	CPU_8051.SFR[ACC] = *( (char*)&CPU_8051 + addr );
+	return 1;
+	
+}
+
 /** 0xE8
  * MOV A, R0
  */
@@ -1694,10 +2038,15 @@ int MOV_A_R7 ( ) {
 	return 1;
 	
 }
+// 0xF0
+int MOVX_at_DPTR_A ( ) {
 
-// int MOVX_at_DPTR_A ( ) {  return 0;} 		//0xF0
+	uint16_t addr = (CPU_8051.SFR[DPH] << 8) | CPU_8051.SFR[DPL];
+	CPU_8051.Code_Memory[addr] = CPU_8051.SFR[ACC];
+	return 1;
+
+}
 //0xF1
-
 int ACALL_0xF1 ( ) {
 
 	uint16_t push_addr = CPU_8051.PC + 2;
@@ -1710,8 +2059,22 @@ int ACALL_0xF1 ( ) {
 	return 1; 
 	
 }
-// int MOVX_at_R0_A ( ) {  return 0;} 
-// int MOVX_at_R1_A ( ) {  return 0;} 
+int MOVX_at_R0_A ( ) {
+
+	uint8_t addr = CPU_8051.REGISTERS[BANK].R0;
+	*( (char*)&CPU_8051 + addr ) = CPU_8051.SFR[ACC];
+	return 1;
+
+}
+
+int MOVX_at_R1_A ( ) {
+
+	uint8_t addr = CPU_8051.REGISTERS[BANK].R1;
+	*( (char*)&CPU_8051 + addr ) = CPU_8051.SFR[ACC];
+	return 1;
+	
+}
+
 /** 0xF4
  * CPL A : Complement A
  */
