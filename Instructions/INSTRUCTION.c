@@ -256,6 +256,53 @@ int8_t addc (int8_t op1, int8_t op2) {
 }
 
 
+int8_t subb ( int8_t op1, int8_t op2) {
+
+	char b, ov, aux, tmp, result;
+	ov = aux = result = tmp = 0;
+	b = (CPU_8051.SFR[PSW] & CY )? 1 : 0;
+
+	// doing binary addition
+	for ( int i = 0; i < 8; i++, tmp = 0) {
+
+		tmp = b - (( (op1 & (1 << i)) - ( op2 & (1 << i))) >> i);
+		
+		switch (tmp)
+		{	
+		case 0:
+			b = 0;
+			break;
+		
+		case -1:
+			b = 1;
+			break;
+		
+		case 1:
+			b = 0;
+			result |= (1 << i);
+			break;
+		
+		default:
+			break;
+		}
+
+		if ( i == 4 && b == 1)	aux = 1;
+		if ( i == 6 && b == 1) ov = 1;
+	}
+
+	if ( ov != b)	ov = 1;
+	else ov = 0;
+
+	update_AC (aux);
+	update_CY (b);
+	update_OV (ov);
+	update_parity ( );
+	
+	return result;
+
+}
+
+
 void show_memory ( ) {
 	
 	char *pntr = &CPU_8051;
@@ -279,6 +326,19 @@ void show_memory ( ) {
 		}
 	}
 	printf ("\n");
+}
+
+/** will resolve the bit addresses,
+ * still need to be expaneded if register which are bit
+ * addressable are given,
+ * right now works only for bit addressable area of CPU
+ */
+int resolve_bit_addr (uint8_t bit_addr) {
+	uint8_t byte = CPU_8051.Bit_Addressable[bit_addr / 8];
+	uint8_t bit = byte & ( 1 < ((bit_addr % 8) + 1) );
+
+	if (bit) return 1;
+	else return 0;
 }
 
 
@@ -419,18 +479,6 @@ int INC_R7 ( ) {
 	return 1;
 }
 
-/** will resolve the bit addresses,
- * still need to be expaneded if register which are bit
- * addressable are given,
- * right now works only for bit addressable area of CPU
- */
-int resolve_bit_addr (uint8_t bit_addr) {
-	uint8_t byte = CPU_8051.Bit_Addressable[bit_addr / 8];
-	uint8_t bit = byte & ( 1 < ((bit_addr % 8) + 1) );
-
-	if (bit) return 1;
-	else return 0;
-}
 
 /** 
  * JBC : jump if bit is set and clear bit
@@ -595,7 +643,24 @@ int DEC_R7 ( ) {
 	return 1;	
 }
 
-// int JB ( ) {  return 0;} 		//0x20
+
+// 0x20
+/** jump if given bit given by address is set, 
+ * opcode bit_addr jump_addr
+ * jump addr = increment pc to next instruction + jump addr
+ */
+int JB ( ) {
+	
+	uint8_t addr = fetch ( );
+	int8_t jump_addr = fetch ( );
+	if (resolve_bit_addr (addr)) {
+		CPU_8051.PC += jump_addr + 1;
+		return 1;
+	}
+	else {
+		return 1;
+	}
+}
 
 //0x21
 int AJMP_0x21 ( ) { 
@@ -652,8 +717,6 @@ int ADD_data ( ) {
 
 	return 1;
 }
-
-/** program after stack instructions */
 
 int ADD_data_addr ( ) {
 	
@@ -806,8 +869,18 @@ int ACALL_0x31 ( ) {
 
 /** 0x40
  * RETI : Return from Interrupt
+ * REstoring the previous interrupt mask part is yet to 
+ * program
  */
-//int RETI ( ) {  return 0;} 
+int RETI ( ) {
+
+	uint8_t high_addr = POP ( );
+	uint8_t low_addr = pop ( );
+
+	CPU_8051.PC = ((high_addr << 8) | low_addr );
+	return 1;
+
+}
 
 
 /** 0x41
@@ -940,8 +1013,20 @@ int ADDC_R7 ( ) {
 	CPU_8051.SFR[ACC] = addc ( CPU_8051.SFR[ACC], data);
 	return 1;
 
-} 
-// int JC ( ) {  return 0;} 		//0x40
+}
+
+/** 0x40
+ * jump if carry
+ */
+int JC ( ) {
+
+	int8_t addr = fetch ( );
+	if ( (CPU_8051.SFR[PSW] & CY) ) {
+		CPU_8051.PC += addr;
+	}
+	return 1;
+
+}
 
 //0x41
 int AJMP_0x41 ( ){ 
@@ -1055,7 +1140,20 @@ int ORL_R7 ( ) {
 	CPU_8051.SFR[ACC] |= CPU_8051.REGISTERS[BANK].R7;
 	return 1;
 } 
-// int JNC ( ) {  return 0;} 		//0x50
+
+// 0x50
+/** jump is carry not set
+ */
+int JNC ( ) { 
+
+	int8_t addr = fetch ( );
+	if ( CPU_8051.SFR[PSW] & CY) {
+		return 1;
+	}
+	else {
+		CPU_8051.PC += addr + 1;	
+	}
+}
 
 //0x51
 int ACALL_0x51 ( ) {
@@ -1186,8 +1284,16 @@ int ANL_R7 ( ) {
 	return 1;
 
 }  
+/** 0x60
+ * jump is accumulator is zero
+ */
+int JZ ( ) {
 
-// int JZ ( ) {  return 0;} 		//0x60
+	int8_t addr = fetch ( );
+	if (!CPU_8051.SFR[ACC]) CPU_8051.PC += addr;
+	return 1;
+
+}
 
 //0x61
 int AJMP_0x61 ( ) { 
@@ -1315,7 +1421,19 @@ int XRL_R7 ( ) {
 
 }   
 
-// int JNZ ( ) {  return 0;} 		//0x70
+/** 0x70
+ * jump if accumulator is not zero
+ */
+
+int JNZ ( ) {
+
+	int8_t addr = fetch ( );
+	if (ACC) {
+		CPU_8051.PC += addr;
+	}
+	return 1;
+
+}
 
 //0x71
 int ACALL_0x71 ( ) {
@@ -1331,8 +1449,25 @@ int ACALL_0x71 ( ) {
 	
 }
 
-//int ORL_C_0x72 ( ) {  return 0;} 
-// int JMP_at_A_DPTR ( ) {  return 0;} 
+// 0x72
+int ORL_C_0x72 ( ) {
+
+	int8_t val = CPU_8051.SFR[PSW];
+	val &= CY;
+	if (val) CPU_8051.SFR[PSW] |= CY;
+	return 1;
+
+}
+
+//0x73
+int JMP_at_A_DPTR ( ) {
+
+	uint16_t dptr_data = ( (CPU_8051.SFR[DPH] << 8) | CPU_8051.SFR[DPL] );
+	dptr_data += CPU_8051.SFR[ACC];
+	CPU_8051.PC = dptr_data;
+	return 1;
+
+}
 
 /** 0x74
  * MOV A, #data;
@@ -1452,7 +1587,19 @@ int AJMP_0x81 ( ) {
 	return 1;
 }		
 
-// int ANL_C_0x82 ( ) {  return 0;} 
+/** 
+ * ANL C, Bit addr
+ */
+int ANL_C_0x82 ( ) {
+
+	uint8_t addr = fetch ( );
+	if (!resolve_bit_addr (addr)) {
+		CPU_8051.SFR[PSW] &= ~(CY);
+	}
+	return 1;
+
+}
+
 /**
  * MOVC A, @A+PC
  * mov code byte
@@ -1467,7 +1614,32 @@ int MOVC ( ) {
 
 }
 
-// int DIV ( ) {  return 0;} 
+/**
+ * DIV AB
+ * quotient : A
+ * remainder : B
+ * 
+ * OV and CY flags are cleared
+ * if B == 0, OV = 1, CY = 0
+ */
+int DIV ( ) {
+	
+	// check if B == 0
+	if (CPU_8051.SFR[B] == 0) {
+		
+		CPU_8051.SFR[PSW] |= (OV);
+		CPU_8051.SFR[PSW] &= ~(CY);
+		return 1;
+	}
+
+	uint8_t quotient, remainder;
+	quotient = CPU_8051.SFR[ACC] / CPU_8051.SFR[B];
+	remainder = CPU_8051.SFR[ACC] % CPU_8051.SFR[B];
+	CPU_8051.SFR[ACC] = quotient;
+	CPU_8051.SFR[B] = remainder;
+	return 1;
+
+}
 
 
 int MOV_data_addr_data_addr ( ) {
@@ -1597,7 +1769,27 @@ int ACALL_0x91 ( ) {
 	
 }
 
-// int MOV_bit_C ( ) {  return 0;} 
+/** 
+ * MOV bit_addr, C
+ */
+int MOV_bit_C ( ) {  
+
+	uint8_t addr = fetch ( );
+	uint8_t byte_addr = addr / 8;
+
+	if ( CPU_8051.SFR[PSW] & CY ) {
+			
+		CPU_8051.Bit_Addressable[byte_addr] |= (1 << ((addr % 8) + 1) );
+	
+	}
+	else {
+		
+		CPU_8051.Bit_Addressable[byte_addr] &= ~(1 << ((addr % 8) + 1) );
+
+	}
+
+	return 1;
+} 
 
 int MOVC_A_dptr ( ) {
 
@@ -1607,19 +1799,132 @@ int MOVC_A_dptr ( ) {
 	return 1;
 
 }
-// int SUBB_A_data ( ) {  return 0;} 
-// int SUBB_A_data_addr ( ) {  return 0;} 
-// int SUBB_A_atR0 ( ) {  return 0;} 
-// int SUBB_A_atR1 ( ) {  return 0;} 		//0x97
-// int SUBB_R0 ( ) {  return 0;} 
-// int SUBB_R1 ( ) {  return 0;} 
-// int SUBB_R2 ( ) {  return 0;} 
-// int SUBB_R3 ( ) {  return 0;} 
-// int SUBB_R4 ( ) {  return 0;} 
-// int SUBB_R5 ( ) {  return 0;} 
-// int SUBB_R6 ( ) {  return 0;}    
-// int SUBB_R7 ( ) {  return 0;} 		//0x9F
-// int ORL_C_0xA0 ( ) {  return 0;} 			//0xA0
+// SUBB A, #data
+int SUBB_A_data ( ) {
+
+	int8_t data = fetch ( );
+	CPU_8051.SFR[ACC] = subb (CPU_8051.SFR[ACC], data);
+	return 1;
+
+} 
+
+// SUBB A, @data_addr
+int SUBB_A_data_addr ( ) {  
+	
+	uint8_t addr = fetch ( );
+	int8_t data = *( (char*)&CPU_8051 + addr );
+	CPU_8051.SFR[ACC] = subb (CPU_8051.SFR[ACC], data);
+	return 1;
+
+} 
+
+// SUBB A, @R0
+int SUBB_A_atR0 ( ) {  
+	
+	uint8_t addr = CPU_8051.REGISTERS[BANK].R0;
+	int8_t data = *( (char*)&CPU_8051 + addr );
+	CPU_8051.SFR[ACC] = subb (CPU_8051.SFR[ACC], data);
+	return 1;
+ 
+} 
+
+//0x97
+// SUBB A, @R1
+int SUBB_A_atR1 ( ) {
+ 
+	uint8_t addr = CPU_8051.REGISTERS[BANK].R0;
+	int8_t data = *( (char*)&CPU_8051 + addr );
+	CPU_8051.SFR[ACC] = subb (CPU_8051.SFR[ACC], data);
+	return 1;
+  
+}
+
+// SUBB A, R0
+int SUBB_R0 ( ) {  
+	
+	int8_t data = CPU_8051.REGISTERS[BANK].R0;
+	CPU_8051.SFR[ACC] = subb (CPU_8051.SFR[ACC], data);
+	return 1;
+} 
+
+// SUBB A, R1
+int SUBB_R1 ( ) {  
+  	
+	int8_t data = CPU_8051.REGISTERS[BANK].R1;
+	CPU_8051.SFR[ACC] = subb (CPU_8051.SFR[ACC], data);
+	return 1;
+
+}
+
+// SUBB A, R2
+int SUBB_R2 ( ) {  
+	
+	int8_t data = CPU_8051.REGISTERS[BANK].R2;
+	CPU_8051.SFR[ACC] = subb (CPU_8051.SFR[ACC], data);
+	return 1;
+
+} 
+
+// SUBB A, R3
+int SUBB_R3 ( ) {  
+	
+	int8_t data = CPU_8051.REGISTERS[BANK].R3;
+	CPU_8051.SFR[ACC] = subb (CPU_8051.SFR[ACC], data);
+	return 1;
+
+} 
+
+// SUBB A, R4
+int SUBB_R4 ( ) {  
+	
+	int8_t data = CPU_8051.REGISTERS[BANK].R4;
+	CPU_8051.SFR[ACC] = subb (CPU_8051.SFR[ACC], data);
+	return 1;
+}
+
+// SUBB A, R5
+int SUBB_R5 ( ) {  
+	
+	int8_t data = CPU_8051.REGISTERS[BANK].R5;
+	CPU_8051.SFR[ACC] = subb (CPU_8051.SFR[ACC], data);
+	return 1;
+
+}
+
+// SUBB A, R6
+int SUBB_R6 ( ) {  
+	
+	int8_t data = CPU_8051.REGISTERS[BANK].R6;
+	CPU_8051.SFR[ACC] = subb (CPU_8051.SFR[ACC], data);
+	return 1;
+
+}     
+
+// 0x9F
+// SUBB A, R7
+int SUBB_R7 ( ) {  
+	
+	int8_t data = CPU_8051.REGISTERS[BANK].R7;
+	CPU_8051.SFR[ACC] = subb (CPU_8051.SFR[ACC], data);
+	return 1;
+
+} 
+
+// 0xA0
+// ORL C, bit_addr
+int ORL_C_0xA0 ( ) {
+
+	uint8_t addr = fetch ( );
+	if (resolve_bit_addr (addr)) {
+
+		CPU_8051.SFR[PSW] |= CY;
+	}
+	else {
+
+		CPU_8051.SFR[PSW] &= (~CY);
+	}
+	return 1;
+}
 
 //0xA1
 int AJMP_0xA1 ( ) { 
@@ -1628,9 +1933,57 @@ int AJMP_0xA1 ( ) {
 	return 1;
 }
 
-// int MOV_C ( ) {  return 0;} 
-// int INC_dptr ( ) {  return 0;} 
-// int MUL ( ) {  return 0;} 
+// MOV C, bit_addr
+int MOV_C ( ) {  
+
+
+	uint8_t addr = fetch ( );
+	if (resolve_bit_addr (addr)) {
+
+		CPU_8051.SFR[PSW] |= CY;
+	}
+	else {
+
+		CPU_8051.SFR[PSW] &= (~CY);
+	}
+	return 1;
+	
+} 
+
+// INC DPTR
+int INC_dptr ( ) {
+
+	uint16_t dptr = ( (CPU_8051.SFR[DPH] << 8) | CPU_8051.SFR[DPL] );
+	dptr++;
+	CPU_8051.SFR[DPH] = dptr >> 8;
+	CPU_8051.SFR[DPL] = dptr & 0x00FF;
+	return 1;
+
+} 
+
+// MUL AB
+/** 
+ * multiplies unsigned values in ACC and B,
+ * higher byte of 16 bit result -> B
+ * lower byte of 16 bit result -> ACC
+ * if result > 255, ov = 1
+ * else ov = 0
+ * carry always cleared 
+ */
+int MUL ( ) {  
+	
+	uint16_t result = CPU_8051.SFR[ACC] * CPU_8051.SFR[B];
+	if (result > 255) CPU_8051.SFR[PSW] |= OV;
+	else  CPU_8051.SFR[PSW] &= ~OV;
+
+	CPU_8051.SFR[ACC] = result & 0x00FF;
+	CPU_8051.SFR[B] = result >> 8;
+
+	CPU_8051.SFR[PSW] &= ~CY;
+
+	return 1;
+
+} 
 //reserved
 
 int MOV_atR0_data_addr ( ) {
@@ -1747,7 +2100,7 @@ int CPL_C ( ) {
 
 	CPU_8051.SFR[ACC] ^= CY;
 	return 1;
-	
+
 }
 // int CJNE_A_data_codeaddr ( ) {  return 0;} 
 // int CJNE_A_data_addr_codeaddr ( ) {  return 0;} 
@@ -1761,9 +2114,7 @@ int CPL_C ( ) {
 // int CJNE_R5 ( ) {  return 0;} 
 // int CJNE_R6 ( ) {  return 0;} 
 // int CJNE_R7 ( ) {  return 0;} 		//0xBF
-// int PUSH (int8_t data) {
-// 	return 0;
-// }			
+// int PUSH (int8_t data) // declared above
 
 //0xC1
 int AJMP_0xC1 ( ) { 
@@ -1900,7 +2251,8 @@ int XCH_A_R7 ( ) {
 	
 } 
 
-// int POP ( ) {  return 0;} 			//0xD0
+// int POP ( )  declard above
+
 //0xD1
 int ACALL_0xD1 ( ) {
 
@@ -1915,8 +2267,23 @@ int ACALL_0xD1 ( ) {
 	
 }
 
-// int SETB ( ) {  return 0;} 
-// int SETB_C ( ) {  return 0;} 
+
+// need to be checked
+int SETB ( ) {
+
+	uint8_t addr = fetch ( );
+	int8_t data = CPU_8051.Bit_Addressable[addr/8];
+	data |= ( 1 << ((addr % 8) + 1) );
+	return 1;
+	
+}
+
+int SETB_C ( ) {
+
+	CPU_8051.SFR[PSW] |= CY;
+	return 1;
+
+}
 // int DA ( ) {  return 0;} 
 // int DJNZ ( ) {  return 0;} 
 // int XCHD_A_at_R0 ( ) {  return 0;} 
@@ -1938,7 +2305,8 @@ int AJMP_0xE1 ( ) {
 	return 1;
 }
 
-
+/** required port programming 
+ */
 // int MOVX_A_at_R0 ( ) {  return 0;} 
 // int MOVX_A_at_R1 ( ) {  return 0;} 
 
@@ -2046,6 +2414,7 @@ int MOVX_at_DPTR_A ( ) {
 	return 1;
 
 }
+
 //0xF1
 int ACALL_0xF1 ( ) {
 
@@ -2085,9 +2454,30 @@ int CPL_A ( ) {
 
 }
 
-// int MOV_data_addr_A ( ) {  return 0;} 
-// int MOV_at_R0_A ( ) {  return 0;} 
-// int MOV_at_R1_A ( ) {  return 0;} 		//0xF7
+int MOV_data_addr_A ( ) {
+
+	uint8_t addr = fetch ( );
+	*( (char*)&CPU_8051 + addr ) = CPU_8051.SFR[ACC];
+	return 1;
+
+} 
+
+int MOV_at_R0_A ( ) {
+
+	uint8_t addr = CPU_8051.REGISTERS[BANK].R0;
+	*( (char*)&CPU_8051 + addr ) = CPU_8051.SFR[ACC];
+	return 1;
+
+}  
+
+// 0xF7
+int MOV_at_R1_A ( ) {
+
+	uint8_t addr = CPU_8051.REGISTERS[BANK].R1;
+	*( (char*)&CPU_8051 + addr ) = CPU_8051.SFR[ACC];
+	return 1;
+
+}  
 
 int MOV_R0_A ( ) {
 
