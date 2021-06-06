@@ -2463,19 +2463,184 @@ int SETB_C ( ) {
 	return 1;
 
 }
-// int DA ( ) {  return 0;} 
-// int DJNZ ( ) {  return 0;} 
-// int XCHD_A_at_R0 ( ) {  return 0;} 
-// int XCHD_A_at_R1 ( ) {  return 0;} 		//0xD7
-// int DJNZ_R0 ( ) {  return 0;} 	
-// int DJNZ_R1 ( ) {  return 0;} 
-// int DJNZ_R2 ( ) {  return 0;} 
-// int DJNZ_R3 ( ) {  return 0;} 
-// int DJNZ_R4 ( ) {  return 0;} 
-// int DJNZ_R5 ( ) {  return 0;} 
-// int DJNZ_R6 ( ) {  return 0;} 
-// int DJNZ_R7 ( ) {  return 0;} 		//0xDF
-// int MOVX_at_DPTR ( ) {  return 0;} 		//0xE0
+
+// DA A 
+
+// doubtful
+int DA ( ) {  
+
+	int8_t data = CPU_8051.SFR[ACC];
+	int8_t tmp;
+	
+	// checking lower nibble
+	if ( ((data & 0x0F) > 9) | (CPU_8051.SFR[PSW] & AC)) {
+		
+		tmp = data >> 4;
+		data += 0x06;
+		
+		if ( (data >> 4) - tmp > 1) // there is aux carry
+		{
+			CPU_8051.SFR[PSW] |= CY;
+		}
+
+		CPU_8051.SFR[ACC] |= (0x0F & data);
+
+		if ( (CPU_8051.SFR[PSW] & CY) | ((data >> 4) > 9) ) {
+			 
+			data = addc (data, 0x60);
+			CPU_8051.SFR[ACC] |= (0xF0 & data);
+		}
+	}
+	return 1;
+} 
+
+// DJNZ byte_addr, relative offset
+int DJNZ ( ) {
+
+	uint8_t addr = fetch ( );
+	int8_t displacement = fetch ( );
+
+	int8_t data = *( (char*)&CPU_8051 + addr);
+	data -= 1;
+	if (data == 0) // branch 
+	{
+		CPU_8051.PC += displacement;
+	}
+	*( (char*)&CPU_8051 + addr) = data;
+	return 1;
+}
+
+/** XCHD A, @R0
+ * xchange digit 
+ * exchanges lower order nibble with that RAM location specified
+ */
+int XCHD_A_at_R0 ( ) {
+
+	uint8_t addr = CPU_8051.REGISTERS[BANK].R0;
+	int8_t data = *( (char*)&CPU_8051 + addr);
+	int8_t tmp = CPU_8051.SFR[ACC];
+	CPU_8051.SFR[ACC] = (CPU_8051.SFR[ACC] & 0xF0) | (0x0F & data);
+	data = ( data & 0xF0) | (tmp & 0x0F);
+	*( (char*)&CPU_8051 + addr) = data;
+	return 1;
+
+}
+
+// 0xD7
+// XCHD A, @R1
+int XCHD_A_at_R1 ( ) {
+
+	uint8_t addr = CPU_8051.REGISTERS[BANK].R1;
+	int8_t data = *( (char*)&CPU_8051 + addr);
+	int8_t tmp = CPU_8051.SFR[ACC];
+	CPU_8051.SFR[ACC] = (CPU_8051.SFR[ACC] & 0xF0) | (0x0F & data);
+	data = ( data & 0xF0) | (tmp & 0x0F);
+	*( (char*)&CPU_8051 + addr) = data;
+	return 1;
+
+}
+
+// DJNZ, R0, diplacement
+int DJNZ_R0 ( ) {
+
+	int8_t displacement = fetch ( );
+	CPU_8051.REGISTERS[BANK].R0 -= 1;
+	if ( CPU_8051.REGISTERS[BANK].R0  == 0) //branch
+	{	
+		CPU_8051.PC += displacement;
+	}
+	return 1;
+}
+
+int DJNZ_R1 ( ) {
+
+	int8_t displacement = fetch ( );
+	CPU_8051.REGISTERS[BANK].R1 -= 1;
+	if ( CPU_8051.REGISTERS[BANK].R1  == 0) //branch
+	{	
+		CPU_8051.PC += displacement;
+	}
+	return 1;
+} 
+
+int DJNZ_R2 ( ) {
+
+	int8_t displacement = fetch ( );
+	CPU_8051.REGISTERS[BANK].R2 -= 1;
+	if ( CPU_8051.REGISTERS[BANK].R2  == 0) //branch
+	{	
+		CPU_8051.PC += displacement;
+	}
+	return 1;
+}
+
+int DJNZ_R3 ( ) {
+
+	int8_t displacement = fetch ( );
+	CPU_8051.REGISTERS[BANK].R3 -= 1;
+	if ( CPU_8051.REGISTERS[BANK].R3  == 0) //branch
+	{	
+		CPU_8051.PC += displacement;
+	}
+	return 1;
+}
+
+int DJNZ_R4 ( ) {
+
+	int8_t displacement = fetch ( );
+	CPU_8051.REGISTERS[BANK].R4 -= 1;
+	if ( CPU_8051.REGISTERS[BANK].R4  == 0) //branch
+	{	
+		CPU_8051.PC += displacement;
+	}
+	return 1;
+}
+
+int DJNZ_R5 ( ) {
+
+	int8_t displacement = fetch ( );
+	CPU_8051.REGISTERS[BANK].R5 -= 1;
+	if ( CPU_8051.REGISTERS[BANK].R5  == 0) //branch
+	{	
+		CPU_8051.PC += displacement;
+	}
+	return 1;
+
+}
+
+int DJNZ_R6 ( ) {
+
+	int8_t displacement = fetch ( );
+	CPU_8051.REGISTERS[BANK].R6 -= 1;
+	if ( CPU_8051.REGISTERS[BANK].R6  == 0) //branch
+	{	
+		CPU_8051.PC += displacement;
+	}
+	return 1;
+
+}
+
+// 0xDF
+int DJNZ_R7 ( ) {
+
+	int8_t displacement = fetch ( );
+	CPU_8051.REGISTERS[BANK].R7 -= 1;
+	if ( CPU_8051.REGISTERS[BANK].R7  == 0) //branch
+	{	
+		CPU_8051.PC += displacement;
+	}
+	return 1;
+}
+
+// 0xE0
+// MOVX A, @DPTR
+// doubtful
+int MOVX_at_DPTR ( ) {
+
+	uint16_t addr = (CPU_8051.SFR[DPH] << 8) | (CPU_8051.SFR[DPL]);
+	CPU_8051.SFR[ACC] = CPU_8051.Code_Memory[addr];
+	return 1;
+}
 
 //0xE1
 int AJMP_0xE1 ( ) { 
@@ -2485,9 +2650,25 @@ int AJMP_0xE1 ( ) {
 }
 
 /** required port programming 
+ * access external memory connected to R0
+ * here we assume we are addressing lower memory
  */
-// int MOVX_A_at_R0 ( ) {  return 0;} 
-// int MOVX_A_at_R1 ( ) {  return 0;} 
+// MOVX A, @R0
+int MOVX_A_at_R0 ( ) {
+
+	uint8_t addr = CPU_8051.REGISTERS[BANK].R0;
+	CPU_8051.SFR[ACC] = CPU_8051.Code_Memory[addr];
+	return 1;
+}
+
+// MOVX A, @R1
+int MOVX_A_at_R1 ( ) {
+
+	uint8_t addr = CPU_8051.REGISTERS[BANK].R1;
+	CPU_8051.SFR[ACC] = CPU_8051.Code_Memory[addr];
+	return 1;
+
+}
 
 
 /** 0xE4
