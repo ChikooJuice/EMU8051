@@ -2102,18 +2102,197 @@ int CPL_C ( ) {
 	return 1;
 
 }
-// int CJNE_A_data_codeaddr ( ) {  return 0;} 
-// int CJNE_A_data_addr_codeaddr ( ) {  return 0;} 
-// int CJNE_atR0_data_codeaddr ( ) {  return 0;} 
-// int CJNE_atR1_data_codeaddr ( ) {  return 0;} 	//0xB7
-// int CJNE_R0 ( ) {  return 0;} 
-// int CJNE_R1 ( ) {  return 0;} 
-// int CJNE_R2 ( ) {  return 0;} 
-// int CJNE_R3 ( ) {  return 0;} 
-// int CJNE_R4 ( ) {  return 0;} 
-// int CJNE_R5 ( ) {  return 0;} 
-// int CJNE_R6 ( ) {  return 0;} 
-// int CJNE_R7 ( ) {  return 0;} 		//0xBF
+
+/** CJNE : Compare and Jump if Not Equal
+ * branch destination = PC + signed value of last byte after incrementing
+ * pc to next instruction
+ * if destination < src, carry is set otherwise not set. not other flag are affected
+ */
+
+// CJNE A, #data, code_addr
+int CJNE_A_data_codeaddr ( ) { 
+
+	int8_t data = fetch ( );
+	int8_t displacement =  fetch ( );
+	
+	if (CPU_8051.SFR[ACC] == data ) {
+		// jump
+		CPU_8051.PC += displacement;
+		if (data < CPU_8051.SFR[ACC]) CPU_8051.SFR[PSW] |= CY;
+	}
+	return 1;
+
+} 
+
+//	CJNE A, data_addr, code_addr 
+int CJNE_A_data_addr_codeaddr ( ) { 
+
+	uint8_t addr = fetch ( );
+	int8_t data = *( (char*)&CPU_8051 + addr);
+	int8_t displacement =  fetch ( );
+	
+	if (CPU_8051.SFR[ACC] == data ) {
+		// jump
+		CPU_8051.PC += displacement;
+		if (data < CPU_8051.SFR[ACC]) CPU_8051.SFR[PSW] |= CY;
+	}
+	return 1;
+
+} 
+
+// CJNE A, @R0, code addr
+int CJNE_atR0_data_codeaddr ( ) { 
+
+	int8_t addr = CPU_8051.REGISTERS[BANK].R0;
+	int8_t data = *( (char*)&CPU_8051 + addr);
+	int8_t displacement =  fetch ( );
+	
+	if (CPU_8051.SFR[ACC] == data ) {
+		// jump
+		CPU_8051.PC += displacement;
+		if (data < CPU_8051.SFR[ACC]) CPU_8051.SFR[PSW] |= CY;
+	}
+	return 1;
+
+} 
+
+// CJNE A, @R1, code addr 
+int CJNE_atR1_data_codeaddr ( ) { 
+
+	int8_t addr = CPU_8051.REGISTERS[BANK].R1;
+	int8_t data = *( (char*)&CPU_8051 + addr);
+	int8_t displacement =  fetch ( );
+	
+	if (CPU_8051.SFR[ACC] == data ) {
+		// jump
+		CPU_8051.PC += displacement;
+		if (data < CPU_8051.SFR[ACC]) CPU_8051.SFR[PSW] |= CY;
+	}
+	return 1;
+
+} 
+
+// CJNE A, R0, codeaddr
+int CJNE_R0 ( ) { 
+
+	int8_t data = CPU_8051.REGISTERS[BANK].R0;
+	int8_t displacement =  fetch ( );
+	
+	if (CPU_8051.SFR[ACC] == data ) {
+		// jump
+		CPU_8051.PC += displacement;
+		if (data < CPU_8051.SFR[ACC]) CPU_8051.SFR[PSW] |= CY;
+	}
+	return 1;
+
+} 
+
+// CJNE A, R1, displacement
+int CJNE_R1 ( ) { 
+
+	int8_t data = CPU_8051.REGISTERS[BANK].R1;
+	int8_t displacement =  fetch ( );
+	
+	if (CPU_8051.SFR[ACC] == data ) {
+		// jump
+		CPU_8051.PC += displacement;
+		if (data < CPU_8051.SFR[ACC]) CPU_8051.SFR[PSW] |= CY;
+	}
+	return 1;
+
+} 
+
+// CJNE A, R2, displacement
+int CJNE_R2 ( ) { 
+
+	int8_t data = CPU_8051.REGISTERS[BANK].R2;
+	int8_t displacement =  fetch ( );
+	
+	if (CPU_8051.SFR[ACC] == data ) {
+		// jump
+		CPU_8051.PC += displacement;
+		if (data < CPU_8051.SFR[ACC]) CPU_8051.SFR[PSW] |= CY;
+	}
+	return 1;
+
+} 
+ 
+// CJNE A, R3, displacement
+int CJNE_R3 ( ) { 
+
+	int8_t data = CPU_8051.REGISTERS[BANK].R3;
+	int8_t displacement =  fetch ( );
+	
+	if (CPU_8051.SFR[ACC] == data ) {
+		// jump
+		CPU_8051.PC += displacement;
+		if (data < CPU_8051.SFR[ACC]) CPU_8051.SFR[PSW] |= CY;
+	}
+	return 1;
+
+} 
+ 
+// CJNE A, R4, displacement
+int CJNE_R4 ( ) { 
+
+	int8_t data = CPU_8051.REGISTERS[BANK].R4;
+	int8_t displacement =  fetch ( );
+	
+	if (CPU_8051.SFR[ACC] == data ) {
+		// jump
+		CPU_8051.PC += displacement;
+		if (data < CPU_8051.SFR[ACC]) CPU_8051.SFR[PSW] |= CY;
+	}
+	return 1;
+
+} 
+ 
+// CJNE A, R5, displacemnt
+int CJNE_R5 ( ) { 
+
+	int8_t data = CPU_8051.REGISTERS[BANK].R5;
+	int8_t displacement =  fetch ( );
+	
+	if (CPU_8051.SFR[ACC] == data ) {
+		// jump
+		CPU_8051.PC += displacement;
+		if (data < CPU_8051.SFR[ACC]) CPU_8051.SFR[PSW] |= CY;
+	}
+	return 1;
+
+} 
+ 
+// CJNE A, R6, displacement
+int CJNE_R6 ( ) { 
+
+	int8_t data = CPU_8051.REGISTERS[BANK].R6;
+	int8_t displacement =  fetch ( );
+	
+	if (CPU_8051.SFR[ACC] == data ) {
+		// jump
+		CPU_8051.PC += displacement;
+		if (data < CPU_8051.SFR[ACC]) CPU_8051.SFR[PSW] |= CY;
+	}
+	return 1;
+
+} 
+
+// 0xBF 
+// CJNE A, R7, displacement
+int CJNE_R7 ( ) { 
+
+	int8_t data = CPU_8051.REGISTERS[BANK].R7;
+	int8_t displacement =  fetch ( );
+	
+	if (CPU_8051.SFR[ACC] == data ) {
+		// jump
+		CPU_8051.PC += displacement;
+		if (data < CPU_8051.SFR[ACC]) CPU_8051.SFR[PSW] |= CY;
+	}
+	return 1;
+
+} 
+
 // int PUSH (int8_t data) // declared above
 
 //0xC1
