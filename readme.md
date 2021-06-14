@@ -35,7 +35,9 @@ Whole 8051 is struct of memory array and all the instructions read/write and do 
 - [*] Init Memory with their initial value as given in ref manual
 - [*] program function to update Parity after each individual instruction involving A.
 - [ ] program function to choose bank of registers.
-- [ ] function to update PSW register 
-- [ ] mechanism to debug the instruction when you write them
-- [ ] stack operations
-- [ ] overflow flag update logic
+- [*] function to update PSW register 
+- [*] stack operations
+- [*] overflow flag update logic
+- [ ] write the disassembled output to code memory and set pc to run
+- [ ] big fucking switch statement that will call the apprpriate function according to opcode of statement, this will fetch byte from code memory pointed by pc and decode it.
+- [ ] 
