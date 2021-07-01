@@ -58,14 +58,14 @@
  *
  **/
 
-#define		P	(1 << 1)
-//#define 	XX	(1 << 2)
-#define		OV	(1 << 3)
-#define		RS0 	(1 << 4)
-#define		RS1 	(1 << 5)
-#define 	F0	(1 << 6)
-#define 	AC	(1 << 7)
-#define		CY 	(1 << 8)
+#define		P		(1 << 0)
+//#define 	XX		(1 << 1)
+#define		OV		(1 << 2)
+#define		RS0 	(1 << 3)
+#define		RS1 	(1 << 4)
+#define 	F0		(1 << 5)
+#define 	AC		(1 << 6)
+#define		CY 		(1 << 7)
 
 /** PCON : Power Control Register. Not Bit Addressable
  * 
@@ -81,14 +81,14 @@
  **/
 
 
-#define		IDL 	(1 << 1)
-#define 	PD	(1 << 2)
-#define		GF0	(1 << 3)
-#define		GF1	(1 << 4)
-//#define	xx 	(1 << 5)
-//#define 	xx	(1 << 6)
-//#define 	xx	(1 << 7)
-#define		SMOD 	(1 << 8)
+#define		IDL 	(1 << 0)
+#define 	PD		(1 << 1)
+#define		GF0		(1 << 2)
+#define		GF1		(1 << 3)
+//#define	xx 		(1 << 4)
+//#define 	xx		(1 << 5)
+//#define 	xx		(1 << 6)
+#define		SMOD 	(1 << 7)
 
 /** IE : Interrupt Enable. Bit Addressable
  * 
@@ -105,13 +105,13 @@
 
 
 #define		EX0 	(1 << 1)
-#define 	ET0	(1 << 2)
-#define		EX1	(1 << 3)
+#define 	ET0		(1 << 2)
+#define		EX1		(1 << 3)
 #define		ET1 	(1 << 4)
-#define		ES 	(1 << 5)
-#define 	ET2	(1 << 6)
-//#define 	XX	(1 << 7)
-#define		EA 	(1 << 8)
+#define		ES 		(1 << 5)
+#define 	ET2		(1 << 6)
+//#define 	XX		(1 << 7)
+#define		EA 		(1 << 8)
 
 /** IP : Interrupt Priority Register. Bit Addressable
  * 
@@ -127,14 +127,14 @@
  **/
 
 
-#define		PX0 	(1 << 1)
-#define 	PT0	(1 << 2)
-#define		PX1	(1 << 3)
-#define		PT1 	(1 << 4)
-#define		PS 	(1 << 5)
-//#define 	XX	(1 << 6)
-//#define 	XX	(1 << 7)
-//#define	XX 	(1 << 8)
+#define		PX0 	(1 << 0)
+#define 	PT0		(1 << 1)
+#define		PX1		(1 << 2)
+#define		PT1 	(1 << 3)
+#define		PS 		(1 << 4)
+//#define 	XX		(1 << 5)
+//#define 	XX		(1 << 6)
+//#define	XX 		(1 << 7)
 
 
 /** TCON : Timer/Counter Control Register. Bit Addressable
@@ -149,14 +149,14 @@
  * |	TF1	|	TCON.7	|	Timer 1 overflow flag		|
  **/
 
-#define		IT0 	(1 << 1)
-#define 	IE0	(1 << 2)
-#define		IT1	(1 << 3)
-#define		IE1 	(1 << 4)
-#define		TR0 	(1 << 5)
-#define 	TF0	(1 << 6)
-#define 	TR1	(1 << 7)
-#define		TF1	(1 << 8)
+#define		IT0 	(1 << 0)
+#define 	IE0		(1 << 1)
+#define		IT1		(1 << 2)
+#define		IE1 	(1 << 3)
+#define		TR0 	(1 << 4)
+#define 	TF0		(1 << 5)
+#define 	TR1		(1 << 6)
+#define		TF1		(1 << 7)
 
 
 /** TMOD : Timer/Counter Mode Control. Not Bit Addressable
@@ -175,14 +175,14 @@
  **/
 
 
-#define		M0_T0 	(1 << 1)
-#define 	M1_T0	(1 << 2)
-#define		CT_T0	(1 << 3)
-#define		GATE_T0	(1 << 4)
-#define		M0_T1	(1 << 5)
-#define 	M1_T1	(1 << 6)
-#define 	CT_T1	(1 << 7)
-#define		GATE_T1	(1 << 8)
+#define		M0_T0 		(1 << 0)
+#define 	M1_T0		(1 << 1)
+#define		CT_T0		(1 << 2)
+#define		GATE_T0		(1 << 3)
+#define		M0_T1		(1 << 4)
+#define 	M1_T1		(1 << 5)
+#define 	CT_T1		(1 << 6)
+#define		GATE_T1		(1 << 7)
 
 
 
@@ -202,14 +202,14 @@
  *
  **/
 
-#define		RI 	(1 << 1)
-#define 	TI	(1 << 2)
-#define		RB8	(1 << 3)
-#define		TB8	(1 << 4)
-#define		REN	(1 << 5)
-#define 	SM2	(1 << 6)
-#define 	SM1	(1 << 7)
-#define		SM0	(1 << 8)
+#define		RI 		(1 << 0)
+#define 	TI		(1 << 1)
+#define		RB8		(1 << 2)
+#define		TB8		(1 << 3)
+#define		REN		(1 << 4)
+#define 	SM2		(1 << 5)
+#define 	SM1		(1 << 6)
+#define		SM0		(1 << 7)
 
 
 
@@ -227,7 +227,7 @@ struct GPR {
 
 /**
  * we can access by address as given in registers 
- * using void pointer 
+ * using void p:14ointer 
  */
 typedef struct cpu {
 	struct GPR REGISTERS[4]; // 4 memory bank registers
@@ -241,7 +241,7 @@ typedef struct cpu {
 
 CPU CPU_8051;
 
-#define BANK CPU_8051.Bank
+#define BANK 00
 
 
 

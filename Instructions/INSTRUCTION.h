@@ -1,10 +1,7 @@
 #ifndef INSTRUCTION_H
 #define INSTRUCTION_H
 
-#include "../Memory/Memory.h"
-#include <stdio.h>
-#include <stdlib.h>
-
+#include <stdint.h>
 
 int (*OP_CODES[0xFF]) (void);
 /** Assign this function pointer to corresponding instruction
@@ -159,7 +156,7 @@ int MOV_R6 ( );
 int MOV_R7 ( );		//0x7F
 int SJMP ( );		//0x80
 int AJMP_0x81 ( );		
-int ANL_C_0x81 ( );
+int ANL_C_0x82 ( );
 int MOVC ( );
 int DIV ( );
 int MOV_data_addr_data_addr ( );
@@ -197,14 +194,14 @@ int MUL ( );
 //reserved
 int MOV_atR0_data_addr ( );
 int MOV_atR1_data_addr ( );	//0xA7
-int R0_data_addr ( );
-int R1_data_addr ( );
-int R2_data_addr ( );
-int R3_data_addr ( );
-int R4_data_addr ( );
-int R5_data_addr ( );
-int R6_data_addr ( );
-int R7_data_addr ( );		//0xAF
+int MOV_R0_data_addr ( );
+int MOV_R1_data_addr ( );
+int MOV_R2_data_addr ( );
+int MOV_R3_data_addr ( );
+int MOV_R4_data_addr ( );
+int MOV_R5_data_addr ( );
+int MOV_R6_data_addr ( );
+int MOV_R7_data_addr ( );		//0xAF
 int ANL_C_0xB0 ( );			//0xB0
 int ACALL_0xB1 ( );
 int CPL ();
@@ -227,7 +224,7 @@ int CLR ( );
 int CLR_C ();
 int SWAP ( );
 int XCH_A_dataaddr ( );
-int XCH_A_atR0 ( );
+int XCH_A_at_R0 ( );
 int XCH_A_at_R1 ( );		//0xC7
 int XCH_A_R0 ( );
 int XCH_A_R1 ( );
@@ -287,17 +284,20 @@ int MOV_R6_A ( );
 int MOV_R7_A ( );		//0xFF
 
 void assign_functions ();
-int8_t fetch ( );
-
 /** parity flag in SFR 
  * will give 1 even parity
  * w.r.t accumulator
  */
+
+/*
+
+int8_t fetch ( );
 void update_parity ( );
 void update_OV ( uint8_t val);
 void update_AC ( uint8_t val);
 void update_CY ( uint8_t val);
 int8_t add (int8_t op1, int8_t op2);
+*/
 
 /**
  * program memory registers with initial values
