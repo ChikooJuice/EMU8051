@@ -19,6 +19,8 @@
 #include <stdint.h>
 #include <stdlib.h>
 
+#define DEBUG
+
 #define FLASH 4096
 
 // SFR Memory Map from 0x80 - 0xFF

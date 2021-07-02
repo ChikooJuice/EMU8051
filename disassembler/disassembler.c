@@ -1,15 +1,23 @@
+#ifndef DISASSEMBLER_H
+#define DISASSEMBLER_H
+
 #include "disassembler.h"
+#include "../Memory/Memory.h"
 
 struct section DecodeSection (FILE *objfile) {
 
 	struct section CurrSection;
+
 	CurrSection.len = CurrSection.checksum = CurrSection.address = 0;
 	char tmp[2]; 
+
+	// reading the initial colon
+	fread (tmp, sizeof (char), 1, objfile);
 
 	// reading the length of current section
 	fread (len_buffer, sizeof (char), 2, objfile);
 	CurrSection.len = ( 16 * IntfromHex( len_buffer[0]) ) + IntfromHex (len_buffer[1]);
-	
+
 	//reading the address to load
 	fread (&address_buffer, sizeof(char), 4, objfile);
 	CurrSection.address = (16 * 16 * 16 * IntfromHex ( address_buffer[0] ) ) + \
@@ -33,7 +41,7 @@ struct section DecodeSection (FILE *objfile) {
 	}
 
 
-	// parsing the checksum
+	// parsing the checksumaddr
 	fread ( len_buffer, sizeof (char), 2, objfile);
 	CurrSection.checksum = ( 16 * IntfromHex(len_buffer[0]) ) + IntfromHex (len_buffer[1]);
 
@@ -51,30 +59,26 @@ struct section DecodeSection (FILE *objfile) {
 	}
 
 	printf ("No checksum error\n");
+	// reading the trailing newline character form hex file
+	fread ( len_buffer, sizeof (char), 2, objfile);
 
 	return CurrSection;
 }
 
-void printSections (struct section *dissasmbl_list) {
-	struct section *temp = dissasmbl_list;
-	int i = 1;
-	while (temp != NULL) {
-		printf ("\n\nSection %d  address %X \n", i, temp);
+#ifdef DEBUG
+
+void printSection (struct section temp) {
+	
 		printf("length : %x \n\
 address : %X \n\
 checksum : %X \n\
-type : %X \n", temp->len, temp->address, temp->checksum, temp->type);
+type : %X \n", temp.len, temp.address, temp.checksum, temp.type);
 
 	printf ("data : ");
-	for (int j = 0; j < temp->len; j++)	printf("%X ",temp->data[j]);
-	printf("\nnext : %x \n", temp->next);
-	temp = temp->next;
-	i++;
-	}
+	for (int j = 0; j < temp.len; j++)	printf("%X ",temp.data[j]);
+
 }
-
-
-	
+#endif
 
 int IntfromHex (char tmp) {
 	switch (tmp)
@@ -116,3 +120,28 @@ int IntfromHex (char tmp) {
 		break;
 	}
 }
+
+
+int WriteTOCodeMemory ( char* Hex_file_addr) {
+
+	struct section temp;
+	uint16_t load_addr;
+	FILE *HEXFILE = fopen (Hex_file_addr, "r");
+	while (1) {
+		temp = DecodeSection (HEXFILE);
+		
+		if (temp.type == 01) { // if its last section, dont write to code memory
+			break;
+		}
+
+		load_addr = temp.address;
+		for (int i = 0; load_addr < temp.address + temp.len; load_addr++, i++) {
+			CPU_8051.Code_Memory[load_addr] = temp.data[i];
+
+		}	
+	}
+	
+	
+}
+
+#endif

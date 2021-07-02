@@ -13,14 +13,15 @@ struct section {
 	uint8_t checksum;
 	uint8_t type;
 	uint8_t *data;
-	struct section *next;	
-} HEAD;
+};
 
 char address_buffer[4], len_buffer[2];
 
 struct section  DecodeSection (FILE *objfile);
 int IntfromHex (char tmp);
-void printSections ();
+void printSection ();
+int WriteTOCodeMemory ( char* );
+
 
 
 

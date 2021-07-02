@@ -339,3 +339,18 @@ int resolve_bit_addr (uint8_t bit_addr) {
 	if (bit) return 1;
 	else return 0;
 }
+
+void show_CodeMemory ( ) {
+	
+	for ( int i = 0; i < 16; i++) printf ("\t %x",i);
+	printf ("\n");
+	for ( int i = 0; i < 130; i++) printf ("-");
+
+	for ( int i = 0; i < FLASH ; i++) {
+		printf ("\t %hhx", CPU_8051.Code_Memory[i]);
+		
+		if ( i % (0xf) == 0) {
+			printf ("\n");
+		} 
+	}
+}
