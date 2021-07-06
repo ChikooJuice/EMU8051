@@ -342,15 +342,20 @@ int resolve_bit_addr (uint8_t bit_addr) {
 
 void show_CodeMemory ( ) {
 	
-	for ( int i = 0; i < 16; i++) printf ("\t %x",i);
+	printf ("\t");
+	for ( int i = 0; i < 16; i++) printf ("%hhx\t",i);
 	printf ("\n");
+	
 	for ( int i = 0; i < 130; i++) printf ("-");
+	printf ("\n");
+	
+	for ( int i = 0,z=0; i < FLASH/16 ; i++) {
+		printf ("\n%d\t", i);
 
-	for ( int i = 0; i < FLASH ; i++) {
-		printf ("\t %hhx", CPU_8051.Code_Memory[i]);
-		
-		if ( i % (0xf) == 0) {
-			printf ("\n");
-		} 
+		for (int j = 0; j <= 0xF; j++) {
+
+			printf ("%hhx\t", CPU_8051.Code_Memory[z++]);
+		}			 
 	}
+	printf ("\n");
 }

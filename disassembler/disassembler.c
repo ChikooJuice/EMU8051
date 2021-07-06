@@ -138,6 +138,8 @@ int WriteTOCodeMemory ( char* Hex_file_addr) {
 		for (int i = 0; load_addr < temp.address + temp.len; load_addr++, i++) {
 			CPU_8051.Code_Memory[load_addr] = temp.data[i];
 
+			if (i == 0) printf ("writing to memory\n");
+
 		}	
 	}
 	

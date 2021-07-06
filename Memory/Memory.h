@@ -21,7 +21,11 @@
 
 #define DEBUG
 
+#ifndef DEBUG 
 #define FLASH 4096
+#else
+#define FLASH 1024
+#endif
 
 // SFR Memory Map from 0x80 - 0xFF
 #define 	P0 		0x80	// Port 0

@@ -38,6 +38,11 @@ Whole 8051 is struct of memory array and all the instructions read/write and do 
 - [*] function to update PSW register 
 - [*] stack operations
 - [*] overflow flag update logic
-- [ ] write the disassembled output to code memory and set pc to run
-- [ ] big fucking switch statement that will call the apprpriate function according to opcode of statement, this will fetch byte from code memory pointed by pc and decode it.
-- [ ] 
+- [*] write the disassembled output to code memory and set pc to run
+- [ ] ACALL instruction bug solve
+
+## Important 
+
+The 8051 LCALL instruction stores the address of the next instruction on the stack. The address is pushed onto the stack low-order byte first. The address is, therefore, stored in memory in little endian format.
+
+All other 16-bit and 32-bit values are stored, contrary to other Intel processors, in big endian format, with the high-order byte stored first. For example, the LJMP and LCALL instructions expect 16-bit addresses that are in big endian format. 
