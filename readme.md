@@ -39,7 +39,8 @@ Whole 8051 is struct of memory array and all the instructions read/write and do 
 - [*] stack operations
 - [*] overflow flag update logic
 - [*] write the disassembled output to code memory and set pc to run
-- [ ] ACALL instruction bug solve
+- [*] ACALL instruction bug solve
+- [ ] BANK function development
 
 ## Important 
 
