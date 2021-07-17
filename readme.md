@@ -34,14 +34,15 @@ Whole 8051 is struct of memory array and all the instructions read/write and do 
 
 - [*] Init Memory with their initial value as given in ref manual
 - [*] program function to update Parity after each individual instruction involving A.
-- [ ] program function to choose bank of registers.
+- [*] program function to choose bank of registers.
 - [*] function to update PSW register 
 - [*] stack operations
 - [*] overflow flag update logic
 - [*] write the disassembled output to code memory and set pc to run
 - [*] ACALL instruction bug solve
-- [ ] BANK function development
-
+- [ ] show_SFR function
+- [ ] show memory
+- [ ] UI command parser
 ## Important 
 
 The 8051 LCALL instruction stores the address of the next instruction on the stack. The address is pushed onto the stack low-order byte first. The address is, therefore, stored in memory in little endian format.

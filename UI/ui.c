@@ -80,4 +80,27 @@ void show_Registers ( ) {
 
 void show_SFR ( ) {
 	
+	printf ("\n showing special function registers\n");
+	printf ("P0 	: 0x%02hhX\n", CPU_8051.SFR[P0]);
+	printf ("SP 	: 0x%02hhX\n", CPU_8051.SFR[SP]);
+	printf ("DPL 	: 0x%02hhX\n", CPU_8051.SFR[DPL]);
+	printf ("DPH 	: 0x%02hhX\n", CPU_8051.SFR[DPH]);
+	printf ("PCON 	: 0x%02hhX\n", CPU_8051.SFR[PCON]);
+	printf ("TCON 	: 0x%02hhX\n", CPU_8051.SFR[TCON]);
+	printf ("TMOD 	: 0x%02hhX\n", CPU_8051.SFR[TMOD]);
+	printf ("TL0 	: 0x%02hhX\n", CPU_8051.SFR[TL0]);
+	printf ("TL1 	: 0x%02hhX\n", CPU_8051.SFR[TL1]);
+	printf ("TH0 	: 0x%02hhX\n", CPU_8051.SFR[TH0]);
+	printf ("TH1 	: 0x%02hhX\n", CPU_8051.SFR[TH1]);
+	printf ("P1 	: 0x%02hhX\n", CPU_8051.SFR[P1]);
+	printf ("SCON 	: 0x%02hhX\n", CPU_8051.SFR[SCON]);
+	printf ("SBUF 	: 0x%02hhX\n", CPU_8051.SFR[SBUF]);
+	printf ("P2 	: 0x%02hhX\n", CPU_8051.SFR[P2]);
+	printf ("IE 	: 0x%02hhX\n", CPU_8051.SFR[IE]);
+	printf ("P3 	: 0x%02hhX\n", CPU_8051.SFR[P3]);
+	printf ("IP 	: 0x%02hhX\n", CPU_8051.SFR[IP]);
+	printf ("PSW 	: 0x%02hhX\n", CPU_8051.SFR[PSW]);
+	printf ("ACC 	: 0x%02hhX\n", CPU_8051.SFR[ACC]);
+	printf ("B	: 0x%02hhX\n", CPU_8051.SFR[B]);
+
 }
