@@ -60,18 +60,16 @@ void show_CodeMemory (uint16_t low, uint16_t high ) {
 
 void show_Registers ( ) {
 
-	printf ("A %X \n", CPU_8051.SFR[ACC]);
-
 	void *bank1, *bank2, *bank3, *bank0;
 	bank0 = &CPU_8051.REGISTERS[0];
 	bank1 = &CPU_8051.REGISTERS[1];
 	bank2 = &CPU_8051.REGISTERS[2];
 	bank3 = &CPU_8051.REGISTERS[3];
 
-	printf ("\t BANK 0 \t BANK 1 \t BANK 3 \t BANK 4 \n");
+	printf ("\tBANK 0\t BANK 1\t BANK 3\t BANK 4\n");
 	
 	for (int i = 0; i < 8; i++) {
-		printf ("R%d\t%X \t %X \t %X \t %X \n", i, \
+		printf ("R%d\t%3X \t %3X \t %3X \t %3X \n", i, \
 		*((char*)bank0 + i), \
 		*((char*)bank1 + i), \
 		*((char*)bank2 + i), \
