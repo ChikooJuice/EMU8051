@@ -91,8 +91,6 @@ void Init_CPU (void) {
 	for (int i = 0; i < FLASH; i++)	CPU_8051.Code_Memory[i] = 0x0;
 
 	CPU_8051.PC = 0x00;
-	CPU_8051.Bank = 0x0;
-
 }
 
 int8_t fetch ( ) {
@@ -300,33 +298,6 @@ int8_t subb ( int8_t op1, int8_t op2) {
 	return result;
 
 }
-
-
-void show_memory ( ) {
-	
-	char *pntr = &CPU_8051;
-	char tmp[2];
-	
-	// printing the upper line of refrence 
-	for ( int i = 0; i < 16; i++) printf ("\t %x",i);
-	printf ("\n");
-	for ( int i = 0; i < 130; i++) printf ("-");
-
-	// printing the memory locations
-	for ( int i = 0 ; i < 8 ; i++) {
-		printf("\n%4x", i);
-		
-		for (int j = 0; j < 16 ; j++) {
-			
-			tmp[0] = *(pntr + j + (i * 0xF));
-			tmp[1] = *(pntr + j + (i * 0xF));
-
-			printf ("\t%hhx",tmp[0]);
-		}
-	}
-	printf ("\n");
-}
-
 /** will resolve the bit addresses,
  * still need to be expaneded if register which are bit
  * addressable are given,
@@ -340,22 +311,13 @@ int resolve_bit_addr (uint8_t bit_addr) {
 	else return 0;
 }
 
-void show_CodeMemory ( ) {
-	
-	printf ("\t");
-	for ( int i = 0; i < 16; i++) printf ("%hhx\t",i);
-	printf ("\n");
-	
-	for ( int i = 0; i < 130; i++) printf ("-");
-	printf ("\n");
-	
-	for ( int i = 0,z=0; i < FLASH/16 ; i++) {
-		printf ("\n%d\t", i);
 
-		for (int j = 0; j <= 0xF; j++) {
+int BANK ( ) {
+	
+	uint8_t tmp = 0;
+	tmp = CPU_8051.SFR[PSW] & RS0;
+	tmp = tmp << 1;
+	tmp = CPU_8051.SFR[PSW] & RS1;
+	return tmp;
 
-			printf ("%hhx\t", CPU_8051.Code_Memory[z++]);
-		}			 
-	}
-	printf ("\n");
 }

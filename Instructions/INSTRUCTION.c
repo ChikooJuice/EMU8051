@@ -110,7 +110,7 @@ printf ("\tINC data_address  address : %hhx\n", addr);
 
 // 0x06
 int INC_at_R0 ( ) {
-	int8_t tmp = CPU_8051.REGISTERS[BANK].R0;
+	int8_t tmp = CPU_8051.REGISTERS[BANK ( )].R0;
 
 	/** we can only address code memory here, not give RAM address in R0 */
 	CPU_8051.Code_Memory[tmp] += 1;
@@ -123,7 +123,7 @@ printf ("\tINC @R0\n");
 
 // 0x07
 int INC_at_R1 ( ){
-	int8_t tmp = CPU_8051.REGISTERS[BANK].R1;
+	int8_t tmp = CPU_8051.REGISTERS[BANK ( )].R1;
 	/** we can only address code memory here, not give RAM address in R1 */
 	CPU_8051.Code_Memory[tmp] += 1;
 if ( PPRINT ) {		
@@ -136,7 +136,7 @@ printf ("\tINC @R1\n");
 
 // 0x08
 int INC_R0 ( ) {
-	CPU_8051.REGISTERS[BANK].R0 += 1;
+	CPU_8051.REGISTERS[BANK ( )].R0 += 1;
 if ( PPRINT ) {		
 printf ("\tINC R0\n");
 }
@@ -146,7 +146,7 @@ printf ("\tINC R0\n");
 
 // 0x09
 int INC_R1 ( ) {
-	CPU_8051.REGISTERS[BANK].R1 += 1;
+	CPU_8051.REGISTERS[BANK ( )].R1 += 1;
 if ( PPRINT ) {		
 printf ("\tINC R1\n");
 }
@@ -156,7 +156,7 @@ printf ("\tINC R1\n");
 
 // 0x0A
 int INC_R2 ( ) {
-	CPU_8051.REGISTERS[BANK].R2 += 1;
+	CPU_8051.REGISTERS[BANK ( )].R2 += 1;
 if ( PPRINT ) {		
 printf ("\tINC R2\n");
 }
@@ -166,7 +166,7 @@ printf ("\tINC R2\n");
 
 // 0x0B
 int INC_R3 ( ) {
-	CPU_8051.REGISTERS[BANK].R3 += 1;
+	CPU_8051.REGISTERS[BANK ( )].R3 += 1;
 if ( PPRINT ) {		
 printf ("\tINC R3\n");
 }
@@ -176,7 +176,7 @@ printf ("\tINC R3\n");
 
 // 0x0C
 int INC_R4 ( ) {
-	CPU_8051.REGISTERS[BANK].R4 += 1;
+	CPU_8051.REGISTERS[BANK ( )].R4 += 1;
 if ( PPRINT ) {		
 printf ("\tINC R4\n");
 }
@@ -185,7 +185,7 @@ printf ("\tINC R4\n");
 
 // 0x0D
 int INC_R5 ( ) {
-	CPU_8051.REGISTERS[BANK].R5 += 1;
+	CPU_8051.REGISTERS[BANK ( )].R5 += 1;
 if ( PPRINT ) {		
 printf ("\tINC R5\n");
 }
@@ -194,7 +194,7 @@ printf ("\tINC R5\n");
 
 //0x0E
 int INC_R6 ( ) {
-	CPU_8051.REGISTERS[BANK].R6 += 1;
+	CPU_8051.REGISTERS[BANK ( )].R6 += 1;
 if ( PPRINT ) {		
 printf ("\tINC R6\n");
 }
@@ -203,7 +203,7 @@ printf ("\tINC R6\n");
 
 //0x0F
 int INC_R7 ( ) {
-	CPU_8051.REGISTERS[BANK].R7 += 1;
+	CPU_8051.REGISTERS[BANK ( )].R7 += 1;
 if ( PPRINT ) {		
 printf ("\tINC R7\n");
 }
@@ -346,28 +346,28 @@ printf ("\tDEC @%X\n",addr);
 
 // 0x16
 int DEC_at_R0 ( ) {
-	int8_t tmp = CPU_8051.REGISTERS[BANK].R0;
+	int8_t tmp = CPU_8051.REGISTERS[BANK ( )].R0;
 	/** we can only address code memory here, not give RAM address in R0 */
 	CPU_8051.Code_Memory[tmp] -= 1;
 if ( PPRINT ) {		
-printf ("\tDEC @R0 | R0 : %X\n", CPU_8051.REGISTERS[BANK].R0);
+printf ("\tDEC @R0 | R0 : %X\n", CPU_8051.REGISTERS[BANK ( )].R0);
 }
 	return 1;
 }
 
 // 0x17
 int DEC_at_R1 ( ) {
-	int8_t tmp = CPU_8051.REGISTERS[BANK].R1;
+	int8_t tmp = CPU_8051.REGISTERS[BANK ( )].R1;
 	/** we can only address code memory here, not give RAM address in R1 */
 	CPU_8051.Code_Memory[tmp] -= 1;
 if ( PPRINT ) {		
-printf ("\tDEC @R1 | R1 : %X\n", CPU_8051.REGISTERS[BANK].R1);
+printf ("\tDEC @R1 | R1 : %X\n", CPU_8051.REGISTERS[BANK ( )].R1);
 }
 	return 1;
 }
 //0x18
 int DEC_R0 ( ) {
-	CPU_8051.REGISTERS[BANK].R0 -= 1;
+	CPU_8051.REGISTERS[BANK ( )].R0 -= 1;
 
 if ( PPRINT ) {		
 printf ("\tDEC R0\n");
@@ -377,7 +377,7 @@ printf ("\tDEC R0\n");
 
 // 0x19
 int DEC_R1 ( ) {
-	CPU_8051.REGISTERS[BANK].R1 -= 1;
+	CPU_8051.REGISTERS[BANK ( )].R1 -= 1;
 
 if ( PPRINT ) {		
 printf ("\tDEC R1\n");
@@ -387,7 +387,7 @@ printf ("\tDEC R1\n");
 
 // 0x1A
 int DEC_R2 ( ) {
-	CPU_8051.REGISTERS[BANK].R2 -= 1;
+	CPU_8051.REGISTERS[BANK ( )].R2 -= 1;
 
 if ( PPRINT ) {		
 printf ("\tDEC R2\n");
@@ -397,7 +397,7 @@ printf ("\tDEC R2\n");
 
 // 0x1B
 int DEC_R3 ( ) {
-	CPU_8051.REGISTERS[BANK].R3 -= 1;
+	CPU_8051.REGISTERS[BANK ( )].R3 -= 1;
 
 if ( PPRINT ) {		
 printf ("\tDEC R3\n");
@@ -408,7 +408,7 @@ printf ("\tDEC R3\n");
 
 // 0x1C
 int DEC_R4 ( ) {
-	CPU_8051.REGISTERS[BANK].R4 -= 1;
+	CPU_8051.REGISTERS[BANK ( )].R4 -= 1;
 
 if ( PPRINT ) {		
 printf ("\tDEC R4\n");
@@ -419,7 +419,7 @@ printf ("\tDEC R4\n");
 
 // 0x1D
 int DEC_R5 ( ) {
-	CPU_8051.REGISTERS[BANK].R5 -= 1;
+	CPU_8051.REGISTERS[BANK ( )].R5 -= 1;
 
 if ( PPRINT ) {		
 printf ("\tDEC R5\n");
@@ -430,7 +430,7 @@ printf ("\tDEC R5\n");
 
 // 0x1E
 int DEC_R6 ( ) {
-	CPU_8051.REGISTERS[BANK].R6 -= 1;
+	CPU_8051.REGISTERS[BANK ( )].R6 -= 1;
 
 if ( PPRINT ) {		
 printf ("\tDEC R6\n");
@@ -441,7 +441,7 @@ printf ("\tDEC R6\n");
 
 // 0x1F
 int DEC_R7 ( ) {
-	CPU_8051.REGISTERS[BANK].R7 -= 1;
+	CPU_8051.REGISTERS[BANK ( )].R7 -= 1;
 
 if ( PPRINT ) {		
 printf ("\tDEC R7\n");
@@ -560,7 +560,7 @@ printf ("\tADD A, @data_address\n",addr);
 
 int ADD_at_R0 ( ) {
 
-	uint8_t addr = CPU_8051.REGISTERS[BANK].R0;
+	uint8_t addr = CPU_8051.REGISTERS[BANK ( )].R0;
 	int8_t data = *( (char*)&CPU_8051 + addr);
 
 	CPU_8051.SFR[ACC] = add ( CPU_8051.SFR[ACC], data);
@@ -576,7 +576,7 @@ printf ("\tADD A, @R0 | R0 : %X\n", addr);
 // 0x27
 int ADD_at_R1 ( ) { 
 
-	uint8_t addr = CPU_8051.REGISTERS[BANK].R1;
+	uint8_t addr = CPU_8051.REGISTERS[BANK ( )].R1;
 	int8_t data = *( (char*)&CPU_8051 + addr);
 
 	CPU_8051.SFR[ACC] = add ( CPU_8051.SFR[ACC], data);
@@ -595,7 +595,7 @@ printf ("\tADD A, @R1  | R1 : %X\n", addr);
  */
 int ADD_R0 ( ) {
 
-	int8_t data = CPU_8051.REGISTERS[BANK].R0;
+	int8_t data = CPU_8051.REGISTERS[BANK ( )].R0;
 	CPU_8051.SFR[ACC] = add ( CPU_8051.SFR[ACC], data);
 
 if ( PPRINT ) {		
@@ -612,7 +612,7 @@ printf ("\tADD A, R0  | R0 : %X\n", data);
  */
 int ADD_R1 ( ) {
 
-	int8_t data = CPU_8051.REGISTERS[BANK].R1;
+	int8_t data = CPU_8051.REGISTERS[BANK ( )].R1;
 	CPU_8051.SFR[ACC] = add ( CPU_8051.SFR[ACC], data);
 
 if ( PPRINT ) {		
@@ -630,7 +630,7 @@ printf ("\tADD A, R1 | R1 : %X\n", data);
  */
 int ADD_R2 ( ) {
 
-	int8_t data = CPU_8051.REGISTERS[BANK].R2;
+	int8_t data = CPU_8051.REGISTERS[BANK ( )].R2;
 	CPU_8051.SFR[ACC] = add ( CPU_8051.SFR[ACC], data);
 
 if ( PPRINT ) {		
@@ -648,7 +648,7 @@ printf ("\tADD A, R2  | R2 : %X\n", data);
  */
 int ADD_R3 ( ) {
 
-	int8_t data = CPU_8051.REGISTERS[BANK].R3;
+	int8_t data = CPU_8051.REGISTERS[BANK ( )].R3;
 	CPU_8051.SFR[ACC] = add ( CPU_8051.SFR[ACC], data);
 
 if ( PPRINT ) {		
@@ -666,7 +666,7 @@ printf ("\tADD A, R3  | R3 : %X\n", data);
  */
 int ADD_R4 ( ) {
 
-	int8_t data = CPU_8051.REGISTERS[BANK].R4;
+	int8_t data = CPU_8051.REGISTERS[BANK ( )].R4;
 	CPU_8051.SFR[ACC] = add ( CPU_8051.SFR[ACC], data);
 
 if ( PPRINT ) {		
@@ -683,7 +683,7 @@ printf ("\tADD A, R4  | R4 : %X\n", data);
  */
 int ADD_R5 ( ) {
 
-	int8_t data = CPU_8051.REGISTERS[BANK].R5;
+	int8_t data = CPU_8051.REGISTERS[BANK ( )].R5;
 	CPU_8051.SFR[ACC] = add ( CPU_8051.SFR[ACC], data);
 
 if ( PPRINT ) {		
@@ -700,7 +700,7 @@ printf ("\tADD A, R5  | R5 : %X\n", data);
  */
 int ADD_R6 ( ) {
 
-	int8_t data = CPU_8051.REGISTERS[BANK].R6;
+	int8_t data = CPU_8051.REGISTERS[BANK ( )].R6;
 	CPU_8051.SFR[ACC] = add ( CPU_8051.SFR[ACC], data);
 
 if ( PPRINT ) {		
@@ -718,7 +718,7 @@ printf ("\tADD A, R6  | R6 : %X\n", data);
  */
 int ADD_R7 ( ) {
 
-	int8_t data = CPU_8051.REGISTERS[BANK].R7;
+	int8_t data = CPU_8051.REGISTERS[BANK ( )].R7;
 	CPU_8051.SFR[ACC] = add ( CPU_8051.SFR[ACC], data);
 
 if ( PPRINT ) {		
@@ -857,7 +857,7 @@ printf ("\tADDC A, @%X | @%X : %hhX\n", addr, addr, *( (char*)&CPU_8051 + addr))
 
 int ADDC_at_R0 ( ) {  
 
-	uint8_t addr = CPU_8051.REGISTERS[BANK].R0;
+	uint8_t addr = CPU_8051.REGISTERS[BANK ( )].R0;
 	int8_t data = *( (char*)&CPU_8051 + addr);
 	CPU_8051.SFR[ACC] = addc ( CPU_8051.SFR[ACC], data);
 
@@ -870,7 +870,7 @@ printf ("\tADDC A, @R0 | @R0 : %X\n", addr);
 // 0x37 
 int ADDC_at_R1 ( ) { 
 
-	uint8_t addr = CPU_8051.REGISTERS[BANK].R1;
+	uint8_t addr = CPU_8051.REGISTERS[BANK ( )].R1;
 	int8_t data = *( (char*)&CPU_8051 + addr);
 	CPU_8051.SFR[ACC] = addc ( CPU_8051.SFR[ACC], data);
 
@@ -884,7 +884,7 @@ printf ("\tADDC A, @R1 | @R1 : %X\n", addr);
 
 int ADDC_R0 ( ) {  
 
-	int8_t data = CPU_8051.REGISTERS[BANK].R0;
+	int8_t data = CPU_8051.REGISTERS[BANK ( )].R0;
 	CPU_8051.SFR[ACC] = addc ( CPU_8051.SFR[ACC], data);
 
 if ( PPRINT ) {		
@@ -897,7 +897,7 @@ printf ("\tADDC A, R0 | R0 : %X\n", data);
 
 int ADDC_R1 ( ) {  
 
-	int8_t data = CPU_8051.REGISTERS[BANK].R1;
+	int8_t data = CPU_8051.REGISTERS[BANK ( )].R1;
 	CPU_8051.SFR[ACC] = addc ( CPU_8051.SFR[ACC], data);
 
 if ( PPRINT ) {		
@@ -910,7 +910,7 @@ printf ("\tADDC A, R1 | R1 : %X\n", data);
 
 int ADDC_R2 ( ) {  
 
-	int8_t data = CPU_8051.REGISTERS[BANK].R2;
+	int8_t data = CPU_8051.REGISTERS[BANK ( )].R2;
 	CPU_8051.SFR[ACC] = addc ( CPU_8051.SFR[ACC], data);
 
 if ( PPRINT ) {		
@@ -923,7 +923,7 @@ printf ("\tADDC A, R2 | R2 : %X\n", data);
 
 int ADDC_R3 ( ) {  
 
-	int8_t data = CPU_8051.REGISTERS[BANK].R3;
+	int8_t data = CPU_8051.REGISTERS[BANK ( )].R3;
 	CPU_8051.SFR[ACC] = addc ( CPU_8051.SFR[ACC], data);
 
 if ( PPRINT ) {		
@@ -936,7 +936,7 @@ printf ("\tADDC A, R3 | R3 : %X\n", data);
 
 int ADDC_R4 ( ) {  
 
-	int8_t data = CPU_8051.REGISTERS[BANK].R4;
+	int8_t data = CPU_8051.REGISTERS[BANK ( )].R4;
 	CPU_8051.SFR[ACC] = addc ( CPU_8051.SFR[ACC], data);
 
 if ( PPRINT ) {		
@@ -949,7 +949,7 @@ printf ("\tADDC A, R4 | R4 : %X\n", data);
 
 int ADDC_R5 ( ) {  
 
-	int8_t data = CPU_8051.REGISTERS[BANK].R5;
+	int8_t data = CPU_8051.REGISTERS[BANK ( )].R5;
 	CPU_8051.SFR[ACC] = addc ( CPU_8051.SFR[ACC], data);
 
 if ( PPRINT ) {		
@@ -962,7 +962,7 @@ printf ("\tADDC A, R5 | R5 : %X\n", data);
 
 int ADDC_R6 ( ) {  
 
-	int8_t data = CPU_8051.REGISTERS[BANK].R6;
+	int8_t data = CPU_8051.REGISTERS[BANK ( )].R6;
 	CPU_8051.SFR[ACC] = addc ( CPU_8051.SFR[ACC], data);
 
 if ( PPRINT ) {		
@@ -976,7 +976,7 @@ printf ("\tADDC A, R6 | R6 : %X\n", data);
 //0x3F
 int ADDC_R7 ( ) {  
 
-	int8_t data = CPU_8051.REGISTERS[BANK].R7;
+	int8_t data = CPU_8051.REGISTERS[BANK ( )].R7;
 	CPU_8051.SFR[ACC] = addc ( CPU_8051.SFR[ACC], data);
 
 if ( PPRINT ) {		
@@ -1081,7 +1081,7 @@ printf ("\tORL A, @%X | @%X : %X\n", addr, data);
 
 int ORL_acc_at_R0 ( ) {
 
-	uint8_t addr = CPU_8051.REGISTERS[BANK].R0;
+	uint8_t addr = CPU_8051.REGISTERS[BANK ( )].R0;
 	int8_t data = *( (char*)&CPU_8051 + addr );
 	CPU_8051.SFR[ACC] |= data;
 
@@ -1096,7 +1096,7 @@ printf ("\tORL A, @R0 | R0 : %X\n", addr);
 // 0x47
 int ORL_acc_at_R1 ( ) {
 
-	uint8_t addr = CPU_8051.REGISTERS[BANK].R1;
+	uint8_t addr = CPU_8051.REGISTERS[BANK ( )].R1;
 	int8_t data = *( (char*)&CPU_8051 + addr );
 	CPU_8051.SFR[ACC] |= data;
 
@@ -1113,10 +1113,10 @@ printf ("\tORL A, @R1 | R1 : %X\n", addr);
  */
 int ORL_R0 ( ) { 
 
-	CPU_8051.SFR[ACC] |= CPU_8051.REGISTERS[BANK].R0;
+	CPU_8051.SFR[ACC] |= CPU_8051.REGISTERS[BANK ( )].R0;
 
 if ( PPRINT ) {		
-printf ("\tORL A, R0 | R0 : %X\n", CPU_8051.REGISTERS[BANK].R0);
+printf ("\tORL A, R0 | R0 : %X\n", CPU_8051.REGISTERS[BANK ( )].R0);
 }
 
 	return 1;
@@ -1124,49 +1124,49 @@ printf ("\tORL A, R0 | R0 : %X\n", CPU_8051.REGISTERS[BANK].R0);
 } 
 
 int ORL_R1 ( ) { 
-	CPU_8051.SFR[ACC] |= CPU_8051.REGISTERS[BANK].R1;
+	CPU_8051.SFR[ACC] |= CPU_8051.REGISTERS[BANK ( )].R1;
 
 if ( PPRINT ) {		
-printf ("\tORL A, R1 | R1 : %X\n", CPU_8051.REGISTERS[BANK].R1);
+printf ("\tORL A, R1 | R1 : %X\n", CPU_8051.REGISTERS[BANK ( )].R1);
 }
 	return 1;
 }  
 
 int ORL_R2 ( ) { 
-	CPU_8051.SFR[ACC] |= CPU_8051.REGISTERS[BANK].R2;
+	CPU_8051.SFR[ACC] |= CPU_8051.REGISTERS[BANK ( )].R2;
 
 if ( PPRINT ) {		
-printf ("\tORL A, R2 | R2 : %X\n", CPU_8051.REGISTERS[BANK].R2);
+printf ("\tORL A, R2 | R2 : %X\n", CPU_8051.REGISTERS[BANK ( )].R2);
 }
 
 	return 1;
 } 
 
 int ORL_R3 ( ) { 
-	CPU_8051.SFR[ACC] |= CPU_8051.REGISTERS[BANK].R3;
+	CPU_8051.SFR[ACC] |= CPU_8051.REGISTERS[BANK ( )].R3;
 
 if ( PPRINT ) {		
-printf ("\tORL A, R3 | R3 : %X\n", CPU_8051.REGISTERS[BANK].R3);
+printf ("\tORL A, R3 | R3 : %X\n", CPU_8051.REGISTERS[BANK ( )].R3);
 }
 
 	return 1;
 }  
 
 int ORL_R4 ( ) { 
-	CPU_8051.SFR[ACC] |= CPU_8051.REGISTERS[BANK].R4;
+	CPU_8051.SFR[ACC] |= CPU_8051.REGISTERS[BANK ( )].R4;
 
 if ( PPRINT ) {		
-printf ("\tORL A, R4 | R4 : %X\n", CPU_8051.REGISTERS[BANK].R4);
+printf ("\tORL A, R4 | R4 : %X\n", CPU_8051.REGISTERS[BANK ( )].R4);
 }
 
 	return 1;
 } 
 
 int ORL_R5 ( ) { 
-	CPU_8051.SFR[ACC] |= CPU_8051.REGISTERS[BANK].R5;
+	CPU_8051.SFR[ACC] |= CPU_8051.REGISTERS[BANK ( )].R5;
 
 if ( PPRINT ) {		
-printf ("\tORL A, R5 | R5 : %X\n", CPU_8051.REGISTERS[BANK].R5);
+printf ("\tORL A, R5 | R5 : %X\n", CPU_8051.REGISTERS[BANK ( )].R5);
 }
 
 	return 1;
@@ -1174,20 +1174,20 @@ printf ("\tORL A, R5 | R5 : %X\n", CPU_8051.REGISTERS[BANK].R5);
 
 
 int ORL_R6 ( ) { 
-	CPU_8051.SFR[ACC] |= CPU_8051.REGISTERS[BANK].R6;
+	CPU_8051.SFR[ACC] |= CPU_8051.REGISTERS[BANK ( )].R6;
 
 if ( PPRINT ) {		
-printf ("\tORL A, R6 | R6 : %X\n", CPU_8051.REGISTERS[BANK].R6);
+printf ("\tORL A, R6 | R6 : %X\n", CPU_8051.REGISTERS[BANK ( )].R6);
 }
 
 	return 1;
 } 
 
 int ORL_R7 ( ) { 
-	CPU_8051.SFR[ACC] |= CPU_8051.REGISTERS[BANK].R7;
+	CPU_8051.SFR[ACC] |= CPU_8051.REGISTERS[BANK ( )].R7;
 
 if ( PPRINT ) {		
-printf ("\tORL A, R7 | R7 : %X\n", CPU_8051.REGISTERS[BANK].R7);
+printf ("\tORL A, R7 | R7 : %X\n", CPU_8051.REGISTERS[BANK ( )].R7);
 }
 
 	return 1;
@@ -1296,7 +1296,7 @@ printf ("\tANL A, @%X\n", addr);
 
 int ANL_A_at_R0 ( ) {
 
-	uint8_t addr = CPU_8051.REGISTERS[BANK].R0;
+	uint8_t addr = CPU_8051.REGISTERS[BANK ( )].R0;
 	int8_t data = *( (char*)&CPU_8051 + addr );
 	CPU_8051.SFR[ACC] &= data;
 
@@ -1311,7 +1311,7 @@ printf ("\tANL A, @R0 | R0 : %X\n", addr);
 // 0x57
 int ANL_A_at_R1 ( ) {
 
-	uint8_t addr = CPU_8051.REGISTERS[BANK].R1;
+	uint8_t addr = CPU_8051.REGISTERS[BANK ( )].R1;
 	int8_t data = *( (char*)&CPU_8051 + addr );
 	CPU_8051.SFR[ACC] &= data;
 	return 1;
@@ -1321,10 +1321,10 @@ int ANL_A_at_R1 ( ) {
 
 int ANL_R0 ( ) { 
 
-	CPU_8051.SFR[ACC] &= CPU_8051.REGISTERS[BANK].R0;
+	CPU_8051.SFR[ACC] &= CPU_8051.REGISTERS[BANK ( )].R0;
 
 if ( PPRINT ) {		
-printf ("\tANL A, R0 | R0 : %X\n", CPU_8051.REGISTERS[BANK].R0);
+printf ("\tANL A, R0 | R0 : %X\n", CPU_8051.REGISTERS[BANK ( )].R0);
 }
 
 	return 1;
@@ -1333,10 +1333,10 @@ printf ("\tANL A, R0 | R0 : %X\n", CPU_8051.REGISTERS[BANK].R0);
 
 int ANL_R1 ( ) { 
 
-	CPU_8051.SFR[ACC] &= CPU_8051.REGISTERS[BANK].R1;
+	CPU_8051.SFR[ACC] &= CPU_8051.REGISTERS[BANK ( )].R1;
 
 if ( PPRINT ) {		
-printf ("\tANL A, R1 | R1 : %X\n", CPU_8051.REGISTERS[BANK].R1);
+printf ("\tANL A, R1 | R1 : %X\n", CPU_8051.REGISTERS[BANK ( )].R1);
 }
 
 	return 1;
@@ -1345,10 +1345,10 @@ printf ("\tANL A, R1 | R1 : %X\n", CPU_8051.REGISTERS[BANK].R1);
 
 int ANL_R2 ( ) { 
 
-	CPU_8051.SFR[ACC] &= CPU_8051.REGISTERS[BANK].R2;
+	CPU_8051.SFR[ACC] &= CPU_8051.REGISTERS[BANK ( )].R2;
 
 if ( PPRINT ) {		
-printf ("\tANL A, R2 | R2 : %X\n", CPU_8051.REGISTERS[BANK].R2);
+printf ("\tANL A, R2 | R2 : %X\n", CPU_8051.REGISTERS[BANK ( )].R2);
 }
 
 	return 1;
@@ -1357,10 +1357,10 @@ printf ("\tANL A, R2 | R2 : %X\n", CPU_8051.REGISTERS[BANK].R2);
 
 int ANL_R3 ( ) { 
 
-	CPU_8051.SFR[ACC] &= CPU_8051.REGISTERS[BANK].R3;
+	CPU_8051.SFR[ACC] &= CPU_8051.REGISTERS[BANK ( )].R3;
 
 if ( PPRINT ) {		
-printf ("\tANL A, R3 | R3 : %X\n", CPU_8051.REGISTERS[BANK].R3);
+printf ("\tANL A, R3 | R3 : %X\n", CPU_8051.REGISTERS[BANK ( )].R3);
 }
 
 	return 1;
@@ -1369,10 +1369,10 @@ printf ("\tANL A, R3 | R3 : %X\n", CPU_8051.REGISTERS[BANK].R3);
 
 int ANL_R4 ( ) { 
 
-	CPU_8051.SFR[ACC] &= CPU_8051.REGISTERS[BANK].R4;
+	CPU_8051.SFR[ACC] &= CPU_8051.REGISTERS[BANK ( )].R4;
 
 if ( PPRINT ) {		
-printf ("\tANL A, R4 | R4 : %X\n", CPU_8051.REGISTERS[BANK].R4);
+printf ("\tANL A, R4 | R4 : %X\n", CPU_8051.REGISTERS[BANK ( )].R4);
 }
 
 	return 1;
@@ -1381,10 +1381,10 @@ printf ("\tANL A, R4 | R4 : %X\n", CPU_8051.REGISTERS[BANK].R4);
 
 int ANL_R5 ( ) { 
 
-	CPU_8051.SFR[ACC] &= CPU_8051.REGISTERS[BANK].R5;
+	CPU_8051.SFR[ACC] &= CPU_8051.REGISTERS[BANK ( )].R5;
 
 if ( PPRINT ) {		
-printf ("\tANL A, R5 | R5 : %X\n", CPU_8051.REGISTERS[BANK].R5);
+printf ("\tANL A, R5 | R5 : %X\n", CPU_8051.REGISTERS[BANK ( )].R5);
 }
 
 	return 1;
@@ -1393,10 +1393,10 @@ printf ("\tANL A, R5 | R5 : %X\n", CPU_8051.REGISTERS[BANK].R5);
 
 int ANL_R6 ( ) { 
 
-	CPU_8051.SFR[ACC] &= CPU_8051.REGISTERS[BANK].R6;
+	CPU_8051.SFR[ACC] &= CPU_8051.REGISTERS[BANK ( )].R6;
 
 if ( PPRINT ) {		
-printf ("\tANL A, R6 | R6 : %X\n", CPU_8051.REGISTERS[BANK].R6);
+printf ("\tANL A, R6 | R6 : %X\n", CPU_8051.REGISTERS[BANK ( )].R6);
 }
 
 	return 1;
@@ -1405,10 +1405,10 @@ printf ("\tANL A, R6 | R6 : %X\n", CPU_8051.REGISTERS[BANK].R6);
 
 int ANL_R7 ( ) { 
 
-	CPU_8051.SFR[ACC] &= CPU_8051.REGISTERS[BANK].R7;
+	CPU_8051.SFR[ACC] &= CPU_8051.REGISTERS[BANK ( )].R7;
 
 if ( PPRINT ) {		
-printf ("\tANL A, R7 | R7 : %X\n", CPU_8051.REGISTERS[BANK].R7);
+printf ("\tANL A, R7 | R7 : %X\n", CPU_8051.REGISTERS[BANK ( )].R7);
 }
 
 	return 1;
@@ -1507,7 +1507,7 @@ printf ("\tXRL A, @%X | @%X : %X\n", addr, addr, data);
 
 int XRL_A_at_R0 ( ) {
 
-	uint8_t addr = CPU_8051.REGISTERS[BANK].R0;
+	uint8_t addr = CPU_8051.REGISTERS[BANK ( )].R0;
 	int8_t data = *( (char*)&CPU_8051 + addr );
 	CPU_8051.SFR[ACC] &= data;
 
@@ -1522,7 +1522,7 @@ printf ("\tXRL A, @R0 | R0 : %X\n", addr);
 // 0x67
 int XRL_A_at_R1 ( ) {
 
-	uint8_t addr = CPU_8051.REGISTERS[BANK].R1;
+	uint8_t addr = CPU_8051.REGISTERS[BANK ( )].R1;
 	int8_t data = *( (char*)&CPU_8051 + addr );
 	CPU_8051.SFR[ACC] &= data;
 
@@ -1537,7 +1537,7 @@ printf ("\tXRL A, @R1 | R1 : %X\n", addr);
 
 int XRL_R0 ( ) { 
 
-	CPU_8051.SFR[ACC] ^= CPU_8051.REGISTERS[BANK].R0;
+	CPU_8051.SFR[ACC] ^= CPU_8051.REGISTERS[BANK ( )].R0;
 
 if ( PPRINT ) {		
 printf ("\tXRL A, R0\n");
@@ -1549,7 +1549,7 @@ printf ("\tXRL A, R0\n");
 
 int XRL_R1 ( ) { 
 
-	CPU_8051.SFR[ACC] ^= CPU_8051.REGISTERS[BANK].R1;
+	CPU_8051.SFR[ACC] ^= CPU_8051.REGISTERS[BANK ( )].R1;
 
 if ( PPRINT ) {		
 printf ("\tXRL A, R1\n");
@@ -1561,7 +1561,7 @@ printf ("\tXRL A, R1\n");
 
 int XRL_R2 ( ) { 
 
-	CPU_8051.SFR[ACC] ^= CPU_8051.REGISTERS[BANK].R2;
+	CPU_8051.SFR[ACC] ^= CPU_8051.REGISTERS[BANK ( )].R2;
 
 if ( PPRINT ) {		
 printf ("\tXRL A, R2\n");
@@ -1573,7 +1573,7 @@ printf ("\tXRL A, R2\n");
 
 int XRL_R3 ( ) { 
 
-	CPU_8051.SFR[ACC] ^= CPU_8051.REGISTERS[BANK].R3;
+	CPU_8051.SFR[ACC] ^= CPU_8051.REGISTERS[BANK ( )].R3;
 
 if ( PPRINT ) {		
 printf ("\tXRL A, R3\n");
@@ -1585,7 +1585,7 @@ printf ("\tXRL A, R3\n");
 
 int XRL_R4 ( ) { 
 
-	CPU_8051.SFR[ACC] ^= CPU_8051.REGISTERS[BANK].R4;
+	CPU_8051.SFR[ACC] ^= CPU_8051.REGISTERS[BANK ( )].R4;
 
 if ( PPRINT ) {		
 printf ("\tXRL A, R4\n");
@@ -1597,7 +1597,7 @@ printf ("\tXRL A, R4\n");
 
 int XRL_R5 ( ) { 
 
-	CPU_8051.SFR[ACC] ^= CPU_8051.REGISTERS[BANK].R5;
+	CPU_8051.SFR[ACC] ^= CPU_8051.REGISTERS[BANK ( )].R5;
 
 if ( PPRINT ) {		
 printf ("\tXRL A, R5\n");
@@ -1609,7 +1609,7 @@ printf ("\tXRL A, R5\n");
 
 int XRL_R6 ( ) { 
 
-	CPU_8051.SFR[ACC] ^= CPU_8051.REGISTERS[BANK].R6;
+	CPU_8051.SFR[ACC] ^= CPU_8051.REGISTERS[BANK ( )].R6;
 
 if ( PPRINT ) {		
 printf ("\tXRL A, R6\n");
@@ -1621,7 +1621,7 @@ printf ("\tXRL A, R6\n");
 
 int XRL_R7 ( ) { 
 
-	CPU_8051.SFR[ACC] ^= CPU_8051.REGISTERS[BANK].R7;
+	CPU_8051.SFR[ACC] ^= CPU_8051.REGISTERS[BANK ( )].R7;
 
 if ( PPRINT ) {		
 printf ("\tXRL A, R7\n");
@@ -1732,7 +1732,7 @@ printf ("\tMOV @%X, #%X\n", addr, data);
 int MOV_at_R0 ( ) {
 
 	int8_t data = fetch ( );
-	uint8_t addr = CPU_8051.REGISTERS[BANK].R0;
+	uint8_t addr = CPU_8051.REGISTERS[BANK ( )].R0;
 	*( (char*)&CPU_8051 + addr ) = data;
 
 if ( PPRINT ) {		
@@ -1747,7 +1747,7 @@ printf ("\tMOV @R0, #%X | R0 : %X\n", data, addr);
 int MOV_at_R1 ( ) {
 
 	int8_t data = fetch ( );
-	uint8_t addr = CPU_8051.REGISTERS[BANK].R1;
+	uint8_t addr = CPU_8051.REGISTERS[BANK ( )].R1;
 	*( (char*)&CPU_8051 + addr ) = data;
 
 if ( PPRINT ) {		
@@ -1760,10 +1760,10 @@ printf ("\tMOV @R1, #%X | R1 : %X\n", data, addr);
 
 int MOV_R0 ( ) {
 	
-	CPU_8051.REGISTERS[BANK].R0 = fetch ( );
+	CPU_8051.REGISTERS[BANK ( )].R0 = fetch ( );
 
 if ( PPRINT ) {		
-printf ("\tMOV R0, #%X \n", CPU_8051.REGISTERS[BANK].R0);
+printf ("\tMOV R0, #%X \n", CPU_8051.REGISTERS[BANK ( )].R0);
 }
 
 	return 1;
@@ -1772,10 +1772,10 @@ printf ("\tMOV R0, #%X \n", CPU_8051.REGISTERS[BANK].R0);
 
 int MOV_R1 ( ) {
 
-	CPU_8051.REGISTERS[BANK].R1 = fetch ( );	
+	CPU_8051.REGISTERS[BANK ( )].R1 = fetch ( );	
 
 if ( PPRINT ) {		
-printf ("\tMOV R1, #%X \n", CPU_8051.REGISTERS[BANK].R1);
+printf ("\tMOV R1, #%X \n", CPU_8051.REGISTERS[BANK ( )].R1);
 }
 
 	return 1;
@@ -1784,10 +1784,10 @@ printf ("\tMOV R1, #%X \n", CPU_8051.REGISTERS[BANK].R1);
 
 int MOV_R2 ( ) {
 	
-	CPU_8051.REGISTERS[BANK].R2 = fetch ( );	
+	CPU_8051.REGISTERS[BANK ( )].R2 = fetch ( );	
 
 if ( PPRINT ) {		
-printf ("\tMOV R2, #%X \n", CPU_8051.REGISTERS[BANK].R2);
+printf ("\tMOV R2, #%X \n", CPU_8051.REGISTERS[BANK ( )].R2);
 }
 
 	return 1;
@@ -1797,10 +1797,10 @@ printf ("\tMOV R2, #%X \n", CPU_8051.REGISTERS[BANK].R2);
 
 int MOV_R3 ( ) {
 	
-	CPU_8051.REGISTERS[BANK].R3 = fetch ( );	
+	CPU_8051.REGISTERS[BANK ( )].R3 = fetch ( );	
 
 if ( PPRINT ) {		
-printf ("\tMOV R3, #%X \n", CPU_8051.REGISTERS[BANK].R3);
+printf ("\tMOV R3, #%X \n", CPU_8051.REGISTERS[BANK ( )].R3);
 }
 
 	return 1;
@@ -1810,10 +1810,10 @@ printf ("\tMOV R3, #%X \n", CPU_8051.REGISTERS[BANK].R3);
 
 int MOV_R4 ( ) {
 	
-	CPU_8051.REGISTERS[BANK].R4 = fetch ( );	
+	CPU_8051.REGISTERS[BANK ( )].R4 = fetch ( );	
 
 if ( PPRINT ) {		
-printf ("\tMOV R4, #%X \n", CPU_8051.REGISTERS[BANK].R4);
+printf ("\tMOV R4, #%X \n", CPU_8051.REGISTERS[BANK ( )].R4);
 }
 
 	return 1;
@@ -1823,10 +1823,10 @@ printf ("\tMOV R4, #%X \n", CPU_8051.REGISTERS[BANK].R4);
 
 int MOV_R5 ( ) {
 
-	CPU_8051.REGISTERS[BANK].R5 = fetch ( );		
+	CPU_8051.REGISTERS[BANK ( )].R5 = fetch ( );		
 
 if ( PPRINT ) {		
-printf ("\tMOV R5, #%X \n", CPU_8051.REGISTERS[BANK].R5);
+printf ("\tMOV R5, #%X \n", CPU_8051.REGISTERS[BANK ( )].R5);
 }
 
 	return 1;
@@ -1836,10 +1836,10 @@ printf ("\tMOV R5, #%X \n", CPU_8051.REGISTERS[BANK].R5);
 
 int MOV_R6 ( ) {
 	
-	CPU_8051.REGISTERS[BANK].R6 = fetch ( );	
+	CPU_8051.REGISTERS[BANK ( )].R6 = fetch ( );	
 
 if ( PPRINT ) {		
-printf ("\tMOV R6, #%X \n", CPU_8051.REGISTERS[BANK].R6);
+printf ("\tMOV R6, #%X \n", CPU_8051.REGISTERS[BANK ( )].R6);
 }
 
 	return 1;
@@ -1849,10 +1849,10 @@ printf ("\tMOV R6, #%X \n", CPU_8051.REGISTERS[BANK].R6);
 
 int MOV_R7 ( ) {
 	
-	CPU_8051.REGISTERS[BANK].R7 = fetch ( );	
+	CPU_8051.REGISTERS[BANK ( )].R7 = fetch ( );	
 
 if ( PPRINT ) {		
-printf ("\tMOV R7, #%X \n", CPU_8051.REGISTERS[BANK].R7);
+printf ("\tMOV R7, #%X \n", CPU_8051.REGISTERS[BANK ( )].R7);
 }
 
 	return 1;
@@ -1979,7 +1979,7 @@ printf ("\tMOV @%X, @%X\n", dest_addr, sour_addr);
 int MOV_data_addr_atR0 ( ) {
 
 	uint8_t dest_addr = fetch ( );
-	uint8_t sour_addr = CPU_8051.REGISTERS[BANK].R0;
+	uint8_t sour_addr = CPU_8051.REGISTERS[BANK ( )].R0;
 	int8_t data = *( (char*)&CPU_8051 + sour_addr );
 	*( (char*)&CPU_8051 + dest_addr ) = data;
 
@@ -1995,7 +1995,7 @@ printf ("\tMOV @%X, @R0 | R0 : %X\n", dest_addr, sour_addr);
 int MOV_data_addr_atR1 ( ) {
 
 	uint8_t dest_addr = fetch ( );
-	uint8_t sour_addr = CPU_8051.REGISTERS[BANK].R1;
+	uint8_t sour_addr = CPU_8051.REGISTERS[BANK ( )].R1;
 	int8_t data = *( (char*)&CPU_8051 + sour_addr );
 	*( (char*)&CPU_8051 + dest_addr ) = data;
 
@@ -2010,7 +2010,7 @@ printf ("\tMOV @%X, @R1 | R1 : %X\n", dest_addr, sour_addr);
 int MOV_data_addr_R0 ( ) {
 
 	uint8_t dest_addr = fetch ( );
-	int8_t data = CPU_8051.REGISTERS[BANK].R0;
+	int8_t data = CPU_8051.REGISTERS[BANK ( )].R0;
 	*( (char*)&CPU_8051 + dest_addr ) = data;
 
 if ( PPRINT ) {		
@@ -2024,7 +2024,7 @@ printf ("\tMOV @%X, R0 | R0 : %X\n", dest_addr, data);
 int MOV_data_addr_R1 ( ) {
 
 	uint8_t dest_addr = fetch ( );
-	int8_t data = CPU_8051.REGISTERS[BANK].R1;
+	int8_t data = CPU_8051.REGISTERS[BANK ( )].R1;
 	*( (char*)&CPU_8051 + dest_addr ) = data;
 
 if ( PPRINT ) {		
@@ -2038,7 +2038,7 @@ printf ("\tMOV @%X, R1 | R1 : %X\n", dest_addr, data);
 int MOV_data_addr_R2 ( ) {
 
 	uint8_t dest_addr = fetch ( );
-	int8_t data = CPU_8051.REGISTERS[BANK].R2;
+	int8_t data = CPU_8051.REGISTERS[BANK ( )].R2;
 	*( (char*)&CPU_8051 + dest_addr ) = data;
 
 if ( PPRINT ) {		
@@ -2052,7 +2052,7 @@ printf ("\tMOV @%X, R2 | R2 : %X\n", dest_addr, data);
 int MOV_data_addr_R3 ( ) {
 
 	uint8_t dest_addr = fetch ( );
-	int8_t data = CPU_8051.REGISTERS[BANK].R3;
+	int8_t data = CPU_8051.REGISTERS[BANK ( )].R3;
 	*( (char*)&CPU_8051 + dest_addr ) = data;
 
 if ( PPRINT ) {		
@@ -2066,7 +2066,7 @@ printf ("\tMOV @%X, R3 | R3 : %X\n", dest_addr, data);
 int MOV_data_addr_R4 ( ) {
 
 	uint8_t dest_addr = fetch ( );
-	int8_t data = CPU_8051.REGISTERS[BANK].R4;
+	int8_t data = CPU_8051.REGISTERS[BANK ( )].R4;
 	*( (char*)&CPU_8051 + dest_addr ) = data;
 
 if ( PPRINT ) {		
@@ -2080,7 +2080,7 @@ printf ("\tMOV @%X, R4 | R4 : %X\n", dest_addr, data);
 int MOV_data_addr_R5 ( ) {
 
 	uint8_t dest_addr = fetch ( );
-	int8_t data = CPU_8051.REGISTERS[BANK].R5;
+	int8_t data = CPU_8051.REGISTERS[BANK ( )].R5;
 	*( (char*)&CPU_8051 + dest_addr ) = data;
 
 if ( PPRINT ) {		
@@ -2094,7 +2094,7 @@ printf ("\tMOV @%X, R5 | R5 : %X\n", dest_addr, data);
 int MOV_data_addr_R6 ( ) {
 
 	uint8_t dest_addr = fetch ( );
-	int8_t data = CPU_8051.REGISTERS[BANK].R6;
+	int8_t data = CPU_8051.REGISTERS[BANK ( )].R6;
 	*( (char*)&CPU_8051 + dest_addr ) = data;
 
 if ( PPRINT ) {		
@@ -2109,7 +2109,7 @@ printf ("\tMOV @%X, R6 | R6 : %X\n", dest_addr, data);
 int MOV_data_addr_R7 ( ) {
 
 	uint8_t dest_addr = fetch ( );
-	int8_t data = CPU_8051.REGISTERS[BANK].R0;
+	int8_t data = CPU_8051.REGISTERS[BANK ( )].R0;
 	*( (char*)&CPU_8051 + dest_addr ) = data;
 
 if ( PPRINT ) {		
@@ -2225,7 +2225,7 @@ printf ("\tSUBB A, @%X \n", addr);
 // SUBB A, @R0
 int SUBB_A_atR0 ( ) {  
 	
-	uint8_t addr = CPU_8051.REGISTERS[BANK].R0;
+	uint8_t addr = CPU_8051.REGISTERS[BANK ( )].R0;
 	int8_t data = *( (char*)&CPU_8051 + addr );
 	CPU_8051.SFR[ACC] = subb (CPU_8051.SFR[ACC], data);
 
@@ -2241,7 +2241,7 @@ printf ("\tSUBB A, @R0 | R0 : %X\n", addr);
 // SUBB A, @R1
 int SUBB_A_atR1 ( ) {
  
-	uint8_t addr = CPU_8051.REGISTERS[BANK].R0;
+	uint8_t addr = CPU_8051.REGISTERS[BANK ( )].R0;
 	int8_t data = *( (char*)&CPU_8051 + addr );
 	CPU_8051.SFR[ACC] = subb (CPU_8051.SFR[ACC], data);
 
@@ -2256,7 +2256,7 @@ printf ("\tSUBB A, @R1 | R1 : %X\n", addr);
 // SUBB A, R0
 int SUBB_R0 ( ) {  
 	
-	int8_t data = CPU_8051.REGISTERS[BANK].R0;
+	int8_t data = CPU_8051.REGISTERS[BANK ( )].R0;
 	CPU_8051.SFR[ACC] = subb (CPU_8051.SFR[ACC], data);
 
 if ( PPRINT ) {		
@@ -2269,7 +2269,7 @@ printf ("\tSUBB A, R0 | R0 : %X\n", data);
 // SUBB A, R1
 int SUBB_R1 ( ) {  
   	
-	int8_t data = CPU_8051.REGISTERS[BANK].R1;
+	int8_t data = CPU_8051.REGISTERS[BANK ( )].R1;
 	CPU_8051.SFR[ACC] = subb (CPU_8051.SFR[ACC], data);
 
 if ( PPRINT ) {		
@@ -2283,7 +2283,7 @@ printf ("\tSUBB A, R1 | R1 : %X\n", data);
 // SUBB A, R2
 int SUBB_R2 ( ) {  
 	
-	int8_t data = CPU_8051.REGISTERS[BANK].R2;
+	int8_t data = CPU_8051.REGISTERS[BANK ( )].R2;
 	CPU_8051.SFR[ACC] = subb (CPU_8051.SFR[ACC], data);
 
 if ( PPRINT ) {		
@@ -2297,7 +2297,7 @@ printf ("\tSUBB A, R2 | R2 : %X\n", data);
 // SUBB A, R3
 int SUBB_R3 ( ) {  
 	
-	int8_t data = CPU_8051.REGISTERS[BANK].R3;
+	int8_t data = CPU_8051.REGISTERS[BANK ( )].R3;
 	CPU_8051.SFR[ACC] = subb (CPU_8051.SFR[ACC], data);
 
 if ( PPRINT ) {		
@@ -2311,7 +2311,7 @@ printf ("\tSUBB A, R3 | R3 : %X\n", data);
 // SUBB A, R4
 int SUBB_R4 ( ) {  
 	
-	int8_t data = CPU_8051.REGISTERS[BANK].R4;
+	int8_t data = CPU_8051.REGISTERS[BANK ( )].R4;
 	CPU_8051.SFR[ACC] = subb (CPU_8051.SFR[ACC], data);
 
 if ( PPRINT ) {		
@@ -2324,7 +2324,7 @@ printf ("\tSUBB A, R4 | R4 : %X\n", data);
 // SUBB A, R5
 int SUBB_R5 ( ) {  
 	
-	int8_t data = CPU_8051.REGISTERS[BANK].R5;
+	int8_t data = CPU_8051.REGISTERS[BANK ( )].R5;
 	CPU_8051.SFR[ACC] = subb (CPU_8051.SFR[ACC], data);
 
 if ( PPRINT ) {		
@@ -2338,7 +2338,7 @@ printf ("\tSUBB A, R5 | R5 : %X\n", data);
 // SUBB A, R6
 int SUBB_R6 ( ) {  
 	
-	int8_t data = CPU_8051.REGISTERS[BANK].R6;
+	int8_t data = CPU_8051.REGISTERS[BANK ( )].R6;
 	CPU_8051.SFR[ACC] = subb (CPU_8051.SFR[ACC], data);
 
 if ( PPRINT ) {		
@@ -2353,7 +2353,7 @@ printf ("\tSUBB A, R6 | R6 : %X\n", data);
 // SUBB A, R7
 int SUBB_R7 ( ) {  
 	
-	int8_t data = CPU_8051.REGISTERS[BANK].R7;
+	int8_t data = CPU_8051.REGISTERS[BANK ( )].R7;
 	CPU_8051.SFR[ACC] = subb (CPU_8051.SFR[ACC], data);
 
 if ( PPRINT ) {		
@@ -2465,7 +2465,7 @@ printf ("\tMUL AB \n");
 
 int MOV_atR0_data_addr ( ) {
 
-	uint8_t dest_addr = CPU_8051.REGISTERS[BANK].R0;
+	uint8_t dest_addr = CPU_8051.REGISTERS[BANK ( )].R0;
 	uint8_t sour_addr = fetch ( );
 
 	*( (char*)&CPU_8051 + dest_addr) = *( (char*)&CPU_8051 + sour_addr );
@@ -2480,7 +2480,7 @@ printf ("\tMOV @R0, %X | R0 : %X\n", sour_addr, dest_addr);
 // 0xA7
 int MOV_atR1_data_addr ( ) {
 
-	uint8_t dest_addr = CPU_8051.REGISTERS[BANK].R1;
+	uint8_t dest_addr = CPU_8051.REGISTERS[BANK ( )].R1;
 	uint8_t sour_addr = fetch ( );
 
 	*( (char*)&CPU_8051 + dest_addr) = *( (char*)&CPU_8051 + sour_addr );
@@ -2496,7 +2496,7 @@ printf ("\tMOV @R1, %X | R1 : %X\n", sour_addr, dest_addr);
 int MOV_R0_data_addr ( ) {
 	
 	uint8_t sour_addr = fetch ( );
-	CPU_8051.REGISTERS[BANK].R0 = *( (char*)&CPU_8051 + sour_addr );
+	CPU_8051.REGISTERS[BANK ( )].R0 = *( (char*)&CPU_8051 + sour_addr );
 
 if ( PPRINT ) {		
 printf ("\tMOV R0, @%X \n", sour_addr);
@@ -2509,7 +2509,7 @@ printf ("\tMOV R0, @%X \n", sour_addr);
 int MOV_R1_data_addr ( ) {
 	
 	uint8_t sour_addr = fetch ( );
-	CPU_8051.REGISTERS[BANK].R1 = *( (char*)&CPU_8051 + sour_addr );
+	CPU_8051.REGISTERS[BANK ( )].R1 = *( (char*)&CPU_8051 + sour_addr );
 
 if ( PPRINT ) {		
 printf ("\tMOV R1, @%X \n", sour_addr);
@@ -2522,7 +2522,7 @@ printf ("\tMOV R1, @%X \n", sour_addr);
 int MOV_R2_data_addr ( ) {
 	
 	uint8_t sour_addr = fetch ( );
-	CPU_8051.REGISTERS[BANK].R2 = *( (char*)&CPU_8051 + sour_addr );
+	CPU_8051.REGISTERS[BANK ( )].R2 = *( (char*)&CPU_8051 + sour_addr );
 
 if ( PPRINT ) {		
 printf ("\tMOV R2, @%X \n", sour_addr);
@@ -2535,7 +2535,7 @@ printf ("\tMOV R2, @%X \n", sour_addr);
 int MOV_R3_data_addr ( ) {
 	
 	uint8_t sour_addr = fetch ( );
-	CPU_8051.REGISTERS[BANK].R3 = *( (char*)&CPU_8051 + sour_addr );
+	CPU_8051.REGISTERS[BANK ( )].R3 = *( (char*)&CPU_8051 + sour_addr );
 
 if ( PPRINT ) {		
 printf ("\tMOV R3, @%X \n", sour_addr);
@@ -2548,7 +2548,7 @@ printf ("\tMOV R3, @%X \n", sour_addr);
 int MOV_R4_data_addr ( ) {
 	
 	uint8_t sour_addr = fetch ( );
-	CPU_8051.REGISTERS[BANK].R4 = *( (char*)&CPU_8051 + sour_addr );
+	CPU_8051.REGISTERS[BANK ( )].R4 = *( (char*)&CPU_8051 + sour_addr );
 
 if ( PPRINT ) {		
 printf ("\tMOV R4, @%X \n", sour_addr);
@@ -2561,7 +2561,7 @@ printf ("\tMOV R4, @%X \n", sour_addr);
 int MOV_R5_data_addr ( ) {
 	
 	uint8_t sour_addr = fetch ( );
-	CPU_8051.REGISTERS[BANK].R5 = *( (char*)&CPU_8051 + sour_addr );
+	CPU_8051.REGISTERS[BANK ( )].R5 = *( (char*)&CPU_8051 + sour_addr );
 
 if ( PPRINT ) {		
 printf ("\tMOV R5, @%X \n", sour_addr);
@@ -2574,7 +2574,7 @@ printf ("\tMOV R5, @%X \n", sour_addr);
 int MOV_R6_data_addr ( ) {
 	
 	uint8_t sour_addr = fetch ( );
-	CPU_8051.REGISTERS[BANK].R6 = *( (char*)&CPU_8051 + sour_addr );
+	CPU_8051.REGISTERS[BANK ( )].R6 = *( (char*)&CPU_8051 + sour_addr );
 
 if ( PPRINT ) {		
 printf ("\tMOV R6, @%X \n", sour_addr);
@@ -2588,7 +2588,7 @@ printf ("\tMOV R6, @%X \n", sour_addr);
 int MOV_R7_data_addr ( ) {
 	
 	uint8_t sour_addr = fetch ( );
-	CPU_8051.REGISTERS[BANK].R7 = *( (char*)&CPU_8051 + sour_addr );
+	CPU_8051.REGISTERS[BANK ( )].R7 = *( (char*)&CPU_8051 + sour_addr );
 
 if ( PPRINT ) {		
 printf ("\tMOV R7, @%X \n", sour_addr);
@@ -2711,7 +2711,7 @@ printf ("\tCJNE A, @%X, %X \n", addr, displacement);
 // CJNE @R0, data, code addr
 int CJNE_atR0_data_codeaddr ( ) { 
 
-	int8_t addr = CPU_8051.REGISTERS[BANK].R0;
+	int8_t addr = CPU_8051.REGISTERS[BANK ( )].R0;
 	int8_t data = *( (char*)&CPU_8051 + addr);
 	int8_t imm_data = fetch ( );
 	int8_t displacement =  fetch ( );
@@ -2733,7 +2733,7 @@ printf ("\tCJNE @R0, #%X, %X | R0 : %X\n", imm_data, displacement, addr);
 // CJNE @R1, data, code addr 
 int CJNE_atR1_data_codeaddr ( ) { 
 
-	int8_t addr = CPU_8051.REGISTERS[BANK].R1;
+	int8_t addr = CPU_8051.REGISTERS[BANK ( )].R1;
 	int8_t data = *( (char*)&CPU_8051 + addr);
 	int8_t imm_data = fetch ( );
 	int8_t displacement =  fetch ( );
@@ -2755,7 +2755,7 @@ printf ("\tCJNE @R1, #%X, %X | R1 : %X\n", imm_data, displacement, addr);
 // CJNE R0, data, codeaddr
 int CJNE_R0 ( ) { 
 
-	int8_t data = CPU_8051.REGISTERS[BANK].R0;
+	int8_t data = CPU_8051.REGISTERS[BANK ( )].R0;
 	int8_t imm_data = fetch ( );
 	int8_t displacement =  fetch ( );
 	
@@ -2776,7 +2776,7 @@ printf ("\tCJNE R0, #%X, %X\n", imm_data,displacement);
 // CJNE R1, data,displacement
 int CJNE_R1 ( ) { 
 
-	int8_t data = CPU_8051.REGISTERS[BANK].R1;
+	int8_t data = CPU_8051.REGISTERS[BANK ( )].R1;
 	int8_t imm_data = fetch ( );
 	int8_t displacement =  fetch ( );
 	
@@ -2798,7 +2798,7 @@ printf ("\tCJNE R1, #%X, %X\n", imm_data,displacement);
 // CJNE R2, data, displacement
 int CJNE_R2 ( ) { 
 
-	int8_t data = CPU_8051.REGISTERS[BANK].R2;
+	int8_t data = CPU_8051.REGISTERS[BANK ( )].R2;
 	int8_t imm_data = fetch ( );
 	int8_t displacement =  fetch ( );
 	
@@ -2820,7 +2820,7 @@ printf ("\tCJNE R2, #%X, %X\n", imm_data,displacement);
 // CJNE R3, data, displacement
 int CJNE_R3 ( ) { 
 
-	int8_t data = CPU_8051.REGISTERS[BANK].R3;
+	int8_t data = CPU_8051.REGISTERS[BANK ( )].R3;
 	int8_t imm_data = fetch ( );
 	int8_t displacement =  fetch ( );
 	
@@ -2842,7 +2842,7 @@ printf ("\tCJNE R3, #%X, %X\n", imm_data,displacement);
 // CJNE R4, data, displacement
 int CJNE_R4 ( ) { 
 
-	int8_t data = CPU_8051.REGISTERS[BANK].R4;
+	int8_t data = CPU_8051.REGISTERS[BANK ( )].R4;
 	int8_t imm_data = fetch ( );
 	int8_t displacement =  fetch ( );
 	
@@ -2864,7 +2864,7 @@ printf ("\tCJNE R4, #%X, %X\n", imm_data,displacement);
 // CJNE R5, data, displacemnt
 int CJNE_R5 ( ) { 
 
-	int8_t data = CPU_8051.REGISTERS[BANK].R5;
+	int8_t data = CPU_8051.REGISTERS[BANK ( )].R5;
 	int8_t imm_data = fetch ( );
 	int8_t displacement =  fetch ( );
 	
@@ -2886,7 +2886,7 @@ printf ("\tCJNE R5, #%X, %X\n", imm_data,displacement);
 // CJNE R6, data, displacement
 int CJNE_R6 ( ) { 
 
-	int8_t data = CPU_8051.REGISTERS[BANK].R6;
+	int8_t data = CPU_8051.REGISTERS[BANK ( )].R6;
 	int8_t imm_data = fetch ( );
 	int8_t displacement =  fetch ( );
 	
@@ -2908,7 +2908,7 @@ printf ("\tCJNE R6, #%X, %X\n", imm_data,displacement);
 // CJNE R7, data, displacement
 int CJNE_R7 ( ) { 
 
-	int8_t data = CPU_8051.REGISTERS[BANK].R7;
+	int8_t data = CPU_8051.REGISTERS[BANK ( )].R7;
 	int8_t imm_data = fetch ( );
 	int8_t displacement =  fetch ( );
 	
@@ -2998,7 +2998,7 @@ printf ("\tXCH A, @%X \n", addr);
 
 int XCH_A_at_R0 ( ) {
 	
-	uint8_t addr = CPU_8051.REGISTERS[BANK].R0;
+	uint8_t addr = CPU_8051.REGISTERS[BANK ( )].R0;
 	int8_t tmp = CPU_8051.SFR[ACC];
 	CPU_8051.SFR[ACC] = *( (char*)&CPU_8051 + addr );
 	*( (char*)&CPU_8051 + addr ) = tmp;
@@ -3014,7 +3014,7 @@ printf ("\tXCH A, @R0 | R0 : %X \n", addr);
 // 0xC7
 int XCH_A_at_R1 ( ) {
 	
-	uint8_t addr = CPU_8051.REGISTERS[BANK].R1;
+	uint8_t addr = CPU_8051.REGISTERS[BANK ( )].R1;
 	int8_t tmp = CPU_8051.SFR[ACC];
 	CPU_8051.SFR[ACC] = *( (char*)&CPU_8051 + addr );
 	*( (char*)&CPU_8051 + addr ) = tmp;
@@ -3033,8 +3033,8 @@ printf ("\tXCH A, @R1 | R1 : %X \n", addr);
 int XCH_A_R0 ( ) {
 
 	int8_t temp = CPU_8051.SFR[ACC];
-	CPU_8051.SFR[ACC] = CPU_8051.REGISTERS[BANK].R0;
-	CPU_8051.REGISTERS[BANK].R0 = temp;
+	CPU_8051.SFR[ACC] = CPU_8051.REGISTERS[BANK ( )].R0;
+	CPU_8051.REGISTERS[BANK ( )].R0 = temp;
 
 if ( PPRINT ) {		
 printf ("\tXCH A, R0\n");
@@ -3047,8 +3047,8 @@ printf ("\tXCH A, R0\n");
 int XCH_A_R1 ( ) {
 
 	int8_t temp = CPU_8051.SFR[ACC];
-	CPU_8051.SFR[ACC] = CPU_8051.REGISTERS[BANK].R1;
-	CPU_8051.REGISTERS[BANK].R1 = temp;
+	CPU_8051.SFR[ACC] = CPU_8051.REGISTERS[BANK ( )].R1;
+	CPU_8051.REGISTERS[BANK ( )].R1 = temp;
 
 if ( PPRINT ) {		
 printf ("\tXCH A, R1\n");
@@ -3061,8 +3061,8 @@ printf ("\tXCH A, R1\n");
 int XCH_A_R2 ( ) {
 
 	int8_t temp = CPU_8051.SFR[ACC];
-	CPU_8051.SFR[ACC] = CPU_8051.REGISTERS[BANK].R2;
-	CPU_8051.REGISTERS[BANK].R2 = temp;
+	CPU_8051.SFR[ACC] = CPU_8051.REGISTERS[BANK ( )].R2;
+	CPU_8051.REGISTERS[BANK ( )].R2 = temp;
 
 if ( PPRINT ) {		
 printf ("\tXCH A, R2\n");
@@ -3075,8 +3075,8 @@ printf ("\tXCH A, R2\n");
 int XCH_A_R3 ( ) {
 
 	int8_t temp = CPU_8051.SFR[ACC];
-	CPU_8051.SFR[ACC] = CPU_8051.REGISTERS[BANK].R3;
-	CPU_8051.REGISTERS[BANK].R3 = temp;
+	CPU_8051.SFR[ACC] = CPU_8051.REGISTERS[BANK ( )].R3;
+	CPU_8051.REGISTERS[BANK ( )].R3 = temp;
 
 if ( PPRINT ) {		
 printf ("\tXCH A, R3\n");
@@ -3089,8 +3089,8 @@ printf ("\tXCH A, R3\n");
 int XCH_A_R4 ( ) {
 
 	int8_t temp = CPU_8051.SFR[ACC];
-	CPU_8051.SFR[ACC] = CPU_8051.REGISTERS[BANK].R4;
-	CPU_8051.REGISTERS[BANK].R4 = temp;
+	CPU_8051.SFR[ACC] = CPU_8051.REGISTERS[BANK ( )].R4;
+	CPU_8051.REGISTERS[BANK ( )].R4 = temp;
 
 if ( PPRINT ) {		
 printf ("\tXCH A, R4\n");
@@ -3103,8 +3103,8 @@ printf ("\tXCH A, R4\n");
 int XCH_A_R5 ( ) {
 
 	int8_t temp = CPU_8051.SFR[ACC];
-	CPU_8051.SFR[ACC] = CPU_8051.REGISTERS[BANK].R5;
-	CPU_8051.REGISTERS[BANK].R5 = temp;
+	CPU_8051.SFR[ACC] = CPU_8051.REGISTERS[BANK ( )].R5;
+	CPU_8051.REGISTERS[BANK ( )].R5 = temp;
 
 if ( PPRINT ) {		
 printf ("\tXCH A, R5\n");
@@ -3117,8 +3117,8 @@ printf ("\tXCH A, R5\n");
 int XCH_A_R6 ( ) {
 
 	int8_t temp = CPU_8051.SFR[ACC];
-	CPU_8051.SFR[ACC] = CPU_8051.REGISTERS[BANK].R6;
-	CPU_8051.REGISTERS[BANK].R6 = temp;
+	CPU_8051.SFR[ACC] = CPU_8051.REGISTERS[BANK ( )].R6;
+	CPU_8051.REGISTERS[BANK ( )].R6 = temp;
 
 if ( PPRINT ) {		
 printf ("\tXCH A, R6\n");
@@ -3132,8 +3132,8 @@ printf ("\tXCH A, R6\n");
 int XCH_A_R7 ( ) {
 
 	int8_t temp = CPU_8051.SFR[ACC];
-	CPU_8051.SFR[ACC] = CPU_8051.REGISTERS[BANK].R7;
-	CPU_8051.REGISTERS[BANK].R7 = temp;
+	CPU_8051.SFR[ACC] = CPU_8051.REGISTERS[BANK ( )].R7;
+	CPU_8051.REGISTERS[BANK ( )].R7 = temp;
 
 if ( PPRINT ) {		
 printf ("\tXCH A, R7\n");
@@ -3254,7 +3254,7 @@ printf ("\tDJNZ @%X,%X\n", addr, displacement);
  */
 int XCHD_A_at_R0 ( ) {
 
-	uint8_t addr = CPU_8051.REGISTERS[BANK].R0;
+	uint8_t addr = CPU_8051.REGISTERS[BANK ( )].R0;
 	int8_t data = *( (char*)&CPU_8051 + addr);
 	int8_t tmp = CPU_8051.SFR[ACC];
 	CPU_8051.SFR[ACC] = (CPU_8051.SFR[ACC] & 0xF0) | (0x0F & data);
@@ -3273,7 +3273,7 @@ printf ("\tXCHD A, @R0 | R0 : %X\n", addr);
 // XCHD A, @R1
 int XCHD_A_at_R1 ( ) {
 
-	uint8_t addr = CPU_8051.REGISTERS[BANK].R1;
+	uint8_t addr = CPU_8051.REGISTERS[BANK ( )].R1;
 	int8_t data = *( (char*)&CPU_8051 + addr);
 	int8_t tmp = CPU_8051.SFR[ACC];
 	CPU_8051.SFR[ACC] = (CPU_8051.SFR[ACC] & 0xF0) | (0x0F & data);
@@ -3292,8 +3292,8 @@ printf ("\tXCHD A, @R1 | R1 : %X\n", addr);
 int DJNZ_R0 ( ) {
 
 	int8_t displacement = fetch ( );
-	CPU_8051.REGISTERS[BANK].R0 -= 1;
-	if ( CPU_8051.REGISTERS[BANK].R0  == 0) //branch
+	CPU_8051.REGISTERS[BANK ( )].R0 -= 1;
+	if ( CPU_8051.REGISTERS[BANK ( )].R0  == 0) //branch
 	{	
 		CPU_8051.PC += displacement;
 	}
@@ -3308,8 +3308,8 @@ printf ("\tDJNZ R0, %X\n", displacement);
 int DJNZ_R1 ( ) {
 
 	int8_t displacement = fetch ( );
-	CPU_8051.REGISTERS[BANK].R1 -= 1;
-	if ( CPU_8051.REGISTERS[BANK].R1  == 0) //branch
+	CPU_8051.REGISTERS[BANK ( )].R1 -= 1;
+	if ( CPU_8051.REGISTERS[BANK ( )].R1  == 0) //branch
 	{	
 		CPU_8051.PC += displacement;
 	}
@@ -3324,8 +3324,8 @@ printf ("\tDJNZ R1, %X\n", displacement);
 int DJNZ_R2 ( ) {
 
 	int8_t displacement = fetch ( );
-	CPU_8051.REGISTERS[BANK].R2 -= 1;
-	if ( CPU_8051.REGISTERS[BANK].R2  == 0) //branch
+	CPU_8051.REGISTERS[BANK ( )].R2 -= 1;
+	if ( CPU_8051.REGISTERS[BANK ( )].R2  == 0) //branch
 	{	
 		CPU_8051.PC += displacement;
 	}
@@ -3340,8 +3340,8 @@ printf ("\tDJNZ R2, %X\n", displacement);
 int DJNZ_R3 ( ) {
 
 	int8_t displacement = fetch ( );
-	CPU_8051.REGISTERS[BANK].R3 -= 1;
-	if ( CPU_8051.REGISTERS[BANK].R3  == 0) //branch
+	CPU_8051.REGISTERS[BANK ( )].R3 -= 1;
+	if ( CPU_8051.REGISTERS[BANK ( )].R3  == 0) //branch
 	{	
 		CPU_8051.PC += displacement;
 	}
@@ -3356,8 +3356,8 @@ printf ("\tDJNZ R3, %X\n", displacement);
 int DJNZ_R4 ( ) {
 
 	int8_t displacement = fetch ( );
-	CPU_8051.REGISTERS[BANK].R4 -= 1;
-	if ( CPU_8051.REGISTERS[BANK].R4  == 0) //branch
+	CPU_8051.REGISTERS[BANK ( )].R4 -= 1;
+	if ( CPU_8051.REGISTERS[BANK ( )].R4  == 0) //branch
 	{	
 		CPU_8051.PC += displacement;
 	}
@@ -3372,8 +3372,8 @@ printf ("\tDJNZ R4, %X\n", displacement);
 int DJNZ_R5 ( ) {
 
 	int8_t displacement = fetch ( );
-	CPU_8051.REGISTERS[BANK].R5 -= 1;
-	if ( CPU_8051.REGISTERS[BANK].R5  == 0) //branch
+	CPU_8051.REGISTERS[BANK ( )].R5 -= 1;
+	if ( CPU_8051.REGISTERS[BANK ( )].R5  == 0) //branch
 	{	
 		CPU_8051.PC += displacement;
 	}
@@ -3389,8 +3389,8 @@ printf ("\tDJNZ R5, %X\n", displacement);
 int DJNZ_R6 ( ) {
 
 	int8_t displacement = fetch ( );
-	CPU_8051.REGISTERS[BANK].R6 -= 1;
-	if ( CPU_8051.REGISTERS[BANK].R6  == 0) //branch
+	CPU_8051.REGISTERS[BANK ( )].R6 -= 1;
+	if ( CPU_8051.REGISTERS[BANK ( )].R6  == 0) //branch
 	{	
 		CPU_8051.PC += displacement;
 	}
@@ -3407,8 +3407,8 @@ printf ("\tDJNZ R6, %X\n", displacement);
 int DJNZ_R7 ( ) {
 
 	int8_t displacement = fetch ( );
-	CPU_8051.REGISTERS[BANK].R7 -= 1;
-	if ( CPU_8051.REGISTERS[BANK].R7  == 0) //branch
+	CPU_8051.REGISTERS[BANK ( )].R7 -= 1;
+	if ( CPU_8051.REGISTERS[BANK ( )].R7  == 0) //branch
 	{	
 		CPU_8051.PC += displacement;
 	}
@@ -3454,7 +3454,7 @@ printf ("\tAJMP_0xE1 %X\n", low_add_byte);
 // MOVX A, @R0
 int MOVX_A_at_R0 ( ) {
 
-	uint8_t addr = CPU_8051.REGISTERS[BANK].R0;
+	uint8_t addr = CPU_8051.REGISTERS[BANK ( )].R0;
 	CPU_8051.SFR[ACC] = CPU_8051.Code_Memory[addr];
 
 if ( PPRINT ) {		
@@ -3467,7 +3467,7 @@ printf ("\tMOVX A, @R0 | R0 : %X\n", addr);
 // MOVX A, @R1
 int MOVX_A_at_R1 ( ) {
 
-	uint8_t addr = CPU_8051.REGISTERS[BANK].R1;
+	uint8_t addr = CPU_8051.REGISTERS[BANK ( )].R1;
 	CPU_8051.SFR[ACC] = CPU_8051.Code_Memory[addr];
 
 if ( PPRINT ) {		
@@ -3510,11 +3510,11 @@ printf ("\tMOV A, @%X\n", addr);
 
 int MOV_A_at_R0 ( ) {
 
-	uint8_t addr = CPU_8051.REGISTERS[BANK].R0;
+	uint8_t addr = CPU_8051.REGISTERS[BANK ( )].R0;
 	CPU_8051.SFR[ACC] = *( (char*)&CPU_8051 + addr );
 
 if ( PPRINT ) {		
-printf ("\tMOV A, @R0 | R0 : %X\n", CPU_8051.REGISTERS[BANK].R0);
+printf ("\tMOV A, @R0 | R0 : %X\n", CPU_8051.REGISTERS[BANK ( )].R0);
 }
 
 	return 1;
@@ -3524,11 +3524,11 @@ printf ("\tMOV A, @R0 | R0 : %X\n", CPU_8051.REGISTERS[BANK].R0);
 // 0xE7
 int MOV_A_at_R1 ( ) {
 
-	uint8_t addr = CPU_8051.REGISTERS[BANK].R1;
+	uint8_t addr = CPU_8051.REGISTERS[BANK ( )].R1;
 	CPU_8051.SFR[ACC] = *( (char*)&CPU_8051 + addr );
 
 if ( PPRINT ) {		
-printf ("\tMOV A, @R1 | R1 : %X\n", CPU_8051.REGISTERS[BANK].R1 );
+printf ("\tMOV A, @R1 | R1 : %X\n", CPU_8051.REGISTERS[BANK ( )].R1 );
 }
 
 	return 1;
@@ -3540,10 +3540,10 @@ printf ("\tMOV A, @R1 | R1 : %X\n", CPU_8051.REGISTERS[BANK].R1 );
  */
 int MOV_A_R0 ( ) {
 
-	CPU_8051.SFR[ACC] = CPU_8051.REGISTERS[BANK].R0;
+	CPU_8051.SFR[ACC] = CPU_8051.REGISTERS[BANK ( )].R0;
 
 if ( PPRINT ) {		
-printf ("\tMOV A, R0 | R0 : %X\n", CPU_8051.REGISTERS[BANK].R0);
+printf ("\tMOV A, R0 | R0 : %X\n", CPU_8051.REGISTERS[BANK ( )].R0);
 }
 
 	return 1;
@@ -3552,10 +3552,10 @@ printf ("\tMOV A, R0 | R0 : %X\n", CPU_8051.REGISTERS[BANK].R0);
 
 int MOV_A_R1 ( ) {
 
-	CPU_8051.SFR[ACC] = CPU_8051.REGISTERS[BANK].R1;
+	CPU_8051.SFR[ACC] = CPU_8051.REGISTERS[BANK ( )].R1;
 
 if ( PPRINT ) {		
-printf ("\tMOV A, R1 | R1 : %X\n", CPU_8051.REGISTERS[BANK].R1);
+printf ("\tMOV A, R1 | R1 : %X\n", CPU_8051.REGISTERS[BANK ( )].R1);
 }
 
 	return 1;
@@ -3564,10 +3564,10 @@ printf ("\tMOV A, R1 | R1 : %X\n", CPU_8051.REGISTERS[BANK].R1);
 
 int MOV_A_R2 ( ) {
 
-	CPU_8051.SFR[ACC] = CPU_8051.REGISTERS[BANK].R2;
+	CPU_8051.SFR[ACC] = CPU_8051.REGISTERS[BANK ( )].R2;
 
 if ( PPRINT ) {		
-printf ("\tMOV A, R2 | R2 : %X\n", CPU_8051.REGISTERS[BANK].R2);
+printf ("\tMOV A, R2 | R2 : %X\n", CPU_8051.REGISTERS[BANK ( )].R2);
 }
 
 	return 1;
@@ -3576,10 +3576,10 @@ printf ("\tMOV A, R2 | R2 : %X\n", CPU_8051.REGISTERS[BANK].R2);
 
 int MOV_A_R3 ( ) {
 
-	CPU_8051.SFR[ACC] = CPU_8051.REGISTERS[BANK].R3;
+	CPU_8051.SFR[ACC] = CPU_8051.REGISTERS[BANK ( )].R3;
 
 if ( PPRINT ) {		
-printf ("\tMOV A, R3 | R3 : %X\n", CPU_8051.REGISTERS[BANK].R3);
+printf ("\tMOV A, R3 | R3 : %X\n", CPU_8051.REGISTERS[BANK ( )].R3);
 }
 
 	return 1;
@@ -3588,10 +3588,10 @@ printf ("\tMOV A, R3 | R3 : %X\n", CPU_8051.REGISTERS[BANK].R3);
 
 int MOV_A_R4 ( ) {
 
-	CPU_8051.SFR[ACC] = CPU_8051.REGISTERS[BANK].R4;
+	CPU_8051.SFR[ACC] = CPU_8051.REGISTERS[BANK ( )].R4;
 
 if ( PPRINT ) {		
-printf ("\tMOV A, R4 | R4 : %X\n", CPU_8051.REGISTERS[BANK].R4);
+printf ("\tMOV A, R4 | R4 : %X\n", CPU_8051.REGISTERS[BANK ( )].R4);
 }
 
 	return 1;
@@ -3600,10 +3600,10 @@ printf ("\tMOV A, R4 | R4 : %X\n", CPU_8051.REGISTERS[BANK].R4);
 
 int MOV_A_R5 ( ) {
 
-	CPU_8051.SFR[ACC] = CPU_8051.REGISTERS[BANK].R5;
+	CPU_8051.SFR[ACC] = CPU_8051.REGISTERS[BANK ( )].R5;
 
 if ( PPRINT ) {		
-printf ("\tMOV A, R5 | R5 : %X\n", CPU_8051.REGISTERS[BANK].R5);
+printf ("\tMOV A, R5 | R5 : %X\n", CPU_8051.REGISTERS[BANK ( )].R5);
 }
 
 	return 1;
@@ -3612,10 +3612,10 @@ printf ("\tMOV A, R5 | R5 : %X\n", CPU_8051.REGISTERS[BANK].R5);
 
 int MOV_A_R6 ( ) {
 
-	CPU_8051.SFR[ACC] = CPU_8051.REGISTERS[BANK].R6;
+	CPU_8051.SFR[ACC] = CPU_8051.REGISTERS[BANK ( )].R6;
 
 if ( PPRINT ) {		
-printf ("\tMOV A, R6 | R6 : %X\n", CPU_8051.REGISTERS[BANK].R6);
+printf ("\tMOV A, R6 | R6 : %X\n", CPU_8051.REGISTERS[BANK ( )].R6);
 }
 
 	return 1;
@@ -3625,10 +3625,10 @@ printf ("\tMOV A, R6 | R6 : %X\n", CPU_8051.REGISTERS[BANK].R6);
 //0xEF
 int MOV_A_R7 ( ) {
 
-	CPU_8051.SFR[ACC] = CPU_8051.REGISTERS[BANK].R7;
+	CPU_8051.SFR[ACC] = CPU_8051.REGISTERS[BANK ( )].R7;
 
 if ( PPRINT ) {		
-printf ("\tMOV A, R7 | R7 : %X\n", CPU_8051.REGISTERS[BANK].R7);
+printf ("\tMOV A, R7 | R7 : %X\n", CPU_8051.REGISTERS[BANK ( )].R7);
 }
 
 	return 1;
@@ -3669,11 +3669,11 @@ printf ("\tACALL_0xF1 lower byte addr %X\n", lower_addr_byte);
 
 int MOVX_at_R0_A ( ) {
 
-	uint8_t addr = CPU_8051.REGISTERS[BANK].R0;
+	uint8_t addr = CPU_8051.REGISTERS[BANK ( )].R0;
 	*( (char*)&CPU_8051 + addr ) = CPU_8051.SFR[ACC];
 
 if ( PPRINT ) {		
-printf ("\tMOVX @R0, A | R0 : %X\n", CPU_8051.REGISTERS[BANK].R0);
+printf ("\tMOVX @R0, A | R0 : %X\n", CPU_8051.REGISTERS[BANK ( )].R0);
 }
 
 	return 1;
@@ -3682,11 +3682,11 @@ printf ("\tMOVX @R0, A | R0 : %X\n", CPU_8051.REGISTERS[BANK].R0);
 
 int MOVX_at_R1_A ( ) {
 
-	uint8_t addr = CPU_8051.REGISTERS[BANK].R1;
+	uint8_t addr = CPU_8051.REGISTERS[BANK ( )].R1;
 	*( (char*)&CPU_8051 + addr ) = CPU_8051.SFR[ACC];
 
 if ( PPRINT ) {		
-printf ("\tMOVX @R1, A | R1 : %X\n", CPU_8051.REGISTERS[BANK].R1);
+printf ("\tMOVX @R1, A | R1 : %X\n", CPU_8051.REGISTERS[BANK ( )].R1);
 }
 
 	return 1;
@@ -3723,11 +3723,11 @@ printf ("\tMOV @%X, A \n", addr);
 
 int MOV_at_R0_A ( ) {
 
-	uint8_t addr = CPU_8051.REGISTERS[BANK].R0;
+	uint8_t addr = CPU_8051.REGISTERS[BANK ( )].R0;
 	*( (char*)&CPU_8051 + addr ) = CPU_8051.SFR[ACC];
 
 if ( PPRINT ) {		
-printf ("\tMOV @R0, A | R0 : %X\n", CPU_8051.REGISTERS[BANK].R0);
+printf ("\tMOV @R0, A | R0 : %X\n", CPU_8051.REGISTERS[BANK ( )].R0);
 }
 
 	return 1;
@@ -3737,11 +3737,11 @@ printf ("\tMOV @R0, A | R0 : %X\n", CPU_8051.REGISTERS[BANK].R0);
 // 0xF7
 int MOV_at_R1_A ( ) {
 
-	uint8_t addr = CPU_8051.REGISTERS[BANK].R1;
+	uint8_t addr = CPU_8051.REGISTERS[BANK ( )].R1;
 	*( (char*)&CPU_8051 + addr ) = CPU_8051.SFR[ACC];
 
 if ( PPRINT ) {		
-printf ("\tMOV @R1, A | R1 : %X\n", CPU_8051.REGISTERS[BANK].R1);
+printf ("\tMOV @R1, A | R1 : %X\n", CPU_8051.REGISTERS[BANK ( )].R1);
 }
 
 	return 1;
@@ -3750,10 +3750,10 @@ printf ("\tMOV @R1, A | R1 : %X\n", CPU_8051.REGISTERS[BANK].R1);
 
 int MOV_R0_A ( ) {
 
-	CPU_8051.REGISTERS[BANK].R0 = CPU_8051.SFR[ACC];
+	CPU_8051.REGISTERS[BANK ( )].R0 = CPU_8051.SFR[ACC];
 
 if ( PPRINT ) {		
-printf ("\tMOV R0, A | R0 : %X\n", CPU_8051.REGISTERS[BANK].R0);
+printf ("\tMOV R0, A | R0 : %X\n", CPU_8051.REGISTERS[BANK ( )].R0);
 }
 
 	return 1;
@@ -3762,10 +3762,10 @@ printf ("\tMOV R0, A | R0 : %X\n", CPU_8051.REGISTERS[BANK].R0);
 
 int MOV_R1_A ( ) {
 
-	CPU_8051.REGISTERS[BANK].R1 = CPU_8051.SFR[ACC];
+	CPU_8051.REGISTERS[BANK ( )].R1 = CPU_8051.SFR[ACC];
 
 if ( PPRINT ) {		
-printf ("\tMOV R1, A | R1 : %X\n", CPU_8051.REGISTERS[BANK].R1);
+printf ("\tMOV R1, A | R1 : %X\n", CPU_8051.REGISTERS[BANK ( )].R1);
 }
 
 	return 1;
@@ -3774,10 +3774,10 @@ printf ("\tMOV R1, A | R1 : %X\n", CPU_8051.REGISTERS[BANK].R1);
 
 int MOV_R2_A ( ) {
 
-	CPU_8051.REGISTERS[BANK].R2 = CPU_8051.SFR[ACC];
+	CPU_8051.REGISTERS[BANK ( )].R2 = CPU_8051.SFR[ACC];
 
 if ( PPRINT ) {		
-printf ("\tMOV R2, A | R2 : %X\n", CPU_8051.REGISTERS[BANK].R2);
+printf ("\tMOV R2, A | R2 : %X\n", CPU_8051.REGISTERS[BANK ( )].R2);
 }
 
 	return 1;
@@ -3786,10 +3786,10 @@ printf ("\tMOV R2, A | R2 : %X\n", CPU_8051.REGISTERS[BANK].R2);
 
 int MOV_R3_A ( ) {
 
-	CPU_8051.REGISTERS[BANK].R3 = CPU_8051.SFR[ACC];
+	CPU_8051.REGISTERS[BANK ( )].R3 = CPU_8051.SFR[ACC];
 
 if ( PPRINT ) {		
-printf ("\tMOV R3, A | R3 : %X\n", CPU_8051.REGISTERS[BANK].R3);
+printf ("\tMOV R3, A | R3 : %X\n", CPU_8051.REGISTERS[BANK ( )].R3);
 }
 
 	return 1;
@@ -3798,10 +3798,10 @@ printf ("\tMOV R3, A | R3 : %X\n", CPU_8051.REGISTERS[BANK].R3);
 
 int MOV_R4_A ( ) {
 
-	CPU_8051.REGISTERS[BANK].R4 = CPU_8051.SFR[ACC];
+	CPU_8051.REGISTERS[BANK ( )].R4 = CPU_8051.SFR[ACC];
 
 if ( PPRINT ) {		
-printf ("\tMOV R4, A | R4 : %X\n", CPU_8051.REGISTERS[BANK].R4);
+printf ("\tMOV R4, A | R4 : %X\n", CPU_8051.REGISTERS[BANK ( )].R4);
 }
 
 	return 1;
@@ -3810,10 +3810,10 @@ printf ("\tMOV R4, A | R4 : %X\n", CPU_8051.REGISTERS[BANK].R4);
 
 int MOV_R5_A ( ) {
 
-	CPU_8051.REGISTERS[BANK].R5 = CPU_8051.SFR[ACC];
+	CPU_8051.REGISTERS[BANK ( )].R5 = CPU_8051.SFR[ACC];
 
 if ( PPRINT ) {		
-printf ("\tMOV R5, A | R5 : %X\n", CPU_8051.REGISTERS[BANK].R5);
+printf ("\tMOV R5, A | R5 : %X\n", CPU_8051.REGISTERS[BANK ( )].R5);
 }
 
 	return 1;
@@ -3822,10 +3822,10 @@ printf ("\tMOV R5, A | R5 : %X\n", CPU_8051.REGISTERS[BANK].R5);
 
 int MOV_R6_A ( ) {
 
-	CPU_8051.REGISTERS[BANK].R6 = CPU_8051.SFR[ACC];
+	CPU_8051.REGISTERS[BANK ( )].R6 = CPU_8051.SFR[ACC];
 
 if ( PPRINT ) {		
-printf ("\tMOV R6, A | R6 : %X\n", CPU_8051.REGISTERS[BANK].R6);
+printf ("\tMOV R6, A | R6 : %X\n", CPU_8051.REGISTERS[BANK ( )].R6);
 }
 
 	return 1;
@@ -3835,10 +3835,10 @@ printf ("\tMOV R6, A | R6 : %X\n", CPU_8051.REGISTERS[BANK].R6);
 //0xFF
 int MOV_R7_A ( ) {
 
-	CPU_8051.REGISTERS[BANK].R7 = CPU_8051.SFR[ACC];
+	CPU_8051.REGISTERS[BANK ( )].R7 = CPU_8051.SFR[ACC];
 
 if ( PPRINT ) {		
-printf ("\tMOV R7, A | R7 : %X\n", CPU_8051.REGISTERS[BANK].R7);
+printf ("\tMOV R7, A | R7 : %X\n", CPU_8051.REGISTERS[BANK ( )].R7);
 }
 
 	return 1;

@@ -19,7 +19,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 
-#define DEBUG
+//#define DEBUG
 
 #ifndef DEBUG 
 #define FLASH 4096
@@ -28,30 +28,30 @@
 #endif
 
 // SFR Memory Map from 0x80 - 0xFF
-#define 	P0 		0x80	// Port 0
-#define 	SP 		0x81	// Stack Pointer
-#define 	DPL 	0x82	// DPTR Low byte
-#define 	DPH 	0x83	// DPTR High Byte
-#define 	PCON	0x87	// Power Control
-#define 	TCON 	0x88	// Timer Control
-#define 	TMOD 	0x89	// Timer Mode Control
-#define 	TL0 	0x8A	// Timer 0 Low Byte 
-#define 	TL1 	0x8B	// Timer 1 Low byte
-#define 	TH0 	0x8C	// Timer 0 High Byte
-#define 	TH1 	0x8D	// Timer 1 High Byte
-#define 	P1 		0x90	// Port 1
-#define 	SCON 	0x98	// Serial Control
-#define 	SBUF 	0x99	// Serial Buffer
-#define 	P2 		0xA0	// Port 2
-#define 	IE 		0xA8	// Interrupt Enable
-#define 	P3 		0xB0	// Port 3
-#define 	IP 		0xB8	// Interrupt Priorit
-#define 	PSW 	0xD0	// Program Status Word
-#define 	ACC 	0xE0	// Accumulator
-#define 	B 		0xF0	// B register
+#define 	P0 		0x00	// Port 0
+#define 	SP 		0x01	// Stack Pointer
+#define 	DPL 	0x02	// DPTR Low byte
+#define 	DPH 	0x03	// DPTR High Byte
+#define 	PCON	0x07	// Power Control
+#define 	TCON 	0x08	// Timer Control
+#define 	TMOD 	0x09	// Timer Mode Control
+#define 	TL0 	0x0A	// Timer 0 Low Byte 
+#define 	TL1 	0x0B	// Timer 1 Low byte
+#define 	TH0 	0x0C	// Timer 0 High Byte
+#define 	TH1 	0x0D	// Timer 1 High Byte
+#define 	P1 		0x10	// Port 1
+#define 	SCON 	0x18	// Serial Control
+#define 	SBUF 	0x19	// Serial Buffer
+#define 	P2 		0x20	// Port 2
+#define 	IE 		0x28	// Interrupt Enable
+#define 	P3 		0x30	// Port 3
+#define 	IP 		0x38	// Interrupt Priority
+#define 	PSW 	0x50	// Program Status Word
+#define 	ACC 	0x60	// Accumulator
+#define 	B 		0x70	// B register
 
 
-/** PCON : Program Status Word. Bit Addressable
+/** PSW : Program Status Word. Bit Addressable
  * 
  * |	P	|	PSW.0	|	Parity Flag			|	
  * |	_	|	PSW.1	|	User defined			|
@@ -77,12 +77,12 @@
  * 
  * |	IDL	|	PCON.0	|	Idle mode bit			|	
  * |	PD	|	PCON.1	|	Power Down bit			|
- * |	GF0 	|	PCON.2	|	General purpose bit		|
+ * |	GF0 |	PCON.2	|	General purpose bit		|
  * |	GF1	|	PCON.3	|	General Purpose bit		|
  * |	_	| 	PCON.4	|	reserved for future use		| 
  * |	_	| 	PCON.5	| 	reserved for future use		|
  * |    _	| 	PCON.6	|	reserved for future use		|
- * |	SMOD	|	PCON.7	|	Double baud Rate bit		|
+ * |	SMOD|	PCON.7	|	Double baud Rate bit		|
  *
  **/
 
@@ -242,12 +242,10 @@ typedef struct cpu {
 	int8_t SFR[0x7F];
 	int8_t Code_Memory[FLASH];
 	uint16_t PC;
-	int8_t Bank;
 }CPU;
 
 CPU CPU_8051;
 
-#define BANK 00
 
 
 
