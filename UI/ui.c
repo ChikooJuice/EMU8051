@@ -72,7 +72,7 @@ void show_Registers ( ) {
 	printf ("\tBANK 0\t BANK 1\t BANK 3\t BANK 4\n");
 	
 	for (int i = 0; i < 8; i++) {
-		printf ("R%d\t%3X \t %3X \t %3X \t %3X \n", i, \
+		printf ("R%d\t%3hhX \t %3hhX \t %3hhX \t %3hhX \n", i, \
 		*((char*)bank0 + i), \
 		*((char*)bank1 + i), \
 		*((char*)bank2 + i), \
@@ -81,9 +81,9 @@ void show_Registers ( ) {
 
 }
 
-void show_SFR ( char* choice ) {
+void show_SFR ( char* chosen_register ) {
 	
-	if (!strcmp (choice, "ALL")) {
+	if (!strcmp (chosen_register, "ALL")) {
 				printf ("\n showing special function registers\n");
 				printf ("P0 	: 0x%02hhX\n", CPU_8051.SFR[P0]);
 				printf ("SP 	: 0x%02hhX\n", CPU_8051.SFR[SP]);
@@ -109,87 +109,87 @@ void show_SFR ( char* choice ) {
 				printf ("PC	: 0x%0X\n", CPU_8051.PC);
 
 	}
-	else if (!strcmp (choice, "ACC")) {
+	else if (!strcmp (chosen_register, "ACC")) {
 		printf ("ACC 	: 0x%02hhX\n", CPU_8051.SFR[ACC]);
 
 	}
-	else if (!strcmp (choice, "P0")) {
+	else if (!strcmp (chosen_register, "P0")) {
 		printf ("P0 	: 0x%02hhX\n", CPU_8051.SFR[P0]);
 
 	}
-	else if (!strcmp (choice, "SP")) {
+	else if (!strcmp (chosen_register, "SP")) {
 		printf ("SP 	: 0x%02hhX\n", CPU_8051.SFR[SP]);
 
 	}
-	else if (!strcmp (choice, "DPL")) {
+	else if (!strcmp (chosen_register, "DPL")) {
 		printf ("DPL 	: 0x%02hhX\n", CPU_8051.SFR[DPL]);
 
 	}
-	else if (!strcmp (choice, "DPH")) {
+	else if (!strcmp (chosen_register, "DPH")) {
 		printf ("DPH 	: 0x%02hhX\n", CPU_8051.SFR[DPH]);
 
 	}
-	else if (!strcmp (choice, "PCON")) {
+	else if (!strcmp (chosen_register, "PCON")) {
 		printf ("PCON 	: 0x%02hhX\n", CPU_8051.SFR[PCON]);
 
 	}
-	else if (!strcmp (choice, "TCON")) {
+	else if (!strcmp (chosen_register, "TCON")) {
 		printf ("TCON 	: 0x%02hhX\n", CPU_8051.SFR[TCON]);
 
 	}
-	else if (!strcmp (choice, "TMOD")) {
+	else if (!strcmp (chosen_register, "TMOD")) {
 		printf ("TMOD 	: 0x%02hhX\n", CPU_8051.SFR[TMOD]);
 
 	}
-	else if (!strcmp (choice, "TL0")) {
+	else if (!strcmp (chosen_register, "TL0")) {
 		printf ("TL0 	: 0x%02hhX\n", CPU_8051.SFR[TL0]);
 
 	}
-	else if (!strcmp (choice, "TL1")) {
+	else if (!strcmp (chosen_register, "TL1")) {
 		printf ("TL1 	: 0x%02hhX\n", CPU_8051.SFR[TL1]);
 
 	}
-	else if (!strcmp (choice, "TH0")) {
+	else if (!strcmp (chosen_register, "TH0")) {
 		printf ("TH0 	: 0x%02hhX\n", CPU_8051.SFR[TH0]);
 
 	}
-	else if (!strcmp (choice, "TH1")) {
+	else if (!strcmp (chosen_register, "TH1")) {
 		printf ("TH1 	: 0x%02hhX\n", CPU_8051.SFR[TH1]);
 
 	}
-	else if (!strcmp (choice, "P1")) {
+	else if (!strcmp (chosen_register, "P1")) {
 		printf ("P1 	: 0x%02hhX\n", CPU_8051.SFR[P1]);
 
 	}
-	else if (!strcmp (choice, "SCON")) {
+	else if (!strcmp (chosen_register, "SCON")) {
 		printf ("SCON 	: 0x%02hhX\n", CPU_8051.SFR[SCON]);
 
 	}
-	else if (!strcmp (choice, "SBUF")) {
+	else if (!strcmp (chosen_register, "SBUF")) {
 		printf ("SBUF 	: 0x%02hhX\n", CPU_8051.SFR[SBUF]);
 
 	}
-	else if (!strcmp (choice, "P2")) {
+	else if (!strcmp (chosen_register, "P2")) {
 		printf ("P2 	: 0x%02hhX\n", CPU_8051.SFR[P2]);
 
 	}
-	else if (!strcmp (choice, "IE")) {
+	else if (!strcmp (chosen_register, "IE")) {
 		printf ("IE 	: 0x%02hhX\n", CPU_8051.SFR[IE]);
 
 	}
-	else if (!strcmp (choice, "P3")) {
+	else if (!strcmp (chosen_register, "P3")) {
 		printf ("P3 	: 0x%02hhX\n", CPU_8051.SFR[P3]);
 
 	}
-	else if (!strcmp (choice, "IP")) {
+	else if (!strcmp (chosen_register, "IP")) {
 		printf ("IP 	: 0x%02hhX\n", CPU_8051.SFR[IP]);
 
 	}
-	else if (!strcmp (choice, "PSW")) {
+	else if (!strcmp (chosen_register, "PSW")) {
 		printf ("PSW 	: 0x%02hhX\n", CPU_8051.SFR[PSW]);
 
 	}
-	else if (!strcmp (choice, "B")) {
+	else if (!strcmp (chosen_register, "B")) {
 		printf ("B 	: 0x%02hhX\n", CPU_8051.SFR[B]);
 
 	}
@@ -235,17 +235,100 @@ void show_PC ( ) {
 }
 
 
-void set_PC ( ) {
+void set_reg (char *chosen_register, uint16_t val) {
 
-	uint16_t tmp;
-	printf ("\n Enter new valid PC value : \t");
-	scanf ("%u", &tmp);
-	if (tmp < 0 || tmp > FLASH) {
-		printf ("invalid PC value");		
+	if ( !strcmp (chosen_register, "PC")) {
+		CPU_8051.PC = val;	
+	}
+
+	else if (!strcmp (chosen_register, "ACC")) {
+		CPU_8051.SFR[ACC] = val & 0xFF;
+	}
+
+	else if (!strcmp (chosen_register, "P0")) {
+		CPU_8051.SFR[P0] = val & 0xFF;
+
+	}
+	else if (!strcmp (chosen_register, "SP")) {
+		CPU_8051.SFR[SP] = val & 0xFF;
+
+	}
+	else if (!strcmp (chosen_register, "DPL")) {
+		CPU_8051.SFR[DPL] = val & 0xFF;
+
+	}
+	else if (!strcmp (chosen_register, "DPH")) {
+		CPU_8051.SFR[DPH] = val & 0xFF;
+
+	}
+	else if (!strcmp (chosen_register, "PCON")) {
+		CPU_8051.SFR[PCON] = val & 0xFF;
+
+	}
+	else if (!strcmp (chosen_register, "TCON")) {
+		CPU_8051.SFR[TCON] = val & 0xFF;
+
+	}
+	else if (!strcmp (chosen_register, "TMOD")) {
+		CPU_8051.SFR[TMOD] = val & 0xFF;
+
+	}
+	else if (!strcmp (chosen_register, "TL0")) {
+		CPU_8051.SFR[TL0] = val & 0xFF;
+
+	}
+	else if (!strcmp (chosen_register, "TL1")) {
+		CPU_8051.SFR[TL1] = val & 0xFF;
+
+	}
+	else if (!strcmp (chosen_register, "TH0")) {
+		CPU_8051.SFR[TH0] = val & 0xFF;
+
+	}
+	else if (!strcmp (chosen_register, "TH1")) {
+		CPU_8051.SFR[TH1] = val & 0xFF;
+
+	}
+	else if (!strcmp (chosen_register, "P1")) {
+		CPU_8051.SFR[P1] = val & 0xFF;
+
+	}
+	else if (!strcmp (chosen_register, "SCON")) {
+		CPU_8051.SFR[SCON] = val & 0xFF;
+
+	}
+	else if (!strcmp (chosen_register, "SBUF")) {
+		CPU_8051.SFR[SBUF] = val & 0xFF;
+
+	}
+	else if (!strcmp (chosen_register, "P2")) {
+		CPU_8051.SFR[P2] = val & 0xFF;
+
+	}
+	else if (!strcmp (chosen_register, "IE")) {
+		CPU_8051.SFR[IE] = val & 0xFF;
+
+	}
+	else if (!strcmp (chosen_register, "P3")) {
+		CPU_8051.SFR[P3] = val & 0xFF;
+
+	}
+	else if (!strcmp (chosen_register, "IP")) {
+		CPU_8051.SFR[IP] = val & 0xFF;
+
+	}
+	else if (!strcmp (chosen_register, "PSW")) {
+		CPU_8051.SFR[PSW] = val & 0xFF;
+
+	}
+	else if (!strcmp (chosen_register, "B")) {
+		CPU_8051.SFR[B] = val & 0xFF;
+
 	}
 	else {
-		CPU_8051.PC = tmp;
+		printf ("Invalid register name\n");
 	}
+	
 
 }
 

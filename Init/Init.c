@@ -91,6 +91,7 @@ void Init_CPU (void) {
 	for (int i = 0; i < FLASH; i++)	CPU_8051.Code_Memory[i] = 0x0;
 
 	CPU_8051.PC = 0x00;
+	assign_functions ();
 }
 
 int8_t fetch ( ) {

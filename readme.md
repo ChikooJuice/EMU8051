@@ -40,8 +40,9 @@ Whole 8051 is struct of memory array and all the instructions read/write and do 
 - [*] overflow flag update logic
 - [*] write the disassembled output to code memory and set pc to run
 - [*] ACALL instruction bug solve
-- [ ] show_SFR function
-- [ ] show memory
+- [*] show_SFR function
+- [*] show memory
+- [ ] SFR memory issue
 - [ ] UI command parser
 ## Important 
 

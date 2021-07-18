@@ -55,10 +55,11 @@ struct section DecodeSection (FILE *objfile) {
 
 	if (CurrSection.checksum != checksum_buffer) {
 		printf ("Checksum Error!\n");
+		printf ("give valid file location\n");
+		printf ("Exiting ! \n");
 		exit (1);
 	}
 
-	printf ("No checksum error\n");
 	// reading the trailing newline character form hex file
 	fread ( len_buffer, sizeof (char), 2, objfile);
 
@@ -137,8 +138,6 @@ int WriteTOCodeMemory ( char* Hex_file_addr) {
 		load_addr = temp.address;
 		for (int i = 0; load_addr < temp.address + temp.len; load_addr++, i++) {
 			CPU_8051.Code_Memory[load_addr] = temp.data[i];
-
-			if (i == 0) printf ("writing to memory\n");
 
 		}	
 	}

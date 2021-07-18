@@ -22,8 +22,4 @@ int IntfromHex (char tmp);
 void printSection ();
 int WriteTOCodeMemory ( char* );
 
-
-
-
-
 #endif
