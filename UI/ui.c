@@ -15,15 +15,15 @@ void show_memory ( uint16_t low, uint16_t high) {
 	else {
 		char *cpu_mem_pointer = &CPU_8051;
 		printf ("\naddr\t");
-		for ( char i = 0; i <= 0xF; i++) printf ("0x%1X\t", i);
+		for ( char i = 0; i <= 0xF; i++) printf ("0x%X\t", i);
 		printf ("\n\n");
 
 		for ( ; low <= high; ) {
 
-			printf ("0x%X \t", low);
+			printf ("0x%02X \t", low);
 
 			for ( uint8_t i = 0; (i <= 0xF) && (low <= high); i++) {
-				printf ("%x|%02hhX\t",low, *(cpu_mem_pointer + low));
+				printf ("%02hhX\t", *(cpu_mem_pointer + low));
 				low += 1;
 			}
 
@@ -332,3 +332,29 @@ void set_reg (char *chosen_register, uint16_t val) {
 
 }
 
+
+
+void write_memory ( uint16_t address, uint8_t val)
+{
+	if (address > FLASH) {
+		printf ("Invalid memory address, address cannot be greater than memory itself \n");
+		return;
+	}
+	
+	else {
+		char *pointer = &CPU_8051;
+		*(pointer + address) = val;
+		return;
+	}
+}
+
+void clear( )
+{
+    #if defined(__linux__) || defined(__unix__) || defined(__APPLE__)
+        system("clear");
+    #endif
+
+    #if defined(_WIN32) || defined(_WIN64)
+        system("cls");
+    #endif
+}

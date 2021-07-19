@@ -10,4 +10,6 @@ void Help ( );
 void show_BitAddressable ( );
 void show_PC ( );
 void set_reg (char *chosen_register, uint16_t val);
+void write_memory ( uint16_t address, uint8_t val);
+void clear( );
 #endif
