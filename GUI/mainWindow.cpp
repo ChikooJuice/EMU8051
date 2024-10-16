@@ -49,13 +49,26 @@ MainFrame :: MainFrame(const wxString& title): wxFrame (nullptr, 1, title, wxDef
     
 
     // assigning the function to menu items. 
-    file_menubar_menu->Bind(wxEVT_MENU, &MainFrame::open_menu, this);
-
+    file_menubar_menu->Bind(wxEVT_MENU, &MainFrame::open_menu, this, file_menu_selectFile->GetId());
 
 }
 
 void MainFrame::open_menu(wxCommandEvent& event) {
-    printf("HEllo World \n");
+    // opening file dialog box 
+    printf("HERE for open file\n");
+    wxFileDialog openfileDialog(this, _("open File"),"","","All Files (*.*)|*.*", wxFD_OPEN | wxFD_FILE_MUST_EXIST);
+    if (openfileDialog.ShowModal() == wxID_CANCEL) {
+        printf("PRESSED CANCELED !! \n");
+        return;
+    }
+    else
+    {
+        wxString chosenFileName, pathname;
+        chosenFileName = openfileDialog.GetFilename();
+        pathname = openfileDialog.GetPath();
+
+        std::cout << "file name : " << chosenFileName  << " PATH : " << pathname << std::endl;
+    }
 }
 
 
