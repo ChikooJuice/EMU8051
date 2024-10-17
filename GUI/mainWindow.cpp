@@ -47,6 +47,8 @@ MainFrame :: MainFrame(const wxString& title): wxFrame (nullptr, 1, title, wxDef
     menubar_menu->Bind(wxEVT_MENU, &MainFrame::open_menu, this, menu_selectFile->GetId());
     menubar_menu->Bind(wxEVT_MENU, &MainFrame::exit_menu, this, menu_exit->GetId());
 
+    this->draw_GUI();
+
 }
 
 /** 
@@ -78,6 +80,51 @@ void MainFrame::draw_GUI() {
 }
 
 
+void MainFrame::draw_GUI() {
+    // main grid
+    wxFlexGridSizer *maingrid = new wxFlexGridSizer(3, 4, 10, 10);
+
+    // Add SFR inside main grid. 
+    wxFlexGridSizer *SFR_sizer = new wxFlexGridSizer(12, 4, 2, 2);
+    maingrid->Add(SFR_sizer, 1, wxEXPAND | wxALL, 5);
+
+    wxString SFR_names[] = {"P0", "SP", "DPL", "DPH", "PCON", "TCON", "TMOD", "TL0", "TL1", "TH0", "TH1", "P1", "SCON", "SBUF", "P2", "IE", "P3", "IP", "PSW", "ACC", "B", "  "};
+
+    // heading of registers
+    SFR_sizer->Add( new wxStaticText (this, wxID_ANY, "SFR RESGISTERS"), 0,  wxEXPAND | wxALIGN_CENTER_HORIZONTAL | wxALL, 0);
+    SFR_sizer->AddSpacer(0); // Empty cell to fill the span`
+    SFR_sizer->AddSpacer(0); // Empty cell to fill the span
+    SFR_sizer->AddSpacer(0); // Empty cell to fill the span`
+
+
+    SFR_sizer->AddGrowableCol(0);
+    SFR_sizer->AddGrowableCol(1);
+    SFR_sizer->AddGrowableCol(2);
+    SFR_sizer->AddGrowableCol(3);
+
+    for(int i = 0; i < 22; i++) {
+        
+        SFR_sizer->Add(new wxTextCtrl(this, wxID_ANY, SFR_names[i], wxDefaultPosition, wxDefaultSize, wxTE_READONLY), 0,  wxALL, 2);
+        SFR_sizer->Add(new wxTextCtrl(this, wxID_ANY, wxString(SFR_names[i] + " value"), wxDefaultPosition, wxDefaultSize, wxTE_READONLY), 0, wxEXPAND | wxALL, 2);
+
+    }   
+
+    // Adding program status word info 2
+    wxFlexGridSizer *PSW_sizer = new wxFlexGridSizer(8, 2, 2, 2);
+    maingrid->Add(PSW_sizer, 1, wxEXPAND | wxALL, 5);
+
+    wxString PSW_names[] = {"P", "XX", "OV", "RS0", "RS1", "F0", "AC", "CY"};
+    for(int i = 0; i < 8; i++) {
+        
+        PSW_sizer->Add(new wxTextCtrl(this, wxID_ANY, PSW_names[i], wxDefaultPosition, wxDefaultSize, wxTE_READONLY), 1,  wxALL, 2);
+        PSW_sizer->Add(new wxTextCtrl(this, wxID_ANY, wxString(PSW_names[i] + " value"), wxDefaultPosition, wxDefaultSize, wxTE_READONLY), 1, wxEXPAND | wxALL, 2);
+
+    }
+
+    
+    this->SetSizerAndFit(maingrid);
+
+}
 
 bool EMU_GUI::OnInit() {
     MainFrame *frame = new MainFrame("EMU 8051");
