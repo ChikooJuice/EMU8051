@@ -15,12 +15,14 @@ class EMU_GUI : public wxApp {
  * Entry point into the application
  */
 class MainFrame : public wxFrame {
+    private:
+        wxString FilePath;
     public:
         MainFrame(const wxString& title);
-    private:
-        // event handlers. 
+        void draw_GUI();
         void open_menu(wxCommandEvent& event);
         void exit_menu(wxCommandEvent& event);
+    
 
 };
 
@@ -55,21 +57,24 @@ void MainFrame::open_menu(wxCommandEvent& event) {
     printf("HERE for open file\n");
     wxFileDialog openfileDialog(this, _("open File"),"","","All Files (*.*)|*.*", wxFD_OPEN | wxFD_FILE_MUST_EXIST);
     if (openfileDialog.ShowModal() == wxID_CANCEL) {
-        printf("PRESSED CANCELED !! \n");
         return;
     }
     else
     {
         wxString chosenFileName, pathname;
-        chosenFileName = openfileDialog.GetFilename();
-        pathname = openfileDialog.GetPath();
-
-        std::cout << "file name : " << chosenFileName  << " PATH : " << pathname << std::endl;
+        FilePath = openfileDialog.GetPath();
+        this->draw_GUI();
     }
 }
 
 void MainFrame::exit_menu(wxCommandEvent& event) {
     Close(true);
+}
+
+void MainFrame::draw_GUI() {
+    wxFlexGridSizer maingrid(3, 4, 10, 10);
+    this->SetSizer(&maingrid);
+
 }
 
 
