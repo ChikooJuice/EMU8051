@@ -20,39 +20,36 @@ class MainFrame : public wxFrame {
     private:
         // event handlers. 
         void open_menu(wxCommandEvent& event);
-        void ext_menu(wxCommandEvent& event);
+        void exit_menu(wxCommandEvent& event);
 
 };
 
-bool EMU_GUI::OnInit() {
-    MainFrame *frame = new MainFrame("EMU 8051");
-    frame->Show(true);
-    return true;
-}
-
 MainFrame :: MainFrame(const wxString& title): wxFrame (nullptr, 1, title, wxDefaultPosition, wxSize(500,500)) {
     
-    // creating menu bar.
-    wxMenuBar* menubar = new wxMenuBar;
-    wxMenu* file_menubar_menu = new wxMenu;
-    wxMenu* exit_menubar_menu = new wxMenu;
+    // creating menu bar with 1 menu. 
+    wxMenuBar *menubar = new wxMenuBar;
+    wxMenu *menubar_menu = new wxMenu;
     
-    wxMenuItem* file_menu_selectFile = new wxMenuItem(file_menubar_menu, wxID_ANY, "Select File");
+    wxMenuItem *menu_selectFile = new wxMenuItem(menubar_menu, wxID_ANY, "Open File");
+    wxMenuItem *menu_exit = new wxMenuItem(menubar_menu, wxID_ANY, "Exit");
 
-    file_menubar_menu->Append(file_menu_selectFile);
-    wxMenuItem* exit_menuOpt = exit_menubar_menu->Append(wxID_ANY, "Exit");
+    menubar_menu->Append(menu_selectFile);
+    menubar_menu->Append(menu_exit);
     
-    menubar->Append(file_menubar_menu, "File");
-    menubar->Append(exit_menubar_menu, "Exit");
+    menubar->Append(menubar_menu, "File");
 
     this->SetMenuBar(menubar);
     
 
     // assigning the function to menu items. 
-    file_menubar_menu->Bind(wxEVT_MENU, &MainFrame::open_menu, this, file_menu_selectFile->GetId());
+    menubar_menu->Bind(wxEVT_MENU, &MainFrame::open_menu, this, menu_selectFile->GetId());
+    menubar_menu->Bind(wxEVT_MENU, &MainFrame::exit_menu, this, menu_exit->GetId());
 
 }
 
+/** 
+ * event handler for opening menu and selecting file. 
+ */
 void MainFrame::open_menu(wxCommandEvent& event) {
     // opening file dialog box 
     printf("HERE for open file\n");
@@ -71,7 +68,17 @@ void MainFrame::open_menu(wxCommandEvent& event) {
     }
 }
 
+void MainFrame::exit_menu(wxCommandEvent& event) {
+    Close(true);
+}
 
+
+
+bool EMU_GUI::OnInit() {
+    MainFrame *frame = new MainFrame("EMU 8051");
+    frame->Show(true);
+    return true;
+}
 
 wxIMPLEMENT_APP(EMU_GUI);
 
