@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 
-int (*OP_CODES[0xFF]) (void);
+extern int (*OP_CODES[0xFF]) (void);
 /** Assign this function pointer to corresponding instruction
  * after defining the functions
  */

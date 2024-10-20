@@ -243,11 +243,7 @@ typedef struct cpu {
 	int8_t Code_Memory[FLASH];
 	uint16_t PC;
 }CPU;
-
-CPU CPU_8051;
-
-
-
+extern CPU CPU_8051;
 
 
 #endif

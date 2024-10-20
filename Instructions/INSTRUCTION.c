@@ -14,7 +14,7 @@ extern int PPRINT;
  */
 
 
-
+int (*OP_CODES[0xFF]) (void);
 int PUSH (int8_t data) {
 	
 	*(((char*)&CPU_8051) + CPU_8051.SFR[SP]) = data;

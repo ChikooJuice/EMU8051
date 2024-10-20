@@ -4,6 +4,9 @@
 #include "disassembler.h"
 #include "../Memory/Memory.h"
 
+char address_buffer[4], len_buffer[2];
+
+
 struct section DecodeSection (FILE *objfile) {
 
 	struct section CurrSection;

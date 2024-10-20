@@ -15,7 +15,7 @@ struct section {
 	uint8_t *data;
 };
 
-char address_buffer[4], len_buffer[2];
+extern char address_buffer[4], len_buffer[2];
 
 struct section  DecodeSection (FILE *objfile);
 int IntfromHex (char tmp);
