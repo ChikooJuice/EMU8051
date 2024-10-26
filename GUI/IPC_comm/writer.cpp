@@ -10,7 +10,8 @@
 #define MMAP_SIZE 1024
 
 int main() {
-    
+    int x,y;
+
     char buffer[] = "a";
     const char *file_name = "/a";
 
@@ -25,15 +26,13 @@ int main() {
     ftruncate(fd, sizeof(sem));
 
     sem *shared_mem_pointer = (sem*)mmap(0, sizeof(sem), PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
+    shared_mem_pointer->init();
 
     if (shared_mem_pointer == MAP_FAILED) {
         printf("MMAP failed \n");
         return 0;
     }
     // mmap is successful 
-    shared_mem_pointer->sem_t = 1;
-    printf("sem : %d---\n", shared_mem_pointer->sem_t);
-
 
 
     strcpy(shared_mem_pointer->buffer, buffer);
@@ -51,23 +50,25 @@ int main() {
         execlp("./reader", "./reader", NULL);
     }
 
-    while(true) {
+    // sem_getvalue(&shared_mem_pointer->mem_read, &x);
+    // sem_getvalue(&shared_mem_pointer->mem_updated, &y);
+    // printf("writer loop start: mem_read : %d | mem_updated : %d \n", x, y);
+    int i = 0;
+    while(i < 1000) {
+        
+        sem_wait(&shared_mem_pointer->mem_read);
+        sem_wait(&shared_mem_pointer->semaphore);        
 
-        if(shared_mem_pointer->sem_t == 0) continue;
-
-        if (shared_mem_pointer->sem_t == 1) {
-            shared_mem_pointer->sem_t = 0;
             printf("from writer :  %s \n", shared_mem_pointer->buffer);
-            shared_mem_pointer->sem_t = 1;
-            sleep(1);
-        }
-
+        i++;
+        sem_post(&shared_mem_pointer->semaphore);
+        sem_post(&shared_mem_pointer->mem_updated);
+        
+        // sem_getvalue(&shared_mem_pointer->mem_read, &x);
+        // sem_getvalue(&shared_mem_pointer->mem_updated, &y);
+        // printf("writer loop : mem_read : %d | mem_updated : %d \n", x, y);
     }
 
-
-
-    
     return 0;
-
 
 }

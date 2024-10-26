@@ -9,6 +9,7 @@
 
 
 int main () {
+    int x,y;
     printf("--------------- IN READER PROCESS----------- \n");
 
     const char *file_name = "/a";
@@ -19,23 +20,24 @@ int main () {
 
     std::string msg = "hello world ";
     std::string r_msg;
-    printf("R ->here sem : %d \n", shared_mem_pointer->sem_t);
     char *buffer;
     int i = 0;
-    while(true) {
-        if(shared_mem_pointer->sem_t == 0) continue;
-
-        if (shared_mem_pointer->sem_t == 1) {
+    
+    while(i < 1000) {
+        
+        sem_wait(&shared_mem_pointer->mem_updated);
+        sem_wait(&shared_mem_pointer->semaphore);
 
             r_msg = msg + std::to_string(i);
-            shared_mem_pointer->sem_t = 0;
             strcpy(shared_mem_pointer->buffer, r_msg.c_str());
-            shared_mem_pointer->sem_t = 1;
-            sleep(1);
-            i++;
+            
+        sem_post(&shared_mem_pointer->mem_read);
+    
+        i++;
+        sem_post(&shared_mem_pointer->semaphore);
+
         }
 
-    }
     return 0;
 
 }
