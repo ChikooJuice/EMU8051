@@ -3,19 +3,36 @@
 #include "../Init/Init.h"
 #include "../disassembler/disassembler.h"
 #include "../UI/ui.h"
+#include "../Sync/sync.hpp"
 #include <stdio.h>
 #include <string.h>
+#include <sys/mman.h>
+#include <ctype.h>
+#include <fcntl.h>
+
 
 int PPRINT = 1;
+int GUI_MODE = 0;
+sem *SHARED_MEM_POINTER = NULL;
 
 uint16_t ConvertToInt (char *);
+void initialize_shared_mem();
 
 int main ( int argc, char *argv[]) {
 	
-	if (argc == 1 || argc > 2) {
+	if (argc > 2) {
 		printf ("invalid number of command line arguments \n");
 		printf ("Give only location of hex file as argument \n");
 		return 0;
+	}
+	if (argc == 1) {
+		printf("CLI Sync mode enabled \n");
+		printf("File to open %s\n", argv[1]);
+		GUI_MODE = 1;
+
+		// initializing the shared memory 
+		initialize_shared_mem();
+
 	}
 
 	Init_CPU ( );
@@ -25,10 +42,16 @@ int main ( int argc, char *argv[]) {
 	
 	while (1) {
 	again:
-		gets (command);
-		if (!strcmp (command, "\0")) goto again; // in case you enter \n 
-		// parsing this command using strtok
-		command_token = strtok (command, delimit);
+		if (GUI_MODE == 0) {
+			gets (command);
+			if (!strcmp (command, "\0")) goto again; // in case you enter \n 
+			// parsing this command using strtok
+			command_token = strtok (command, delimit);
+		}
+		else if (GUI_MODE == 1) {
+			
+			continue;
+		}
 
 		if (!strcmp (command_token, "exit") | (command_token == NULL)) {
 			return 0;
@@ -206,4 +229,18 @@ hex:
 	}
 
 	return tmp;
+}
+
+void initialize_shared_mem() {
+
+	const char *file_name = "/emu_gui";
+    int fd = shm_open (file_name, O_RDWR, 0666);
+
+	if (fd == -1) {
+		printf ("Shared Memory allocation Failed \n");
+		return 0;
+	}
+
+    SHARED_MEM_POINTER = (sem*)mmap(0, sizeof(sem), PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
+	close(fd);
 }

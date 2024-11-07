@@ -1,5 +1,16 @@
 #include <wx-3.0/wx/wx.h>
 #include <iostream>
+#include "../Memory/Memory.h"
+#include "../Sync/sync.hpp"
+#include <sys/mman.h>
+#include <ctype.h>
+#include <fcntl.h>
+#include <semaphore.h>
+
+
+
+
+sem *SHARED_MEM_POINTER;
 
 /** 
  * main overridden OnInit function creating
@@ -25,6 +36,47 @@ class MainFrame : public wxFrame {
     
 
 };
+
+
+int initialize_backend (wxString filepath) {
+    const char* f_path = filepath.mb_str();
+    
+    // initializing the shared memory & calling CLI function in backend. 
+    
+    const char *file_name = "/emu_gui";
+    int fd = shm_open (file_name, O_CREAT | O_RDWR, 0666);
+    if (fd == -1) {
+        printf("shm open failed \n");
+        std::cout << "shm : " << strerror(errno) << std::endl;
+    }
+
+    ftruncate(fd, sizeof(sem));
+
+    SHARED_MEM_POINTER = (sem*)mmap(0, sizeof(sem), PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
+    if (SHARED_MEM_POINTER == MAP_FAILED) {
+        printf("MMAP failed \n");
+        return 0;
+    }
+    close(fd);
+    printf("here :: 1");
+    init_sem(SHARED_MEM_POINTER);
+    printf("HERE to initial backend \n");
+    // creating child process. 
+    // creating a child process. 
+    pid_t pid_child = fork();
+
+    if (pid_child < 0 ) {
+        printf("Forking failed \n");
+        return 0;
+    }
+    if (pid_child == 0) {
+        printf("exec-ed child \n");
+        execlp("/home/dipesh/programming_stuff/EMU8051/EMU8051", "/home/dipesh/programming_stuff/EMU8051/EMU8051", f_path, NULL);
+    }
+
+
+
+}
 
 MainFrame :: MainFrame(const wxString& title): wxFrame (nullptr, 1, title, wxDefaultPosition, wxSize(500,500)) {
     
@@ -54,7 +106,6 @@ MainFrame :: MainFrame(const wxString& title): wxFrame (nullptr, 1, title, wxDef
  */
 void MainFrame::open_menu(wxCommandEvent& event) {
     // opening file dialog box 
-    printf("HERE for open file\n");
     wxFileDialog openfileDialog(this, _("open File"),"","","HexFile (*.hex)|*.hex", wxFD_OPEN | wxFD_FILE_MUST_EXIST);
     if (openfileDialog.ShowModal() == wxID_CANCEL) {
         return;
@@ -63,6 +114,9 @@ void MainFrame::open_menu(wxCommandEvent& event) {
     {
         wxString chosenFileName, pathname;
         FilePath = openfileDialog.GetPath();
+        printf("going to initialize : 1\n");
+        initialize_backend(FilePath);
+
         this->draw_GUI();
     }
 }
@@ -70,7 +124,6 @@ void MainFrame::open_menu(wxCommandEvent& event) {
 void MainFrame::exit_menu(wxCommandEvent& event) {
     Close(true);
 }
-
 
 void MainFrame::draw_GUI() {
     // main grid
@@ -152,6 +205,7 @@ void MainFrame::draw_GUI() {
     this->SetSizerAndFit(maingrid);
 
 }
+
 
 bool EMU_GUI::OnInit() {
     MainFrame *frame = new MainFrame("EMU 8051");
